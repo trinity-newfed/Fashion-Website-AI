@@ -1,1 +1,3 @@
-# Fashion-Website-AI
+# FOR REQUIREMENT PLEASE READ requirement.txt
+
+#HOW TO USE AND INSTALL#
