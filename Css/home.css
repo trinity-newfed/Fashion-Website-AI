@@ -9,7 +9,6 @@ html,body{
 
 /*START HEAD LOGO TRINITY */
 #head{
-    padding-top: 2%;
     width: 100vw;
     max-width: 1500px;
     height: 100svh;
@@ -53,7 +52,6 @@ html,body{
 
 /*START HEAD HERO BANNER */
 #head-banner-container{
-    margin-top: 5%;
     width: 100vw;
     height: 100svh;
     max-width: 1500px;
@@ -143,7 +141,7 @@ html,body{
     justify-content: center;
     align-items: center;
     width: 100vw;
-    height: 100svh;
+    height: 107svh;
     max-width: 1500px;
     max-height: 900px;
     background: linear-gradient(135deg, #1f1f1f, #111);
@@ -193,15 +191,15 @@ html,body{
 }
 #image-container{
     position: absolute;
-    width: 90%;
-    height: 90%;
-    right: 20%;
-}
-#image-container img{
-    scale: 1.75;
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    right: 15%;
+}
+#s-img0{
+    scale: 1.5;
+    width: 100%;
+    height: 100%;
+    object-fit: scale-down;
     object-position: center 5rem;
     filter: brightness(0.9) contrast(1.05);
 }
@@ -564,7 +562,7 @@ html,body{
 /*START SEPERATE*/
 #territory{
     width: 100vw;
-    height: 10svh;
+    height: 15svh;
     max-width: 1500px;
     max-height: 200px;
     display: flex;
@@ -584,9 +582,10 @@ html,body{
 #menu{
     width: 100vw;
     max-width: 1500px;
-    height: 70px;
+    margin-top: clamp(0.25rem, 1vw, 1rem);
+    height: clamp(0.25rem, 2.5vw, 3rem);;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     position: absolute;
     top: 0;
@@ -607,11 +606,12 @@ html,body{
     left: 0;
     width: 10%;
     height: 100%;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-weight: bold;
     color: rgb(255, 111, 0);
-    font-size: clamp(1rem, 2vw, 2.5rem);
+    font-size: clamp(.25rem, 3vw, 2.5rem);
     cursor: default;
 }
 #text{
@@ -621,6 +621,9 @@ html,body{
     justify-content: space-between;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bolder;
+}
+#text span{
+    font-size: clamp(0.35rem, 1.25vw, 1rem);
 }
 #text span:hover{
     transition: .3s all;
@@ -636,10 +639,11 @@ html,body{
     display: flex;
     justify-content: space-around;
     align-items: center;
+    font-size: clamp(0.45rem, 1.25vw, 1rem);
 }
 .icon{
-    width: 1.2rem;
-    height: 1.2rem;
+    width: clamp(.35rem, 3vw, 2.5rem);
+    height: clamp(.35rem, 3vw, 2.5rem);
 }
 .icon path{
     scale: 1;
@@ -660,5 +664,19 @@ html,body{
 }
 #login-btn:hover{
     background-color: rgb(183, 49, 0);
+}
+#user-account{
+    width: clamp(.25rem, 3vw, 2.5rem);
+    height: clamp(.25rem, 3vw, 2.5rem);
+    z-index: 2;
+    background-color: #111;
+    border-radius: 50%;
+}
+#user-avatar{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: scale-down;
+    object-position: center 30%;
 }
 /*END MENU*/

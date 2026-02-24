@@ -2,7 +2,7 @@
 $host = "localhost";
 $user = "root";
 $password = "";
-$dbname = "RS_Database";
+$dbname = "TF_Database";
 
 
 $conn = new mysqli($host, $user, $password);
@@ -25,8 +25,6 @@ $conn->query("CREATE TABLE IF NOT EXISTS products(
     product_name VARCHAR(100),
     product_price VARCHAR(100),
     product_type VARCHAR(255),
-    product_state VARCHAR(255),
-    product_address VARCHAR(255),
     product_describe VARCHAR(255),
     product_size VARCHAR(255),
     product_img VARCHAR(255),
@@ -35,19 +33,11 @@ $conn->query("CREATE TABLE IF NOT EXISTS products(
     product_img3 VARCHAR(255),
     product_img4 VARCHAR(255)
     )");
-$conn->query("CREATE TABLE IF NOT EXISTS projects(
-    id INT(10) AUTO_INCREMENT PRIMARY KEY,
-    project_name VARCHAR(100),
-    project_describe VARCHAR(255),
-    project_img VARCHAR(255),
-    project_img1 VARCHAR(255),
-    project_img2 VARCHAR(255),
-    project_img3 VARCHAR(255)
-    )");
-$conn->query("CREATE TABLE IF NOT EXISTS Favorite(
+$conn->query("CREATE TABLE IF NOT EXISTS Cart(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100),
     product_id VARCHAR(100),
+    quantity VARCHAR(100),
     product_type ENUM('male','female','kid')
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS userdata(
@@ -71,6 +61,6 @@ $conn->query("CREATE TABLE IF NOT EXISTS employeedata(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 
-    header("Location: /Real%20Estate/Pages/main_pages/product.php");
+    header("Location: ../Pages/log.php");
     exit();
 ?>

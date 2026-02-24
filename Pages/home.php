@@ -1,3 +1,15 @@
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$dbname = "TF_Database";
+
+$conn = new mysqli($host, $user, $password, $dbname);
+if ($conn->connect_error) {
+    die("Lỗi kết nối: " . $conn->connect_error);
+}
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,12 +47,12 @@
                 <span>GET SALE UP TO 20%</span>
             </div>
             <div id="image-container">
-                <img src="../Pictures/Collections/Body_collection.png" alt="">
+                <img src="../Pictures/Collections/Body_collection.png" alt="" id="s-img0">
             </div>
             <div id="slide-container">
-                <div class="variant"><img src="../Pictures/Collections/Collection-1.png" alt=""></div>
-                <div class="variant"><img src="../Pictures/Collections/Collection-2.png" alt=""></div>
-                <div class="variant"><img src="../Pictures/Collections/Collection-3.png" alt=""></div>
+                <div class="variant"><img src="../Pictures/Collections/Collection-1.png" alt="" id="s-img1"></div>
+                <div class="variant"><img src="../Pictures/Collections/Collection-2.png" alt="" id="s-img2"></div>
+                <div class="variant"><img src="../Pictures/Collections/Collection-3.png" alt="" id="s-img3"></div>
             </div>
             <div class="cta-group">
                 <button class="shop-btn">SHOP NOW</button>
@@ -94,7 +106,7 @@
             <div id="text">
                 <span>New Arrival</span>
                 <span>Tops</span>
-                <span>Bottoms</span>
+                <span id="t-bottoms">Bottoms</span>
                 <span>Accesorires</span>
                 <span>About</span>
             </div>
@@ -103,9 +115,25 @@
             <svg class="icon" viewBox="0 0 640 512" aria-hidden="true">
                 <path fill="currentColor" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
             </svg>
-            <div id="login-btn">Login</div>
+            <?php if(isset($_SESSION['username'])): ?>
+                <p><?=$_SESSION['username']?></p>
+                <?php if(!empty($_SESSION['img'])): ?>
+                    <div id="user-account">
+                        <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
+                    </div>
+                <?php endif; ?>
+            <?php else: ?>
+                <div id="login-btn">
+                    <form action="../Database/createdatabase.php" method="post" style="width: 100%; height: 100%;">
+                        <input type="submit" value="Login" style="width: 100%; height: 100%; background-color: transparent; border: none; color: white;">
+                    </form>
+                
+                </div>
+            <?php endif; ?>
         </div>
     </section>
-    <script></script>
+    <script>
+
+    </script>
 </body>
 </html>
