@@ -2,17 +2,19 @@
 $host = "localhost";
 $user = "root";
 $password = "";
-$dbname = "RS_Database";
+$dbname = "TF_Database";
 
 $conn = new mysqli($host, $user, $password, $dbname);
 if ($conn->connect_error) {
     die("Lỗi kết nối: " . $conn->connect_error);
 }
 
+session_start();     
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $username = trim($_POST['username']);
-    $img    = trim($_POST['img']);
+    $img      = trim($_SESSION['avatar_temp']);
     $email    = trim($_POST['email']);
     $password = $_POST['user_password'];
     $address  = trim($_POST['user_address']);
@@ -22,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (empty($password)) {
     echo "<script>
-            alert('Mật khẩu không được để trống!');
+            alert('Password can not be plank!');
             window.history.back();
           </script>";
     exit;
@@ -30,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if (strlen($password) < 6) {
     echo "<script>
-            alert('Mật khẩu phải có ít nhất 6 ký tự!');
+            alert('The password must hold at least 6 letters!');
             window.history.back();
           </script>";
     exit;
@@ -46,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($stmt->num_rows > 0) {
         echo "<script>
-                alert('Tài khoản hoặc email đã tồn tại!');
+                alert('Account or email already exists!');
                 window.history.back();
               </script>";
         exit;
@@ -69,12 +71,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($stmt->execute()) {
         echo "<script>
-                alert('Đăng ký thành công!');
+                alert('Register success!');
                 window.location.href = 'log.php';
               </script>";
         exit;
     } else {
-        echo "<script>alert('Đăng ký thất bại!');</script>";
+        echo "<script>alert('Register failed!');</script>";
     }
 }
 ?>

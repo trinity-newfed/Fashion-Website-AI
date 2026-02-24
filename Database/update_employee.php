@@ -1,5 +1,5 @@
 <?php
-$conn = new mysqli("localhost", "root", "", "RS_Database");
+$conn = new mysqli("localhost", "root", "", "TF_Database");
 if ($conn->connect_error) {
     die("Error: " . $conn->connect_error);
 }

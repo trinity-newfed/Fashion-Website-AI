@@ -7,7 +7,7 @@ session_start();
 $host = "localhost";
 $user = "root";
 $password = "";
-$dbname = "RS_Database";
+$dbname = "TF_Database";
 
 $conn = new mysqli($host, $user, $password, $dbname);
 if ($conn->connect_error) {
@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($username === "Admin" && $userpassword === "Operationer") {
         $_SESSION['username'] = "Admin";
         $_SESSION['role'] = "admin";
-        header("Location: /Real Estate/Pages/manage/admin.php");
+        header("Location: admin.php");
         exit;
     }
 
@@ -39,18 +39,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
         if (password_verify($userpassword, $hashedPassword)) {
+            $_SESSION['img'] = $row['img'];
             $_SESSION['username'] = $row['username'];
             $_SESSION['email'] = $row['email'];
             $_SESSION['role'] = 'user';
 
-            header("Location: ../../../Real EState/Pages/main_pages/Trangchu.php");
+            header("Location: home.php");
             exit;
         }
     }
     
     echo "
     <script>
-    alert('Sai tên đăng nhập hoặc mật khẩu!');
+    alert('Wrong username or password!');
     window.location.href='log.php';
     </script>
     ";
