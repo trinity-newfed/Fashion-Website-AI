@@ -46,8 +46,8 @@ session_start();
                 <div class="variant"><img src="../Pictures/Collections/Collection-3.png" alt="" id="s-img3"></div>
             </div>
             <div class="cta-group">
-                <button class="shop-btn">SHOP NOW</button>
-                <div class="play-btn">
+                <button class="shop-btn" onclick="window.location.href='products.php#newest'">SHOP NOW</button>
+                <div class="play-btn" onclick="window.location.href='products.php#newest'">
                     <div class="circle">
                         <div class="triangle"></div>
                     </div>
