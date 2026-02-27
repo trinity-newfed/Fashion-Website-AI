@@ -1,7 +1,7 @@
 /upload/
-/uploads/
+/picture-uploads/
 /vendor/
 /node_modules/
 .env
 .DS_Store
-
+AI/sd14/
