@@ -9,13 +9,13 @@ if ($conn->connect_error) {
     die("Lỗi kết nối DB");
 }
 
-if (!isset($_GET['id'])) {
-    die("Thiếu ID");
+if (!isset($_POST['id'])) {
+    die("ID REQUIRED!");
 }
 
-$id = intval($_GET['id']);
+$id = $_POST['id'];
 
-$sql = "DELETE FROM products WHERE id = ?";
+$sql = "UPDATE products SET product_is_delete = 1 WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 
@@ -28,3 +28,4 @@ if ($stmt->execute()) {
 
 $stmt->close();
 $conn->close();
+?>

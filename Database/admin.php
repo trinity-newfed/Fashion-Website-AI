@@ -1,28 +1,24 @@
-
 <?php
-session_start();
 $host = "localhost";
 $user = "root";
 $password = "";
 $dbname = "TF_Database";
 
 $conn = new mysqli($host, $user, $password, $dbname);
+//PRODUCT FETCH
+$product = $conn
+    ->query("SELECT * FROM products")
+    ->fetch_all(MYSQLI_ASSOC);
 
-if($conn->connect_error){
-    die("error" .$conn->connect_error);
-}
+//USER FETCH
+$userdata = $conn
+    ->query("SELECT * FROM userdata")
+    ->fetch_all(MYSQLI_ASSOC);
 
-$products = $conn
-  ->query("SELECT * FROM products")
-  ->fetch_all(MYSQLI_ASSOC);
-  
-$projects = $conn
-  ->query("SELECT * FROM projects")
-  ->fetch_all(MYSQLI_ASSOC);
-  
-$employee = $conn
-  ->query("SELECT * FROM employeedata")
-  ->fetch_all(MYSQLI_ASSOC);
+//VOUNCHER FETCH
+$vouncher = $conn
+    ->query("SELECT * FROM vouncher")
+    ->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,258 +27,429 @@ $employee = $conn
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-        html, body{
-            width: 100%;
-            height: 800px;
-            position: relative;
-            margin: auto;
+        html{
             user-select: none;
         }
-        #header{
-            width: 100%;
-            height: 100px;
+        #head{
+            top: 0;
+            width: 100vw;
+            height: 100svh;
             max-width: 1500px;
-            position: absolute;
-            background-color: black;
-            color: white;
-            z-index: 10;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 1px solid black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 90px;
-            font-weight: bold;
-        }
-        #container{
-            width: 1500px;
-            height: 1000px;
-            display: flex;
+            max-height: 900px;
             position: relative;
             margin: auto;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        #header{
+            display: flex;
             justify-content: space-between;
-        }
-        #section-menu{
-            width: 300px;
-            height: 91%;
-            padding-top: 200px;
-            border: 2px solid black;
-            border-right: 0;
-            background-color: white;
-            position: relative;
-            z-index: 1;
-        }
-        #section-menu :nth-child(1){
-            margin-top: 0;
-        }
-        .option{
-            margin-top: 5px;
+            align-items: center;
             width: 100%;
-            height: 50px;
+            height: 12%;
             border: 1px solid black;
-            border-left: 0;
-            border-right: 0;
+        }
+        #head-label{
+            width: 15%;
+            height: 100%;
+            background-color: black;
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-weight: bold;
         }
-        .option:hover{
-            background-color: whitesmoke;
+        .head-section{
+            width: 15%;
+            height: 25%;
+            border: 1px solid black;
+            text-align: center;
+            cursor: default;
         }
-        .product{
-            top: 100px;
+        .head-section:hover{
+            background-color: black;
+            color: white;
+        }
+
+        #header-body{
+            width: 100%;
+            height: 85%;
+            display: flex;
+        }
+        #list{
+            width: 80%;
+            height: 100%;
+            border: 1px solid black;
+            border-right: none;
+            border-top: none;
+        }
+        .list-view{
             width: 100%;
             height: 100%;
-            max-width: 1600px;
-            padding-left: 50px;
-            padding-top: 10px;
-            position: relative;
-            border: 2px solid black;
             display: grid;
-            grid-template-columns: repeat(5, 150px);
-            grid-template-rows: repeat(20, 220px);
-            gap: 60px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-rows: repeat(10, 300px);
+            overflow-x: hidden;
+            padding-top: 20px;
+            padding-left: 20px;
         }
-        .box{
-            width: 180px;
-            height: 250px;
+        #search{
+            width: 20%;
+            height: 100%;
+            border: 1px solid black;
+            border-top: none;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .search-div{
             display: grid;
             place-items: center;
+            gap: 10px;
+        }
+
+        .head-section.show{
+            background-color: black;
+            color: white;
+        }
+        .head-section.show:hover{
+            background-color: white;
+            color: black;
+            cursor: pointer;
+        }
+
+        .items{
+            width: 200px;
+            height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid black;
             text-align: center;
+            transition: .3s all;
         }
-        .box img{
-            width: 150px;
-            height: 200px;
+        .items:hover{
+            transition: .1s all;
+            scale: 1.05;
+        }
+        .items:hover img{
+            filter: brightness(80%);
+        }
+        .items img{
+            width: 100%;
+            height: 80%;
             object-fit: cover;
-            object-position: 20% 65%;
         }
-        .product-id{
-            display: none;
+        #user{
+            width: 100%;
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            grid-template-rows: repeat(10, 100px);
+            overflow-x: hidden;
+            padding-top: 20px;
+            padding-left: 20px;
         }
-        .add-products{
-            top: 80%;
+
+
+
+        #modal-popup{
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2;
             position: absolute;
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: .1s all;
+        }
+        #modal-popup.show{
+            visibility: visible;
+            opacity: 1;
+            transition: .5s all;
+        }
+        .form{
+            width: 50%;
+            height: 80%;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-left: 20px;
+        }
+        .input{
+            width: 300px;
+            height: 30px;
         }
     </style>
 </head>
 <body>
-    <div id="header">Admin Manager Page</div>
-    <div id="container">
-    <div id="section-menu">
-        <div class="option" id="b1">Products</div>
-        <div class="option" id="b2">Projects</div>
-        <div class="option" id="b3">Employee</div>
-    </div>
-    <div class="product" id="p1">
-        <?php foreach($products as $p): ?>
-            <div class="box">
-                <div class="product-id"><?=$p['id']?></div>
-                <img src="/Real Estate/pictures/<?=$p['product_img']?>">
-                <p><?=$p['product_describe']?>|| Diện tích <?=$p['product_size']?></p>
-                <button onclick="window.location.href='deleteitem.php?id=<?=$p['id']?>'">Xóa</button>
+    <div id="head">
+        <div id="modal-popup">
+            <div id="form-product" class="form">
+                <form action="add_product_admin.php" method="post" enctype="multipart/form-data" style="gap: 10px; display: flex; flex-direction: column;">
+                <div class="input-container">
+                    <input type="text" name="product_name" class="input" id="product_name">
+                    <label for="product_name">Product Name</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" name="product_price" class="input" id="product_price">
+                    <label for="product_price">Product Price</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" name="product_type" class="input" id="product_type">
+                    <label for="product_type">Product Type</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" name="product_describe" class="input" id="product_describe">
+                    <label for="product_describe">Product Describe</label>
+                </div>
+                <div class="input-container">
+                    <input type="text" name="product_size" class="input" id="product_size">
+                    <label for="product_size">Product Size</label>
+                </div>
+                <div class="input-container" style="display: grid;">
+                    <input type="file" name="product_img" id="product_img" hidden>
+                    <label for="product_img" class="file-label">Select a product picture</label>
+
+                    <input type="file" name="product_img1" id="product_img1" hidden>
+                    <label for="product_img1" class="file-label">Select a product picture</label>
+
+                    <input type="file" name="product_img2" id="product_img2" hidden>
+                    <label for="product_img2" class="file-label">Select a product picture</label>
+
+                    <input type="file" name="product_img3" id="product_img3" hidden>
+                    <label for="product_img3" class="file-label">Select a product picture</label>
+                </div>
+                <input type="submit" value="ADD">
+                </form>
             </div>
-        <?php endforeach ?>
-        <div class="add-products">
-            <span>Thêm sản phẩm cho bảng products</span>
-            <form action="additem.php" method="post">
-                <input type="text" placeholder="Nhập tên" name="product_name">
-                <input type="text" placeholder="Nhập giá" name="product_price">
-                <input type="text" placeholder="Nhập loại" name="product_type">
-                <input type="text" placeholder="Nhập trạng thái" name="product_state">
-                <input type="text" placeholder="Địa chỉ" name="product_address">
-                <input type="text" placeholder="Mô tả" name="product_describe">
-                <input type="text" placeholder="Diện tích" name="product_size">
-                <div style="display: grid;">
-                    <input type="file" placeholder="Ảnh" name="product_img">
-                    <input type="file" placeholder="Ảnh 1" name="product_img1">
-                    <input type="file" placeholder="Ảnh 2" name="product_img2">
-                    <input type="file" placeholder="Ảnh 3" name="product_img3">
-                    <input type="file" placeholder="Ảnh 4" name="product_img4">
-                </div>
-                <input type="submit" value="gửi">
-            </form>
+            <div id="form-vouncher" style="display: none;" class="form"></div>
         </div>
-    </div>
-    <div class="product" id="p2">
-        <?php foreach($projects as $p): ?>
-            <div class="box">
-                <div class="product-id"><?=$p['id']?></div>
-                <img src="/Real Estate/pictures/<?=$p['project_img']?>">
-                <p><?=$p['product_describe']?>||Kích thước <?=$p['project_size']?></p>
-                <button onclick="window.location.href='project_delete.php?id=<?=$p['id']?>'">Xóa</button>
+        <div id="header">
+            <div id="head-label" onclick="window.location.href='../Pages/'">ADMIN</div>
+            <div class="head-section" id="h-product">Product</div>
+            <div class="head-section" id="h-user">User</div>
+            <div class="head-section" id="h-vouncher">Vouncher</div>
+            <div></div>
+        </div>
+        <div id="header-body">
+            <div id="list">
+                <div id="product" class="list-view">
+                    <?php if(empty($product)): ?>
+                        <span>Nothing in product table</span>
+                    <?php else: ?>
+                        <?php foreach($product as $p): ?>
+                            <?php if($p['product_is_delete'] == 1): ?>
+                                <div class="items" style="opacity: 0.7;">
+                                    <span style="color: red; position: absolute; transform: rotateZ(40deg); font-size: 20px; z-index: 3;">Deleted</span>
+                                    <img src="../picture-uploads/<?=$p['product_img']?>" alt="">
+                                    <span><?=$p['product_name']?></span>
+                                    <div style="width: 100%; display: flex; font-size: 13px; justify-content: space-around;">
+                                        <form action="restore_item_admin.php" method="post">
+                                            <input type="submit" id="p-restore-<?=$p['id']?>" hidden>
+                                            <input type="hidden" name="id" value="<?=$p['id']?>">
+                                            <label style="background-color: orangered; color: white;" for="p-restore-<?=$p['id']?>">Restore Product</label>
+                                        </form>
+                                        <form action="update_item_admin.php" method="post">
+                                            <input type="submit" id="p-update" hidden>
+                                            <label style="background-color: black; color: white;" for="p-update">Update Product</label>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="items" style="opacity: 1;">
+                                    <img src="../picture-uploads/<?=$p['product_img']?>" alt="">
+                                    <span><?=$p['product_name']?></span>
+                                    <div style="width: 100%; display: flex; font-size: 13px; justify-content: space-around;">
+                                        <form action="delete_item_admin.php" method="post">
+                                            <input type="submit" id="p-delete-<?=$p['id']?>" hidden>
+                                            <input type="hidden" name="id" value="<?=$p['id']?>">
+                                            <label style="background-color: orangered; color: white;" for="p-delete-<?=$p['id']?>">Delete Product</label>
+                                        </form>
+                                        <form action="update_item_admin.php" method="post">
+                                            <input type="submit" id="p-update" hidden>
+                                            <label style="background-color: black; color: white;" for="p-update">Update Product</label>
+                                        </form>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <div id="user" style="display: none;">
+                    <?php if(empty($userdata)): ?>
+                        <span>Nothing in user table</span>
+                    <?php else: ?>
+                        <?php foreach($userdata as $u): ?>
+                            <div class="items" style="width: 100px; 
+                                                      height: 100px; display: 
+                                                      flex; flex-direction: column; 
+                                                      justify-content: center; 
+                                                      align-items: center; 
+                                                      border: 1px solid black; 
+                                                      font-size: 10px; 
+                                                      border: none;">
+                                <img style="width: 60px; height: 60px; border-radius: 50%;" src="../upload/<?=$u['img']?>" alt="">
+                                <span><?=$u['username']?></span>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+                <div id="vouncher" style="display: none" class="list-view">
+                    <?php if(empty($vouncher)): ?>
+                        <span>Nothing in vouncher table</span>
+                    <?php else: ?>
+                        <div class="items"></div>
+                    <?php endif; ?>
+                </div>
             </div>
-        <?php endforeach ?>
-        <div class="add-products">
-            <span>Thêm sản phẩm cho bảng project</span>
-            <form action="add_project.php" method="post">
-                <input type="text" placeholder="Nhập tên" name="project_name">
-                <input type="text" placeholder="Mô tả" name="project_describe">
-                <div style="display: grid;">
-                    <input type="file" placeholder="Ảnh" name="project_img">
-                    <input type="file" placeholder="Ảnh 1" name="project_img1">
-                    <input type="file" placeholder="Ảnh 2" name="project_img2">
-                    <input type="file" placeholder="Ảnh 3" name="project_img3">
+            <div id="search">
+                <div id="s-product" class="search-div">
+                    <label id="total-products" style="text-align: center;"></label>
+                    <input type="text" placeholder="Search" id="search-input-1">
+                    <div id="add-product" style="text-align: center; 
+                                                 background-color: orangered; 
+                                                 color: white; width: 80%; 
+                                                 height: 110%;">
+                                Add new product
+                    </div>
                 </div>
-                <input type="submit" value="gửi">
-            </form>
-        </div>
-    </div>
-    <div class="product" id="p3">
-        <?php foreach($employee as $p): ?>
-            <div class="box">
-                <div class="product-id"><?=$p['id']?></div>
-                <img src="/Real Estate/pictures/<?=$p['img']?>">
-                <span><?=$p['name']?>|| <?=$p['email']?></span>
-                <span>Điện thoại: <?=$p['hotline']?>|| Thêm vào ngày <?=$p['created_at']?></span>
-                <p>Đánh giá: <?=$p['rating']?></p>
-                <div style="display: flex; gap: 10px;">
-                    <button onclick="window.location.href='delete_employee.php?id=<?=$p['id']?>'">Xóa</button>
-                    <button onclick="window.location.href='update.php?id=<?=$p['id']?>'">Cập nhật</button>
+                <div id="s-user" style="display: none;" class="search-div">
+                    <label id="total-users" style="text-align: center;"></label>
+                    <input type="text" placeholder="Search" id="search-input-2">
+                </div>
+                <div id="s-vouncher" style="display: none;" class="search-div">
+                    <label id="total-vounchers" style="text-align: center;"></label>
+                    <input type="text" placeholder="Search" id="search-input-3">
+                    <div id="add-vouncher" style="text-align: center; 
+                                                  background-color: orangered; 
+                                                  color: white; 
+                                                  width: 80%; 
+                                                  height: 110%;">
+                                Add new vouncher
+                    </div>
                 </div>
             </div>
-        <?php endforeach ?>
-        <div class="add-products">
-            <span>Thêm sản phẩm cho bảng employee</span>
-            <form action="add_employee.php" method="post">
-                <input type="text" placeholder="Nhập tên" name="name">
-                <input type="text" placeholder="Nhập mail" name="email">
-                <input type="text" placeholder="Mô tả" name="address">
-                <input type="text" placeholder="Số điện thoại" name="hotline">
-                <input type="text" placeholder="Đánh giá" name="rating">
-                <div style="display: grid;">
-                    <input type="file" placeholder="Ảnh" name="img">
-                </div>
-                <input type="submit" value="gửi">
-            </form>
         </div>
-    </div>
     </div>
     <script>
-        const p1 = document.getElementById("p1");
-        const p2 = document.getElementById("p2");
-        const p3 = document.getElementById("p3");
-        const b1 = document.getElementById("b1");
-        const b2 = document.getElementById("b2");
-        const b3 = document.getElementById("b3");
-        const option = document.querySelectorAll(".option");
+        const h_product = document.getElementById("h-product");
+        const product = document.getElementById("product");
+        const section = document.querySelectorAll(".head-section");
+        const lists = document.querySelectorAll(".list-view");
+        const items = document.querySelectorAll(".items");
+        const searchs = document.querySelectorAll(".search-div");
+        const search_input_1 = document.getElementById("search-input-1");
+        const search_input_2 = document.getElementById("search-input-2");
+        const search_input_3 = document.getElementById("search-input-3");
+        const add_product = document.getElementById("add-product");
+        const add_vouncher = document.getElementById("add-vouncher");
 
-            b1.classList.add("active");
-            p1.style.display = "";
-            p2.style.display = "none";
-            p3.style.display = "none";
-            b1.style.background = "black";
-            b2.style.background = "white";
-            b3.style.background = "white";
-            b1.style.color = "white";
-            b2.style.color = "black";
-            b3.style.color = "black";
+        h_product.classList.add("show");
+        product.style.display = "grid";
 
-        option.forEach(o => o.addEventListener('click', ()=>{
-            option.forEach(ops => ops.classList.remove("active"))
-            o.classList.add("active");
-        }));
+        section.forEach(sec =>{
+            sec.addEventListener('click', ()=>{
+                section.forEach(s => s.classList.remove("show"));
+                lists.forEach(list => list.style.display = "none");
+                searchs.forEach(search => search.style.display = "none");
+                sec.classList.add("show");
+                const name = sec.id.replace("h-", "");
+                document.getElementById(name).style.display = "grid";
+                document.getElementById("s-" + name).style.display = "grid";
+            });
+        });
 
-        b1.addEventListener('click', ()=>{
-            if(b1.classList.contains("active")){
-            b1.style.background = "black";
-            b2.style.background = "white";
-            b3.style.background = "white";
-            b1.style.color = "white";
-            b2.style.color = "black";
-            b3.style.color = "black";
-            p1.style.display = "";
-            p2.style.display = "none";
-            p3.style.display = "none";
-        }
+        //SEARCH BY NAME FEAT
+        search_input_1.addEventListener('keyup', ()=>{
+            const keyword = search_input_1.value.toLowerCase();
+
+            items.forEach(item =>{
+                const search = item.textContent.toLowerCase();
+                if(search.includes(keyword)){
+                    item.style.display = "";
+                }else{
+                    item.style.display = "none";
+                }
+            });
         });
-        b2.addEventListener('click', ()=>{
-            if(b2.classList.contains("active")){
-            b1.style.background = "white";
-            b2.style.background = "black";
-            b3.style.background = "white";
-            b1.style.color = "black";
-            b2.style.color = "white";
-            b3.style.color = "black";
-            p1.style.display = "none";
-            p2.style.display = "";
-            p3.style.display = "none";
-        }
+        search_input_2.addEventListener('keyup', ()=>{
+            const keyword = search_input_2.value.toLowerCase();
+
+            items.forEach(item =>{
+                const search = item.textContent.toLowerCase();
+                if(search.includes(keyword)){
+                    item.style.display = "";
+                }else{
+                    item.style.display = "none";
+                }
+            });
         });
-        b3.addEventListener('click', ()=>{
-            if(b3.classList.contains("active")){
-            b1.style.background = "white";
-            b2.style.background = "white";
-            b3.style.background = "black";
-            b1.style.color = "black";
-            b2.style.color = "black";
-            b3.style.color = "white";
-            p1.style.display = "none";
-            p2.style.display = "none";
-            p3.style.display = "";
-        }
+        search_input_3.addEventListener('keyup', ()=>{
+            const keyword = search_input_3.value.toLowerCase();
+
+            items.forEach(item =>{
+                const search = item.textContent.toLowerCase();
+                if(search.includes(keyword)){
+                    item.style.display = "";
+                }else{
+                    item.style.display = "none";
+                }
+            });
         });
-        
+        //SEARCH BY NAME FEAT
+
+
+
+
+
+
+
+
+        add_product.addEventListener('click', ()=>{
+            console.log("a");
+            document.getElementById("modal-popup").classList.add("show");
+        });
+        document.getElementById("modal-popup").addEventListener('click', (e)=>{
+            const form = document.getElementById("form-product");
+            if(!form.contains(e.target)){
+                document.getElementById("modal-popup").classList.remove("show");
+            }
+        })
+
+
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function () {
+                const label = document.querySelector(`label[for="${this.id}"]`);
+                if(this.files.length > 0) {
+                    label.textContent = this.files[0].name;
+                }else{
+                    label.textContent = "Select a product picture";
+                }
+            });
+        });
+
+
+
+
+        const total_user = document.getElementById("total-users");
+        const total_product = document.getElementById("total-products");
+        const total_vouncher = document.getElementById("total-vounchers");
+
+        const user = document.querySelectorAll("#user .items");
+        const products = document.querySelectorAll("#product .items");
+        const vouncher = document.querySelectorAll("#vouncher .items");
+
+        total_user.textContent = "total users: " + user.length;
+        total_product.textContent = "total products: " + products.length;
+        total_vouncher.textContent = "total vounchers: " + vouncher.length;
     </script>
 </body>
 </html>

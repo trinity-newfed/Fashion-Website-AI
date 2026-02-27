@@ -15,7 +15,7 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-$sql = "DELETE FROM employeedata WHERE id = ?";
+$sql = "DELETE FROM products WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 
