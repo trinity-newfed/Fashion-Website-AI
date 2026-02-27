@@ -4,6 +4,7 @@ html,body{
     position: relative;
     margin: auto;
     background-color: rgb(255, 255, 255);
+    overflow-x: hidden;
 }
 
 
@@ -650,7 +651,7 @@ html,body{
 }
 #login-btn{
     width: 30%;
-    height: 40%;
+    height: 80%;
     background-color: orangered;
     border-radius: 2px;
     text-align: center;
