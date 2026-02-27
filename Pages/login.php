@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($username === "Admin" && $userpassword === "Operationer") {
         $_SESSION['username'] = "Admin";
         $_SESSION['role'] = "admin";
-        header("Location: admin.php");
+        header("Location: ../Database/admin.php");
         exit;
     }
 

@@ -4,7 +4,6 @@ $user = "root";
 $password = "";
 $dbname = "TF_Database";
 
-
 $conn = new mysqli($host, $user, $password);
 
 if($conn->connect_error){
@@ -31,14 +30,14 @@ $conn->query("CREATE TABLE IF NOT EXISTS products(
     product_img1 VARCHAR(255),
     product_img2 VARCHAR(255),
     product_img3 VARCHAR(255),
-    product_img4 VARCHAR(255)
+    product_is_delete TINYINT(1) DEFAULT 0,
+    product_state ENUM('active','inactive') DEFAULT 'active'
     )");
-$conn->query("CREATE TABLE IF NOT EXISTS Cart(
+$conn->query("CREATE TABLE IF NOT EXISTS cart(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100),
     product_id VARCHAR(100),
-    quantity VARCHAR(100),
-    product_type ENUM('male','female','kid')
+    quantity VARCHAR(100)
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS userdata(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -60,7 +59,14 @@ $conn->query("CREATE TABLE IF NOT EXISTS employeedata(
     rating VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
-
+$conn->query("CREATE TABLE IF NOT EXISTS vouncher(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255),
+    vouncher_id VARCHAR(255),
+    vouncher_describe VARCHAR(255),
+    vouncher_discount VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
     header("Location: ../Pages/log.php");
     exit();
 ?>
