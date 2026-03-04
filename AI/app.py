@@ -23,7 +23,7 @@ pipe.load_ip_adapter(
     weight_name="ip-adapter_sd15.bin"
 )
 
-pipe.set_ip_adapter_scale(0.8)
+pipe.set_ip_adapter_scale(0.4)
 
 print("✅ MODEL LOADED")
 
@@ -42,10 +42,10 @@ def generate():
         if not person_file or not cloth_file:
             return "Missing image", 400
 
-        person_img = Image.open(person_file).convert("RGB").resize((512, 512))
-        cloth_img = Image.open(cloth_file).convert("RGB").resize((512, 512))
+        person_img = Image.open(person_file).convert("RGB").resize((256, 256))
+        cloth_img = Image.open(cloth_file).convert("RGB").resize((256, 256))
 
-        prompt = "a realistic studio photo of a man wearing this cloth, detailed fabric, natural lighting, high quality"
+        prompt = "a man wearing this cloth"
 
         result = pipe(
             prompt=prompt,
