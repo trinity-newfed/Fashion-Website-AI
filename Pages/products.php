@@ -621,7 +621,7 @@ $product = $conn
     <section id="body"> 
       <section id="body-products">
         <p class="introduct">
-        <span>&ndash;&ndash;&ndash;Newest Collection&ndash;&ndash;&ndash;</span>
+        <span>&ndash;&ndash;&ndash;Newest Collections&ndash;&ndash;&ndash;</span>
     </p>
         <section class="men-fashion" id="newest">
           <?php if(empty($product)): ?>
@@ -829,7 +829,7 @@ products.forEach(product => {
   });
 });
 
-detailBtn.onclick = function() {
+detailBtn.onclick = function(){
   if(currentProductId){
     window.location.href = "detail.php?id=" + currentProductId;
   }
