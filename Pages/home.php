@@ -1,4 +1,5 @@
 <?php
+include "../Database/createdatabase.php";
 session_start();
 ?>
 <!DOCTYPE html>
@@ -16,12 +17,6 @@ session_start();
         </div>
         <div id="head-banner-container">
             <img src="../Pictures/Banners/bannerImg (1).png" alt="">
-            <div id="banner-container">
-                <div id="head-banner-text-container">
-                    <h1>SUPER DEALS</h1>
-                    <span>GET THE NEWEST COLLECTION</span>
-                </div>
-            </div>
         </div>
     </section>
     <div id="territory">
@@ -45,7 +40,7 @@ session_start();
                 <div class="variant"><img src="../Pictures/Collections/Collection-2.png" alt="" id="s-img2"></div>
                 <div class="variant"><img src="../Pictures/Collections/Collection-3.png" alt="" id="s-img3"></div>
             </div>
-            <div class="cta-group">
+            <div class="cta-group" id="product-redirect">
                 <button class="shop-btn" onclick="window.location.href='products.php#newest'">SHOP NOW</button>
                 <div class="play-btn" onclick="window.location.href='products.php#newest'">
                     <div class="circle">
@@ -77,11 +72,11 @@ session_start();
         </div>
         <div id="explore">
             <div id="explore-advertise">
-                <span>400K</span>
-                <span>Worldwide</span>
+                <span>0K</span>
+                <p>Worldwide</p>
             </div>
         </div>
-        <div id="explore-button">
+        <div id="explore-button" onclick="window.location.href='products.php'">
             <svg class="explore-icon" viewBox="0 0 384 512">
                 <path d="M214.6 9.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 109.3V480c0 17.7 14.3 32 32 32s32-14.3 32-32V109.3l105.4 105.4c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/>
             </svg>
@@ -115,16 +110,53 @@ session_start();
                 <?php endif; ?>
             <?php else: ?>
                 <div id="login-btn">
-                    <form action="../Database/createdatabase.php" method="post" style="width: 100%; height: 100%;">
-                        <input type="submit" value="Login" style="width: 100%; height: 100%; background-color: transparent; border: none; color: white;">
-                    </form>
-                
+                    <input type="submit" value="Login" style="width: 100%; height: 100%; background-color: transparent; border: none; color: white;" onclick="window.location.href='log.php'">
                 </div>
             <?php endif; ?>
         </div>
     </section>
     <script>
+        const head = document.getElementById("head");
+        const body = document.getElementById("body");
+        const footer = document.getElementById("footer");
 
+
+        const bodyObserve = new IntersectionObserver(entries =>{
+            entries.forEach(entry =>{
+                if(entry.isIntersecting){
+                    document.getElementById("content-container").classList.add("intersect");
+                    document.querySelector("#content-container span").classList.add("intersect");
+                    document.getElementById("image-container").classList.add("intersect");
+                    document.getElementById("slide-container").classList.add("intersect");
+                    document.getElementById("product-redirect").classList.add("intersect");
+                }
+            });
+        },{
+            threshold: 0.5
+        });
+        const footerObserve = new IntersectionObserver(entries =>{
+            entries.forEach(entry =>{
+                if(entry.isIntersecting){
+                    let count = 0;
+                    document.getElementById("footer-text").classList.add("intersect");           
+                    document.querySelector("#explore-advertise p").classList.add("intersect");
+                    document.getElementById("product-redirect").classList.add("intersect");
+                    setTimeout(() => {
+                        setInterval(() => {
+                        if(count < 400){
+                            count++;
+                            document.querySelector("#explore-advertise span").textContent = count + "K";
+                        }
+                    }, 10);
+                    }, 2000);
+                }
+            });
+        },{
+            threshold: 0.5
+        });
+
+        bodyObserve.observe(body);
+        footerObserve.observe(footer);
     </script>
 </body>
 </html>

@@ -5,24 +5,20 @@ $password = "";
 $dbname = "TF_Database";
 
 $conn = new mysqli($host, $user, $password, $dbname);
-if ($conn->connect_error) {
-    die("Lỗi kết nối DB");
+
+session_start();
+
+
+if(isset($_POST['id']) && isset($_SESSION['username'])) {
+    $stmt = $conn->prepare("DELETE FROM cart WHERE id = ? AND username = ?");
+    $stmt->bind_param("is", $_POST['id'], $_SESSION['username']);
+    $stmt->execute();
 }
 
-if (!isset($_GET['id'])) {
-    die("Thiếu ID");
-}
-
-$id = intval($_GET['id']);
-
-$sql = "DELETE FROM products WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id);
-
-if ($stmt->execute()) {
-    header("Location: admin.php");
+if($stmt->execute()){
+    header("Location: ../Pages/cart.php");
     exit();
-} else {
+}else{
     echo "Xoá thất bại";
 }
 

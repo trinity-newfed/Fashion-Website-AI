@@ -105,8 +105,8 @@ $product = $conn
         align-items: center;
       }
       .icon {
-        width: 1.2rem;
-        height: 1.2rem;
+        width: clamp(.35rem, 1.25vw, 2.5rem);
+        height: clamp(.35rem, 1.25vw, 2.5rem);
       }
       .icon path {
         scale: 1;
@@ -254,31 +254,27 @@ $product = $conn
         background-size: contain;
       }
       .product-price {
-        border: 1px solid black;
         width: 100px;
         height: 40px;
         border-radius: 10px;
-        background-color: #1c1c1c;
-        color: white;
+        color: #b5835a;
         font-family: "Inter", sans-serif;
         font-weight: bolder;
         font-size: 17px;
         position: relative;
         margin: 10px 10px;
         line-height: 1.6;
-        text-align: center;
         user-select: none;
         display: flex;
-        justify-content: center;
+        justify-content: start;
         align-items: center;
       }
       .product-brand {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: #b5835a;
-        margin-bottom: 5px;
-        font-weight: 700;
+        letter-spacing: 4px;
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 10px;
+        font-family: "Montserrat", serif;
       }
       .product-name {
         font-family: "Montserrat", serif;
@@ -328,12 +324,12 @@ $product = $conn
         cursor: pointer;
       }
       .product-cart {
-        position: absolute;
-        text-align: center;
+        position: relative;
+        display: flex;
         justify-content: center;
         align-items: center;
-        min-height: 30px;
-        min-width: 30px;
+        width: 100%;
+        height: 100%;
         font-size: 30px;
         scale: 1.4;
         margin: 7px 15px;
@@ -426,7 +422,25 @@ $product = $conn
   height: 80%;
   object-fit: contain;
 }
-
+#tooltip-explain{
+  position: absolute;
+  width: 150px;
+  height: 70px;
+  background-color: rgba(0, 0, 0, 0.65);
+  margin: -100px 25px;
+  visibility: hidden;
+  opacity: 0;
+  transition: .3s all;
+  color: white;
+  font-size: clamp(0.35rem, 0.7vw, 1rem); 
+  text-align: center;
+  font-family: "Montserrat", serif;
+}
+#Try-on-form:hover #tooltip-explain{
+  visibility: visible;
+  opacity: 1;
+  transition: .3s all;
+}
 .modal-right {
   width: 50%;
   padding: 60px 40px;
@@ -522,6 +536,35 @@ $product = $conn
   to {transform: scale(1); opacity: 1;}
 }
 
+
+
+#try-on-modal{
+  width: 50%;
+  height: 70%;
+  max-width: 400px;
+  max-height: 700px;
+  z-index: 5001;
+  background-color: white;
+  position: fixed;
+  bottom: 15%;
+  left: 60%;
+  translate: -50%;
+  border: 1px solid black;
+  text-align: center;
+  display: flex; 
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: .3s all;
+  font-family: "Montserrat", serif;
+}
+#try-on-modal.show{
+  visibility: visible;
+  opacity: 1;
+  transition: .3s all;
+}
     </style>
   </head>
   <body>
@@ -634,18 +677,23 @@ $product = $conn
                                             data-img="../picture-uploads/<?= htmlspecialchars($p['product_img']) ?>">
             <div class="product-image" style="background-image: url(../picture-uploads/<?=$p['product_img']?>);"></div>
             <div class="product-price"><?=$p['product_price']?>$</div>
-            <div class="product-brand">Trinity</div>
+            <div class="product-brand">TRINITY</div>
             <div class="product-name"><?=$p['product_name']?></div>
             <div class="box">
-              <div class="product-cart">
-                <svg class="icon" viewBox="0 0 640 512" aria-hidden="true">
-                  <path
-                    fill="currentColor"
-                    d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"
-                  />
-                </svg>
+                <div class="product-cart">
+                  <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
+                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="product_id" value="<?=$p['id']?>">
+                    <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
+                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
+                    <button type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
+                      <svg class="icon" viewBox="0 0 640 512">
+                        <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
+                      </svg>
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
             <div class="product-try"></div>
           </div>
             <?php endforeach; ?>
@@ -665,18 +713,23 @@ $product = $conn
                                             data-img="../picture-uploads/<?= htmlspecialchars($p['product_img']) ?>">
             <div class="product-image" style="background-image: url(../picture-uploads/<?=$p['product_img']?>);"></div>
             <div class="product-price"><?=$p['product_price']?>$</div>
-            <div class="product-brand">Trinity</div>
+            <p class="product-brand">TRINITY</p>
             <div class="product-name"><?=$p['product_name']?></div>
             <div class="box">
-              <div class="product-cart">
-                <svg class="icon" viewBox="0 0 640 512" aria-hidden="true">
-                  <path
-                    fill="currentColor"
-                    d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"
-                  />
-                </svg>
+                <div class="product-cart">
+                  <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
+                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="product_id" value="<?=$p['id']?>">
+                    <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
+                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
+                    <button type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
+                      <svg class="icon" viewBox="0 0 640 512">
+                        <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
+                      </svg>
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
             <div class="product-try"></div>
           </div>
             <?php endforeach; ?>
@@ -699,16 +752,20 @@ $product = $conn
             <div class="product-brand">Trinity</div>
             <div class="product-name"><?=$p['product_name']?></div>
             <div class="box">
-              <div class="product-cart">
-                <svg class="icon" viewBox="0 0 640 512" aria-hidden="true">
-                  <path
-                    fill="currentColor"
-                    d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"
-                  />
-                </svg>
+                <div class="product-cart">
+                  <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
+                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="product_id" value="<?=$p['id']?>">
+                    <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
+                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
+                    <button type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
+                      <svg class="icon" viewBox="0 0 640 512">
+                        <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
+                      </svg>
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
-            <div class="product-try"></div>
           </div>
             <?php endforeach; ?>
           <?php endif; ?>
@@ -723,24 +780,28 @@ $product = $conn
           <?php else: ?>
             <?php foreach($product as $p): ?>
           <div class="men-fashion-product"  data-id="<?= $p['id'] ?>"
-                                            data-name="<?= htmlspecialchars($p['product_name']) ?>"
-                                            data-price="<?= htmlspecialchars($p['product_price']) ?>"
-                                            data-img="../picture-uploads/<?= htmlspecialchars($p['product_img']) ?>">>
+                                            data-name="<?= htmlspecialchars($p['product_name'])?>"
+                                            data-price="<?= htmlspecialchars($p['product_price'])?>"
+                                            data-img="../picture-uploads/<?= htmlspecialchars($p['product_img'])?>">>
             <div class="product-image" style="background-image: url(../picture-uploads/<?=$p['product_img']?>);"></div>
             <div class="product-price"><?=$p['product_price']?>$</div>
             <div class="product-brand">Trinity</div>
             <div class="product-name"><?=$p['product_name']?></div>
-            <div class="box">
-              <div class="product-cart">
-                <svg class="icon" viewBox="0 0 640 512" aria-hidden="true">
-                  <path
-                    fill="currentColor"
-                    d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"
-                  />
-                </svg>
+              <div class="box">
+                <div class="product-cart">
+                  <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
+                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="product_id" value="<?=$p['id']?>">
+                    <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
+                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
+                    <button type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
+                      <svg class="icon" viewBox="0 0 640 512">
+                        <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
+                      </svg>
+                    </button>
+                  </form>
+                </div>
               </div>
-            </div>
-            <div class="product-try"></div>
           </div>
             <?php endforeach; ?>
           <?php endif; ?>
@@ -749,21 +810,28 @@ $product = $conn
     </section>
     <!--FOOT-->
 
-    <section id="foot"></section>
-  <div id="product-modal">
+<section id="foot"></section>
+<div id="product-modal">
   <div class="modal-container">
-
     <div class="modal-left">
+      <form action="" method="POST" style="align-self: end; left: 80%; position: relative;" id="Try-on-form">
+        <h1 style="width: 20px; height: 20px; display: grid; place-items: center;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+          <path d="M320.2 112c44.2 0 80-35.8 80-80l53.5 0c17 0 33.3 6.7 45.3 18.7L617.6 169.4c12.5 12.5 12.5 32.8 0 45.3l-50.7 50.7c-12.5 12.5-32.8 12.5-45.3 0l-41.4-41.4 0 224c0 35.3-28.7 64-64 64l-192 0c-35.3 0-64-28.7-64-64l0-224-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0L22.9 214.6c-12.5-12.5-12.5-32.8 0-45.3L141.5 50.7c12-12 28.3-18.7 45.3-18.7l53.5 0c0 44.2 35.8 80 80 80z"/>
+        </svg>
+        </h1>
+        <div id="tooltip-explain">
+          <h3>Virtual AI Try On</h3>
+          <span>This is an experiment feature for customers to try on our product</span>
+        </div>
+      </form>
       <img id="modal-img" src="" alt="">
     </div>
-
     <div class="modal-right">
       <span class="close-modal">&times;</span>
-
       <p class="modal-brand">TRINITY</p>
       <h2 id="modal-name"></h2>
       <p id="modal-price"></p>
-
       <div class="size-select">
         <p>Size</p>
         <div class="sizes">
@@ -773,14 +841,30 @@ $product = $conn
           <span>XL</span>
         </div>
       </div>
-
-      <button class="modal-add">ADD TO CART</button>
+          <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; display: grid; place-items: center;">     
+                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="product_id" value="<?=$p['id']?>" id="modal-product-id">
+                    <input type="hidden" name="product_name" value="<?=$p['product_name']?>" id="modal-product-name">
+                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>" id="modal-product-type">
+                    <button class="modal-add" type="submit">ADD TO CART</button>
+            </form>
       <div id="modal-detail">Details</div>
     </div>
-
   </div>
 </div>
-
+<div id="try-on-modal">
+  <h1>VIRTUAL TRY ON AI</h1>
+  <form action="">
+    <input type="file" id="try-on-input" hidden>
+    <label for="try-on-input">Choose your file</label>
+    <h3 style="display: grid; place-items: center; position: absolute; bottom: 0; left: 5%">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path d="M256 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.1 480 472 480L40 480c-14.1 0-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zm0 352a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-192c-18.2 0-32.7 15.5-31.4 33.7l7.4 104c.9 12.5 11.4 22.3 23.9 22.3 12.6 0 23-9.7 23.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z"/>
+      </svg>
+      <span style="color: red;">This is just an experiment feature, AI can make mistake and the result not always at ease!</span>
+    </h3>
+  </form>
+</div>
 <script>
 const products = document.querySelectorAll(".men-fashion-product");
 const modal = document.getElementById("product-modal");
@@ -788,46 +872,59 @@ const modalImg = document.getElementById("modal-img");
 const modalName = document.getElementById("modal-name");
 const modalPrice = document.getElementById("modal-price");
 const closeBtn = document.querySelector(".close-modal");
+const modalProductId = document.getElementById("modal-product-id");
+const modalProductName = document.getElementById("modal-product-name");
+const modalProductType = document.getElementById("modal-product-type");
+const try_on = document.getElementById("Try-on-form");
+const try_on_modal = document.getElementById("try-on-modal");
 
+
+
+ 
+
+//PRODUCT INFO
 products.forEach(product => {
-  product.addEventListener("click", function(e) {
+  product.addEventListener("click", function(e){
 
-    if(e.target.closest(".product-cart")) return;
+    if(e.target.closest(".box")) return;
 
     modalImg.src = this.dataset.img;
     modalName.textContent = this.dataset.name;
     modalPrice.textContent = this.dataset.price + "$";
-
     modal.style.display = "flex";
   });
 });
 
 closeBtn.onclick = () => modal.style.display = "none";
 
-window.onclick = (e) => {
+window.onclick = (e) =>{
   if(e.target === modal){
     modal.style.display = "none";
   }
 };
 
 
+
+//POP-UP PRODUCT
 const detailBtn = document.getElementById("modal-detail");
 let currentProductId = null;
 
 products.forEach(product => {
-  product.addEventListener("click", function(e) {
+  product.addEventListener("click", function(e){
 
-    if(e.target.closest(".product-cart")) return;
+    if(e.target.closest(".box")) return;
 
     modalImg.src = this.dataset.img;
     modalName.textContent = this.dataset.name;
     modalPrice.textContent = this.dataset.price + "$";
-
+    modalProductId.value = this.dataset.id;
+    modalProductName.value = this.dataset.name;
+    modalProductType.value = "default";
     currentProductId = this.dataset.id;
-
     modal.style.display = "flex";
   });
 });
+
 
 detailBtn.onclick = function(){
   if(currentProductId){
@@ -835,17 +932,27 @@ detailBtn.onclick = function(){
   }
 };
 
-window.addEventListener("load", function () {
-    if (window.location.hash) {
+
+
+
+//TRY ON AI
+try_on.addEventListener('click', ()=>{
+  try_on_modal.classList.toggle("show");
+});
+
+
+
+//RELOAD PAGE
+window.addEventListener("load", function (){
+    if(window.location.hash){
 
         const element = document.querySelector(window.location.hash);
-        if (element) {
+        if(element){
             element.scrollIntoView({ behavior: "smooth" });
         }
         history.replaceState(null, null, window.location.pathname);
     }
 });
 </script>
-
   </body>
 </html>
