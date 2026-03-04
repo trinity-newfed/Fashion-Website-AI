@@ -17,6 +17,9 @@ if(isset($_SESSION['username'])) {
 } else {
     $vouncher = [];
 }
+
+
+
 //CART FETCH
 if(isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
@@ -31,7 +34,6 @@ if(isset($_SESSION['username'])) {
         ON cart.product_id = products.id
     WHERE cart.username = ?
 ");
-
     $stmt->bind_param("s", $username);
     $stmt->execute();
 
@@ -69,7 +71,7 @@ if(isset($_SESSION['username'])) {
                 <p><?=$_SESSION['username']?></p>
                 <?php if(!empty($_SESSION['img'])): ?>
                     <div id="user-account">
-                        <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
+                        <img id="user-avatar" src="../upload/<?=htmlspecialchars($_SESSION['img'])?>" alt="avatar">
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
@@ -89,30 +91,41 @@ if(isset($_SESSION['username'])) {
                 </div>
                 <?php if(empty($data)): ?>
                     <span style="position: relative; top: 20%; left: 40%; max-width: 20%; font-size: clamp(0.35rem, 1vw, 1rem); color: rgba(0, 0, 0, 0.3);">Your cart is empty</span>
-                    <span onclick="window.location.href='product.php'" style="top: 20%; left: 39%; max-width: 20%; position: relative; top: 20%; font-size: clamp(0.35rem, 1vw, 1rem); color: rgba(0, 72, 255, 0.3);">[Continue shopping]</span>
+                    <span onclick="window.location.href='products.php'" style="top: 20%; left: 39%; max-width: 20%; position: relative; top: 20%; font-size: clamp(0.35rem, 1vw, 1rem); color: rgba(0, 72, 255, 0.3);">[Continue shopping]</span>
                 <?php else: ?>
                 <?php foreach($data as $d): ?>
                 <div class="items">
-                    <div id="items-image-container"><img src="../picture-upload/<?=$d['']?>" alt=""></div>
+                    <input type="checkbox" class="item-checkbox">
+                    <div id="items-image-container"><img src="../picture-uploads/<?=$d['product_img']?>" alt=""></div>
                     <div id="items-info-container">
                         <span style="font-weight: bolder;"></span>
                         <span style="color: rgba(0, 0, 0, 0.5); font-weight: 400;">Black / S</span>
-                        <span style="text-decoration: underline;">Remove</span>
-                    </div>
-                    <div id="items-price-container" style="font-size: clamp(0.35rem, 0.9vw, 1rem); width: 20%;">250$</div>
-                    <div id="items-quantity-container" style="font-size: clamp(0.35rem, 0.9vw, 1rem); width: 8%; display: flex; justify-content: space-between;">
-                        <form action="minus_items_cart" method="post">
-                            <input type="submit" id="minus-input" hidden>
-                            <label for="minus-input">-</label>
-                        </form>
-                        <span>1</span>
-                        <form action="plus_items_cart" method="post">
-                            <input type="submit" id="plus-input" hidden>
-                            <label for="plus-input">+</label>
+                        <form action="../Database/delete_item_cart.php" method="POST">
+                            <label for="remove-input" id="label-for-remove-input">Remove</label>
+                            <input type="text" name="id" value="<?=$d['cart_id']?>" hidden>
+                            <input type="submit" id="remove-input" hidden>
                         </form>
                     </div>
-                    <div id="items-total-container" style="font-size: clamp(0.35rem, 0.9vw, 1rem); width: 15%; display: flex; justify-content: center;">
-                        <span style="font-size: clamp(0.35rem, 0.9vw, 1rem); position: relative; left: 70%;">1</span>
+                    <div class="items-price-container" style="font-size: clamp(0.35rem, 0.9vw, 1rem); width: 20%;">
+                        <?=$d['product_price']?> $
+                    </div>
+                    <div id="items-quantity-container">
+                        <form action="../Database/cart_update.php" method="post">
+                            <input type="text" name="username" value="<?=$_SESSION['username']?>" hidden>
+                            <input type="text" name="product_id" value="<?=$d['product_id']?>" hidden>
+                            <input type="text" name="action" value="minus" hidden>
+                            <button type="submit" id="minus-input" class="operation-button">-</button>
+                        </form>
+                        <span class="item-quantity"><?=$d['quantity']?></span>
+                        <form action="../Database/cart_update.php" method="post">
+                            <input type="text" name="username" value="<?=$_SESSION['username']?>" hidden>
+                            <input type="text" name="product_id" value="<?=$d['product_id']?>" hidden>
+                            <input type="text" name="action" value="plus" hidden>
+                            <button type="submit" id="plus-input" class="operation-button">+</button>
+                        </form>
+                    </div>
+                    <div class="items-total-container">
+                        <span style="font-size: clamp(0.35rem, 0.9vw, 1rem); position: relative; left: 70%;">0</span>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -153,9 +166,9 @@ if(isset($_SESSION['username'])) {
                     <div class="info-total-order-span-container">
                         <span>Totals</span>
                         <?php if(empty($data)): ?>
-                        <span>0$</span>
+                        <span id="final-total">0$</span>
                         <?php else: ?>
-                        <span></span>
+                        <span id="final-total">0$</span>
                         <?php endif; ?>
                     </div>
                     <div id="order-btn">Check out</div>
@@ -164,7 +177,41 @@ if(isset($_SESSION['username'])) {
         </div>
     </section>
     <script>
-        const item_total = document.getElementById("items-total-container");
+        const items = document.querySelectorAll(".items");
+        const finalTotal = document.getElementById("final-total");
+
+    function calculateFinalTotal(){
+        let total = 0;
+        items.forEach(item =>{
+            const checkbox = item.querySelector(".item-checkbox");
+            let itemsTotal = item.querySelector(".items-total-container");
+            let price = item.querySelector(".items-price-container").textContent;
+            let quantity = item.querySelector(".item-quantity").textContent;
+            price = parseInt(price.replace("$",""));
+            quantity = parseInt(quantity);
+
+            itemsTotal.textContent = quantity * price + "$";
+            let itemTotal = price * quantity;
+
+            if(checkbox.checked){
+                total += itemTotal;
+            }
+        });
+        finalTotal.textContent = total + "$";
+            let freeShippingCalculate = total + 100;
+            if(freeShippingCalculate >= 0){
+                document.getElementById("progress-bar").style.width = `${freeShippingCalculate/10}%`;
+                if(freeShippingCalculate >= 1000){
+                    document.getElementById("shipping-label").textContent = "Free Shipping";
+                }else if(freeShippingCalculate < 1000){
+                    document.getElementById("shipping-label").textContent = "Buy more to enjoy Free Shipping"
+                }
+            }
+    }
+        document.querySelectorAll(".item-checkbox").forEach(checkbox =>{
+            checkbox.addEventListener("change", calculateFinalTotal);
+        });
+        calculateFinalTotal();
     </script>
 </body>
 </html>

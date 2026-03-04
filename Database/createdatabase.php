@@ -13,7 +13,7 @@ if($conn->connect_error){
 $sql = "CREATE DATABASE IF NOT EXISTS $dbname";
 
 if($conn->query($sql)){
-    echo"abc";
+    
 }else{
     echo"<script>alert('Database khởi tạo thất bại')</script>";
 }
@@ -67,6 +67,4 @@ $conn->query("CREATE TABLE IF NOT EXISTS vouncher(
     vouncher_discount VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
-    header("Location: ../Pages/log.php");
-    exit();
 ?>

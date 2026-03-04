@@ -34,18 +34,18 @@ html,body{
     font-size: clamp(1rem, 20vw, 17rem);
     font-weight: bold;
     color: white;
-    animation: zoomIn 14s forwards;
-    animation-delay: 4s;
+    animation: zoomIn 4s forwards;
     z-index: 2;
-    opacity: 0.25;
+    opacity: 0;
 }
 @keyframes zoomIn {
     0%{
-        opacity: 0.25;
+        scale: 0;
+        opacity: 0;
     }
     30%,100%{
-        opacity: 0;
-        display: none;
+        scale: 1;
+        opacity: 0.25;
     }
 }
 /*END HEAD LOGO TRINITY */
@@ -84,13 +84,6 @@ html,body{
     justify-content: space-between;
     align-items: flex-start;
 }
-#head-banner-text-container{
-    width: 50%;
-    height: auto;
-    animation: bannerText 3s forwards;
-    animation-delay: 8s;
-    visibility: hidden;
-}
 #head-banner-image-container{
     padding-top: 3%;
     display: inline;
@@ -108,22 +101,6 @@ html,body{
     z-index: 3;
     animation: bannerImage 1s forwards;
     animation-delay: 7s;
-}
-@keyframes imageSlider {
-    from{
-        translate: -100%;
-    }to{
-        translate: 0;
-    }
-}
-@keyframes bannerText {
-    from{
-        visibility: hidden;
-        width: 0%;
-    }to{
-        visibility: visible;
-        width: 50%;
-    }
 }
 /*END HEAD HERO BANNER */
 
@@ -177,6 +154,12 @@ html,body{
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    transform: translateX(-200%);
+    position: relative;
+    transition: 2s ease-in-out;
+    transition-delay: 3s;
+    z-index: 100;
+    opacity: 0;
 }
 #content-container h1{
     font-size: clamp(2rem, 4vw, 4rem);
@@ -189,13 +172,31 @@ html,body{
     font-size: 1rem;
     letter-spacing: 3px;
     text-transform: uppercase;
+    opacity: 0;
+    scale: 0.5;
+}
+#content-container span.intersect{
+    scale: 1;
     opacity: 0.7;
+    transition: 1s ease-in;
+    transition-delay: 2s;
+}
+#content-container.intersect{
+    opacity: 1;
+    transform: translateX(0);
+    transition: 2s ease-in-out;
 }
 #image-container{
     position: absolute;
     width: 100%;
     height: 100%;
+    scale: 0;
     right: 15%;
+    transition: 2s all;
+}
+#image-container.intersect{
+    scale: 1;
+    transition: 1.2s all;
 }
 #s-img0{
     scale: 1.5;
@@ -212,6 +213,14 @@ html,body{
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    transform: translateY(150%);
+    transition: 1s all;
+    transition-delay: 1s;
+}
+#slide-container.intersect{
+    transition: 1s all;
+    transition-delay: 1s;
+    transform: translateY(0);
 }
 .variant{
     width: 100%;
@@ -301,6 +310,15 @@ html,body{
     font-size: 0.85rem;
     letter-spacing: 3px;
 }
+#product-redirect{
+    transform: translateX(400%);
+    transition: 1s all;
+}
+#product-redirect.intersect{
+    transform: translateX(0);
+    transition: 1s all;
+    transition-delay: 4s;
+}
 /*END HEAD HERO BANNER */
 
 
@@ -337,6 +355,14 @@ html,body{
     align-items: flex-start;
     justify-content: space-around;
     font-family: Arial, Helvetica, sans-serif;
+    scale: 0.1;
+    font-size: 0.1px;
+    transition: 1s all;
+}
+#footer-text.intersect{
+    transition: 1s all;
+    scale: 1;
+    font-size: clamp(1rem, 10vw, 10rem);
 }
 #footer-text span{
     font-size: clamp(1rem, 10vw, 10rem);
@@ -393,9 +419,16 @@ html,body{
     font-family: Arial, Helvetica, sans-serif;
 }
 #explore-advertise :nth-child(2){
+    font-size: 1px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgba(0, 0, 0, 0.36);
+}
+#explore-advertise :nth-child(2).intersect{
     font-size: clamp(1rem, 1.15vw, 1.5rem);
     font-family: Arial, Helvetica, sans-serif;
     color: rgba(0, 0, 0, 0.36);
+    transition: .5s all;
+    transition-delay: 6.25s;
 }
 #explore-button{
     position: absolute;
@@ -644,8 +677,8 @@ html,body{
     font-size: clamp(0.45rem, 1.25vw, 1rem);
 }
 .icon{
-    width: clamp(.35rem, 3vw, 2.5rem);
-    height: clamp(.35rem, 3vw, 2.5rem);
+    width: clamp(.35rem, 1.25vw, 2.5rem);
+    height: clamp(.35rem, 1.25vw, 2.5rem);
 }
 .icon path{
     scale: 1;
