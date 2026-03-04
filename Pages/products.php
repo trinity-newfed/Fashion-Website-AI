@@ -854,8 +854,9 @@ $product = $conn
 </div>
 <div id="try-on-modal">
   <h1>VIRTUAL TRY ON AI</h1>
-  <form action="">
-    <input type="file" id="try-on-input" hidden>
+  <form action="http://127.0.0.1:5000/api/generate" method="POST" enctype="multipart/form-data">
+    <input type="file" id="try-on-input" name="person" hidden>
+    <input type="hidden" name="cloth" id="cloth">
     <label for="try-on-input">Choose your file</label>
     <h3 style="display: grid; place-items: center; position: absolute; bottom: 0; left: 5%">
       <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -863,6 +864,7 @@ $product = $conn
       </svg>
       <span style="color: red;">This is just an experiment feature, AI can make mistake and the result not always at ease!</span>
     </h3>
+    <button type="submit">Generate</button>
   </form>
 </div>
 <script>
@@ -877,6 +879,7 @@ const modalProductName = document.getElementById("modal-product-name");
 const modalProductType = document.getElementById("modal-product-type");
 const try_on = document.getElementById("Try-on-form");
 const try_on_modal = document.getElementById("try-on-modal");
+const try_on_input = document.getElementById("cloth");
 
 
 
@@ -891,6 +894,7 @@ products.forEach(product => {
     modalImg.src = this.dataset.img;
     modalName.textContent = this.dataset.name;
     modalPrice.textContent = this.dataset.price + "$";
+    try_on_input.value = this.dataset.img;
     modal.style.display = "flex";
   });
 });
