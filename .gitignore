@@ -1,8 +1,10 @@
-/upload/
-/picture-uploads/
-/vendor/
-/node_modules/
-/AI/sd14/
+upload/
+picture-uploads/
+static/
+static/outputs/
+vendor/
+node_modules/
+AI/sd15/
+sd15/
 .env
 .DS_Store
-AI/sd14/
