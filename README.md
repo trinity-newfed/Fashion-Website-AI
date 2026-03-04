@@ -11,7 +11,7 @@ sd15\Scripts\activate
 
 #IF BLOCK#
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-sd14\Scripts\Activate.ps1
+sd15\Scripts\Activate.ps1
 
 #OS INSTALL#
 pip install -r requirements.txt (can't install torch + cpu)
