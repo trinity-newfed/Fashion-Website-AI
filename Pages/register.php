@@ -18,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email    = trim($_POST['email']);
     $password = $_POST['user_password'];
     $address  = trim($_POST['user_address']);
+    $user_sex = isset($_POST["user_sex"]) ? $_POST["user_sex"] : "";
     $hotline  = trim($_POST['user_hotline']);
 
     $password = $_POST['user_password'];
@@ -56,16 +57,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $stmt = $conn->prepare("
         INSERT INTO userdata 
-        (username, img, email, user_password, user_address, user_hotline)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (username, img, email, user_password, user_address, user_sex, user_hotline)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
     $stmt->bind_param(
-        "ssssss",
+        "sssssss",
         $username,
         $img,
         $email,
         $hashedPassword,
         $address,
+        $user_sex,
         $hotline
     );
 

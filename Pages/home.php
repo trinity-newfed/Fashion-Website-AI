@@ -97,14 +97,21 @@ session_start();
                 <span>About</span>
             </div>
         </div>
+        <input type="checkbox" id="menu-toggle" hidden>
         <div id="utility-menu">
+            <label class="hamburger" for="menu-toggle">
+                    <svg viewBox="0 0 32 32">
+                        <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
+                        <path class="line" d="M7 16 27 16"></path>
+                    </svg>
+            </label>
             <svg class="icon" viewBox="0 0 640 512" aria-hidden="true" onclick="window.location.href='cart.php'">
                 <path fill="currentColor" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
             </svg>
             <?php if(isset($_SESSION['username'])): ?>
-                <p><?=$_SESSION['username']?></p>
+                <p onclick="window.location.href='user.php'"><?=$_SESSION['username']?></p>
                 <?php if(!empty($_SESSION['img'])): ?>
-                    <div id="user-account">
+                    <div id="user-account" onclick="window.location.href='user.php'">
                         <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
                     </div>
                 <?php endif; ?>
@@ -114,6 +121,47 @@ session_start();
                 </div>
             <?php endif; ?>
         </div>
+<div id="fast-menu">
+    <div class="menu-item">
+        <div class="menu-title">TRINITY</div>
+            <div class="submenu">
+                <div class="submenu-item">T-shirt
+                    <div class="sub-sub">a</div>
+                    <div class="sub-sub">b</div>
+            </div>
+            <div class="submenu-item">Polo shirt
+                <div class="sub-sub">a</div>
+                <div class="sub-sub">b</div>
+            </div>
+            <div class="submenu-item">Hoodie
+                <div class="sub-sub">a</div>
+            </div>
+        </div>
+    </div>
+    <div class="menu-item">
+        <div class="menu-title">TRINITY LADIES</div>
+        <div class="submenu">
+            <div class="submenu-item">T-shirt</div>
+            <div class="submenu-item">Blouse</div>
+            <div class="submenu-item">Crop top</div>
+        </div>
+    </div>
+    <div class="menu-item">
+        <div class="menu-title">GIFT VOUNCHER</div>
+        <div class="submenu">
+            <div>Check voucher</div>
+        </div>
+    </div>
+    <div class="menu-item">
+        <div class="menu-title">TRINITY TIER</div>
+        <div class="submenu">
+            <div>Check your shopping tier</div>
+        </div>
+    </div>
+    <div class="menu-item">
+        <div class="menu-title">ABOUT</div>
+    </div>
+</div>
     </section>
     <script>
         const head = document.getElementById("head");
@@ -157,6 +205,23 @@ session_start();
 
         bodyObserve.observe(body);
         footerObserve.observe(footer);
+
+
+
+        const menuTitles = document.querySelectorAll(".menu-title");
+            menuTitles.forEach(title =>{
+                title.addEventListener("click", ()=>{
+                    const parent = title.parentElement;
+                    parent.classList.toggle("active");
+            });
+        });
+        const submenuItems = document.querySelectorAll(".submenu-item");
+            submenuItems.forEach(item =>{
+                item.addEventListener("click",(e)=>{
+                    e.stopPropagation();
+                    item.classList.toggle("active");
+            });
+        });
     </script>
 </body>
 </html>

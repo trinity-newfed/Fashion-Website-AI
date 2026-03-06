@@ -21,5 +21,5 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-header("Location: ../../../Real EState/Pages/main_pages/Trangchu.php");
+header("Location: ../Pages/log.php");
 exit;

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /*START MENU*/
+#menu{
+    width: 100vw;
+    max-width: 1500px;
+    margin-top: clamp(0.25rem, 1vw, 1rem);
+    height: clamp(0.25rem, 2.5vw, 3rem);;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5000;
+}
+#text-menu{
+    width: 70%;
+    height: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    position: relative;
+    left: 0;
+}
+#logo{
+    position: relative;
+    left: 0;
+    width: 10%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    font-size: clamp(.25rem, 3vw, 2.5rem);
+    cursor: default;
+}
+#text{
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+}
+#text span{
+    color: orange;
+    font-size: clamp(0.35rem, 1.25vw, 1rem);
+}
+#text span:hover{
+    transition: .3s all;
+    cursor: pointer;
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+
+
+#utility-menu{
+    width: 20%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: clamp(0.45rem, 1.25vw, 1rem);
+}
+.icon{
+    width: clamp(.35rem, 1.25vw, 2.5rem);
+    height: clamp(.35rem, 1.25vw, 2.5rem);
+}
+.icon path{
+    scale: 1;
+}
+#login-btn{
+    width: 30%;
+    height: 80%;
+    background-color: orangered;
+    border-radius: 2px;
+    text-align: center;
+    color: white;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    cursor: pointer;
+}
+#login-btn:hover{
+    background-color: rgb(183, 49, 0);
+}
+#user-account{
+    width: clamp(.25rem, 3vw, 2.5rem);
+    height: clamp(.25rem, 3vw, 2.5rem);
+    z-index: 2;
+    background-color: #111;
+    border-radius: 50%;
+}
+#user-avatar{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 30%;
+}
+/*Menu Button*/
+.hamburger{
+  cursor: pointer;
+}
+#menu-toggle:checked ~ #fast-menu{
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(0);
+}
+.hamburger input{
+  display: none;
+}
+.hamburger svg{
+  height: 2em;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.line{
+  fill: none;
+  stroke: rgb(0, 0, 0);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+              stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.line-top-bottom{
+  stroke-dasharray: 12 63;
+}
+#menu-toggle:checked + #utility-menu .hamburger svg{
+  transform: rotate(-45deg);
+}
+
+#menu-toggle:checked + #utility-menu .line-top-bottom{
+  stroke-dasharray: 20 300;
+  stroke-dashoffset: -32.42;
+}
+
+/*Menu Button*/
+/*FAST MENU*/
+#fast-menu{
+    background: linear-gradient(180deg,#111 0%,#0a0a0a 50%,#0000005d 100%);
+    color: #fff;
+    position: fixed;
+    width: 260px;
+    top: 110%;
+    right: 1%;
+    transform: translate(200%, -50%);
+    padding: 30px 40px;
+    display: grid;
+    gap: 30px;
+    box-sizing: border-box;
+    visibility: hidden;
+    opacity: 0;
+    border-radius: 12px 0 0 12px;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    transition: .4s ease;
+}
+.menu-item:hover .menu-title{
+    color: orangered;
+    text-decoration: underline;
+}
+.menu-item:hover .submenu{
+    color: white;
+    text-decoration: none;
+}
+.menu-title{
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+.sub-sub{
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding-left: 15px;
+    transition: .3s ease;
+}
+.submenu-item.active .sub-sub{
+    max-height: 100px;
+    opacity: 1;
+}
+.submenu{
+    max-height: 0;
+    overflow: hidden;
+    transition: .35s ease;
+}
+
+.menu-item.active .submenu{
+    max-height: 300px;
+}
+/*FAST MENU*/
+/*END MENU*/
+      /*End section head - menu */
+</style>
+<body>
+    <label class="hamburger" for="menu-toggle">
+                    <svg viewBox="0 0 32 32">
+                        <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
+                        <path class="line" d="M7 16 27 16"></path>
+                    </svg>
+            </label>
+</body>
+</html>

@@ -1,5 +1,3 @@
-# FOR REQUIREMENT PLEASE READ requirement.txt
-
 #REQUIRE#
 first time download (>5.4G)
 python ver 3.10.x
@@ -11,7 +9,7 @@ sd15\Scripts\activate
 
 #IF BLOCK#
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-sd14\Scripts\Activate.ps1
+sd15\Scripts\Activate.ps1
 
 #OS INSTALL#
 pip install -r requirements.txt (can't install torch + cpu)

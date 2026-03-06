@@ -12,7 +12,7 @@ if($conn->connect_error){
 session_start();
 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../Pages/log.php");
     exit();
 }
 
@@ -35,10 +35,10 @@ if($result->num_rows > 0){
     $stmt->bind_param("si", $username, $product_id);
     $stmt->execute();
 }else{
-    $sql = "INSERT INTO cart (username, product_id, product_type, quantity)
-            VALUES (?, ?, ?, ?)";
+    $sql = "INSERT INTO cart (username, product_id, quantity)
+            VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sisi", $username, $product_id, $product_type, $quantity);
+    $stmt->bind_param("sii", $username, $product_id, $quantity);
     $stmt->execute();
 }
 header("Location: ../Pages/products.php");

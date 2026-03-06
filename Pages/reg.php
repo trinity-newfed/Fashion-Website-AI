@@ -226,9 +226,9 @@ button:hover {
 
     <div class="gender-group">
         <label>Giới tính:</label>
-        <label><input type="radio" name="gender" value="Nam"> Male</label>
-        <label><input type="radio" name="gender" value="Nữ"> Female</label>
-        <label><input type="radio" name="gender" value="Bia đia"> Other</label>
+        <label><input type="radio" name="user_sex" value="Male"> Male</label>
+        <label><input type="radio" name="user_sex" value="Female"> Female</label>
+        <label><input type="radio" name="user_sex" value="Other"> Other</label>
     </div>
 
     <div class="input-group password-wrapper">
