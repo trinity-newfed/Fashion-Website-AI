@@ -23,8 +23,9 @@ $conn->query("CREATE TABLE IF NOT EXISTS products(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     product_name VARCHAR(100),
     product_price VARCHAR(100),
-    product_type VARCHAR(255),
+    product_type ENUM('collections','men','women','accesories'),
     product_describe VARCHAR(255),
+    product_color VARCHAR(255),
     product_size VARCHAR(255),
     product_img VARCHAR(255),
     product_img1 VARCHAR(255),
@@ -36,6 +37,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS products(
 $conn->query("CREATE TABLE IF NOT EXISTS cart(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100),
+    cart_size ENUM('S','M','L','XL') DEFAULT 'S',
     product_id VARCHAR(100),
     quantity VARCHAR(100)
     )");
@@ -47,6 +49,8 @@ $conn->query("CREATE TABLE IF NOT EXISTS userdata(
     user_password VARCHAR(255) NOT NULL,
     user_address VARCHAR(100),
     user_hotline VARCHAR(20),
+    user_sex ENUM('Male','Female','Other'),
+    user_tier ENUM('None','Silver','Gold','Diamond') DEFAULT 'None',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS employeedata(
@@ -59,12 +63,19 @@ $conn->query("CREATE TABLE IF NOT EXISTS employeedata(
     rating VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
-$conn->query("CREATE TABLE IF NOT EXISTS vouncher(
+$conn->query("CREATE TABLE IF NOT EXISTS voucher(
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(255),
-    vouncher_id VARCHAR(255),
-    vouncher_describe VARCHAR(255),
-    vouncher_discount VARCHAR(255),
+    voucher_id VARCHAR(255),
+    voucher_describe VARCHAR(255),
+    voucher_discount VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+$conn->query("CREATE TABLE IF NOT EXISTS tryon(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255),
+    cloth_path VARCHAR(255),
+    result_img VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 ?>

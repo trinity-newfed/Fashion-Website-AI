@@ -12,7 +12,7 @@ if($conn->connect_error){
 session_start();
 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: log.php");
     exit();
 }
 
