@@ -70,7 +70,7 @@ if(isset($_SESSION['username'])) {
             <?php if(isset($_SESSION['username'])): ?>
                 <p><?=$_SESSION['username']?></p>
                 <?php if(!empty($_SESSION['img'])): ?>
-                    <div id="user-account">
+                    <div id="user-account" onclick="window.location.href='user.php'">
                         <img id="user-avatar" src="../upload/<?=htmlspecialchars($_SESSION['img'])?>" alt="avatar">
                     </div>
                 <?php endif; ?>
@@ -99,7 +99,7 @@ if(isset($_SESSION['username'])) {
                     <div id="items-image-container"><img src="../picture-uploads/<?=$d['product_img']?>" alt=""></div>
                     <div id="items-info-container">
                         <span style="font-weight: bolder;"></span>
-                        <span style="color: rgba(0, 0, 0, 0.5); font-weight: 400;">Black / S</span>
+                        <span style="color: rgba(0, 0, 0, 0.5); font-weight: 400;">Black / <?=$d['product_size']?></span>
                         <form action="../Database/delete_item_cart.php" method="POST">
                             <label for="remove-input" id="label-for-remove-input">Remove</label>
                             <input type="text" name="id" value="<?=$d['cart_id']?>" hidden>
@@ -157,11 +157,7 @@ if(isset($_SESSION['username'])) {
                     </div>
                     <div class="info-total-order-span-container">
                         <span>Delivery fee</span>
-                        <?php if(empty($data)): ?>
-                        <span>0$</span>
-                        <?php else: ?>
-                        <span></span>
-                        <?php endif; ?>
+                        <span id="deli-fee"></span>
                     </div>
                     <div class="info-total-order-span-container">
                         <span>Totals</span>
@@ -204,7 +200,8 @@ if(isset($_SESSION['username'])) {
                 if(freeShippingCalculate >= 1000){
                     document.getElementById("shipping-label").textContent = "Free Shipping";
                 }else if(freeShippingCalculate < 1000){
-                    document.getElementById("shipping-label").textContent = "Buy more to enjoy Free Shipping"
+                    document.getElementById("deli-fee").textContent = `${freeShippingCalculate/10}% off`;
+                    document.getElementById("shipping-label").textContent = "Buy more to enjoy Free Shipping";
                 }
             }
     }

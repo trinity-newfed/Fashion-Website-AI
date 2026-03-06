@@ -5,6 +5,14 @@ $password = "";
 $dbname = "TF_Database";
 
 $conn = new mysqli($host, $user, $password, $dbname);
+session_start();
+if(!isset($_SESSION['role']) || $_SESSION['role'] !== "admin"){
+    echo "<script>
+        alert('Restrict permission!');
+        window.location.href='../Pages/';
+    </script>";
+    exit();
+}
 //PRODUCT FETCH
 $product = $conn
     ->query("SELECT * FROM products")
@@ -17,7 +25,7 @@ $userdata = $conn
 
 //VOUNCHER FETCH
 $vouncher = $conn
-    ->query("SELECT * FROM vouncher")
+    ->query("SELECT * FROM voucher")
     ->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -183,9 +191,17 @@ $vouncher = $conn
             gap: 10px;
             padding-left: 20px;
         }
+        #form{
+            padding-top: 100px;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: start;
+        }
         .input{
             width: 300px;
-            height: 30px;
+            height: 20px;
         }
     </style>
 </head>
@@ -193,7 +209,7 @@ $vouncher = $conn
     <div id="head">
         <div id="modal-popup">
             <div id="form-product" class="form">
-                <form action="add_product_admin.php" method="post" enctype="multipart/form-data" style="gap: 10px; display: flex; flex-direction: column;">
+            <form id="form" action="add_product_admin.php" method="post" enctype="multipart/form-data" style="gap: 10px; display: flex; flex-direction: column;">
                 <div class="input-container">
                     <input type="text" name="product_name" class="input" id="product_name">
                     <label for="product_name">Product Name</label>
@@ -203,16 +219,34 @@ $vouncher = $conn
                     <label for="product_price">Product Price</label>
                 </div>
                 <div class="input-container">
-                    <input type="text" name="product_type" class="input" id="product_type">
-                    <label for="product_type">Product Type</label>
-                </div>
-                <div class="input-container">
                     <input type="text" name="product_describe" class="input" id="product_describe">
                     <label for="product_describe">Product Describe</label>
                 </div>
                 <div class="input-container">
+                    <input type="text" name="product_color" class="input" id="product_color">
+                    <label for="product_color">Product Color</label>
+                </div>
+                <div class="input-container">
                     <input type="text" name="product_size" class="input" id="product_size">
                     <label for="product_size">Product Size</label>
+                </div>
+                <div class="input-container" style="flex-direction: column;">
+                    <div style="display: flex; justify-content: space-between; width: 150px;">
+                        <label style="width: 10px;">Collections</label>
+                        <input type="radio" name="product_type" class="input-radio" value="collections"  checked>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; width: 150px;">
+                        <label style="width: 10px;">Men</label>
+                        <input type="radio" name="product_type" class="input-radio" value="men">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; width: 150px;">
+                        <label style="width: 10px;">Women</label>
+                        <input type="radio" name="product_type" class="input-radio" value="women">
+                    </div>
+                    <div style="display: flex; justify-content: space-between; width: 150px;">
+                        <label style="width: 10px;">Accesories</label>
+                        <input type="radio" name="product_type" class="input-radio" value="accesories">
+                    </div>
                 </div>
                 <div class="input-container" style="display: grid;">
                     <input type="file" name="product_img" id="product_img" hidden>
@@ -228,7 +262,7 @@ $vouncher = $conn
                     <label for="product_img3" class="file-label">Select a product picture</label>
                 </div>
                 <input type="submit" value="ADD">
-                </form>
+            </form>
             </div>
             <div id="form-vouncher" style="display: none;" class="form"></div>
         </div>

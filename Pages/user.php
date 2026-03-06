@@ -1,3 +1,36 @@
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$dbname = "TF_Database";
+
+$conn = new mysqli($host, $user, $password, $dbname);
+session_start();
+
+$username = $_SESSION['username'];
+
+$sql = "SELECT * FROM userdata
+        WHERE username = ?";
+$stmt = $conn->prepare($sql);
+if(!$stmt){
+    die("Prepare failed: " . $conn->error);
+}
+$stmt->bind_param("s", $username);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+$stmt->close();
+
+$img = "SELECT * FROM tryon WHERE username = ?";
+$stmt = $conn->prepare($img);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+
+$fetchData = $stmt->get_result();
+$stmt->close();
+
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -18,6 +51,8 @@
       width: 100vw;
       scroll-behavior: smooth;
       overflow-x: hidden;
+      max-width: 1500px;
+      max-height: 900px;
     }
     /*section head - menu*/
     #head {
@@ -49,7 +84,7 @@
       align-items: center;
       position: relative;
       left: 0;
-      color: rgb(255, 147, 64);
+      color: rgb(0, 0, 0);
     }
     #logo {
       position: relative;
@@ -59,7 +94,7 @@
       display: grid;
       place-items: center;
       font-weight: bold;
-      color: rgb(255, 255, 255);
+      color: rgb(255, 147, 64);
       font-size: clamp(1rem, 2vw, 2.5rem);
       cursor: default;
     }
@@ -127,21 +162,26 @@
       display: flex;
       position: relative;
       margin: 0;
+      max-height: 900px;
       justify-content: right;
       align-items: right;
     }
     .user-box {
       width: 100vw;
       height: 100vh;
+      max-width: 1500px;
+      max-height: 900px;
       border: 1px solid black;
       position: relative;
-      margin-top: 10%;
+      margin: 10% auto;
       display: flex;
       flex-direction: row;
     }
     .user-information {
       width: 20vw;
       height: 100vh;
+      max-width: 1000px;
+      max-height: 900px;
       background-color: black;
       color: white;
       display: flex;
@@ -243,11 +283,13 @@
     }
     .user-cart {
       position: relative;
+      max-width: 1500px;
       width: 80vw;
       height: 100vh;
+      max-height: 900px;
       right: 0;
       background-color: rgb(255, 255, 255);
-      overflow-y: scroll;
+      overflow: auto;
     }
     .user-cart p:nth-child(1) {
       color: black;
@@ -268,6 +310,36 @@
       background-color: #ff4500;
       position: absolute;
       margin: -20px 15px;
+    }
+    #try-on-container{
+      max-width: 1000px;
+      display: grid;
+      place-items: center;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+    }
+    .line3{
+      width: 200px;
+      height: 300px;
+      border: 1px solid black;
+      box-shadow: 3px 3px 3px solid rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      transition: .3s all;
+    }
+    .line3:hover{
+      width: 220px;
+      transition: .3s all;
+    }
+    .line3 img{
+      width: 90%;
+      height: 90%;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .line3 img:hover{
+      filter: brightness(80%);
     }
     .add-more {
       width: 200px;
@@ -331,69 +403,79 @@
               d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"
             />
           </svg>
-          <div id="login-btn">
-            <form
-              action="../Database/createdatabase.php"
-              method="post"
-              style="width: 100%; height: 100%"
-            >
-              <input
-                type="submit"
-                value="Login"
-                style="
-                  width: 100%;
-                  height: 100%;
-                  background-color: transparent;
-                  border: none;
-                  color: white;
-                "
-              />
-            </form>
-          </div>
+          <?php if(isset($_SESSION['username'])): ?>
+                <p><?=$_SESSION['username']?></p>
+                <?php if(!empty($_SESSION['img'])): ?>
+                    <div id="user-account" onclick="window.location.href='user.php'">
+                        <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
+                    </div>
+                <?php endif; ?>
+            <?php else: ?>
+                <div id="login-btn">
+                    <input type="submit" value="Login" style="width: 100%; height: 100%; background-color: transparent; border: none; color: white;" onclick="window.location.href='log.php'">
+                </div>
+            <?php endif; ?>
         </div>
       </section>
     </section>
     <section class="body">
       <div class="user-box">
         <div class="user-information">
-          <div class="user-avatar"></div>
-          <div class="user-name">Ly Ngoc Duy Tan</div>
-          <div class="user-tier">Gold Member</div>
+          <?php if(isset($_SESSION['username'])): ?>
+          <div class="user-avatar">
+            <img style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="">
+          </div>
+          <div class="user-name"><?=$_SESSION['username']?></div>
+          <div class="user-tier"><?=$user['user_tier']?></div>
           <div class="line1">_________________________</div>
           <div class="user-details">
             <div class="info-row">
-              <span>Giới tính:</span>
-              <span>Nữ</span>
+              <span>Sex:</span>
+              <span><?=$user['user_sex']?></span>
             </div>
             <div class="info-row">
-              <span>Số điện thoại:</span>
-              <span>0909638410</span>
+              <span>Hotline:</span>
+              <span><?=$user['user_hotline']?></span>
             </div>
             <div class="info-row">
               <span>Email:</span>
-              <span> Luongminhtri0395@gmail.com</span>
+              <span><?=$user['email']?></span>
             </div>
             <div class="info-row">
-              <span>Địa chỉ:</span>
-              <span> 123 To Van Street, Dong Thap Province</span>
+              <span>Address: </span>
+              <span><?=$user['user_address']?></span>
             </div>
           </div>
-          <div class="user-setting">Chỉnh Sửa Thông Tin</div>
+          <div class="user-setting">Edit informations</div>
+          <div class="user-setting">
+            <form action="logout.php">
+              <input type="submit" id="log-out" hidden>
+              <label for="log-out">Log out</label>
+            </form>
+          </div>
+          <?php endif; ?>
         </div>
         <div class="user-cart">
-          <p>Đơn hàng của bạn</p>
+          <p>Order state</p>
           <div class="line2"></div>
           <!--<div class="add-more" onclick="window.location.href='https://cosplaytele.com';">Thêm mới <br> + </div>-->
           <p class="user-cart-alert">Nothing here...</p>
           <div class="user-history">
-            <p class="user-history-text">Lịch sử mua hàng</p>
+            <p class="user-history-text">Purchase history</p>
             <div class="line2"></div>
             <p class="user-cart-alert">Nothing here...</p>
           </div>
           <div class="user-history-AI">
-            <p class="user-history-text">Lịch sử thử đồ</p>
-            <div class="line2"></div>
-            <p class="user-cart-alert">Nothing here...</p>
+            <p class="user-history-text">Try on history</p>
+            <div id="try-on-container">
+              <?php while($row = $fetchData->fetch_assoc()): ?>
+              <div class="line3">
+                <img src="../AI/static/outputs/user_<?=$_SESSION['username']?>/<?=$row['result_img']?>" alt="">
+                <?=$row['created_at']?>
+              </div>
+            <?php endwhile; ?>
+            </div>
+            <p class="user-cart-alert"></p>
           </div>
         </div>
       </div>

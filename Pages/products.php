@@ -1,4 +1,5 @@
 <?php
+session_start();
 $host = "localhost";
 $user = "root";
 $password = "";
@@ -6,8 +7,7 @@ $dbname = "TF_Database";
 
 $conn = new mysqli($host, $user, $password, $dbname);
 
-session_start();
-
+$username = $_SESSION['username'] ?? null;
 $product = $conn
   ->query("SELECT * FROM products")
   ->fetch_all(MYSQLI_ASSOC);
@@ -24,7 +24,7 @@ $product = $conn
       href="https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
-    <style>
+<style>
       html,
       body {
         user-select: none;
@@ -47,101 +47,207 @@ $product = $conn
         max-height: 900px;
         top: 0;
       }
-      #menu {
-        width: 100vw;
-        max-width: 1500px;
-        height: 70px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: absolute;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 1000;
-      }
-      #text-menu {
-        width: 70%;
-        height: 100%;
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        position: relative;
-        left: 0;
-        color: rgb(255, 147, 64);
-      }
-      #logo {
-        position: relative;
-        left: 0;
-        width: 10%;
-        height: 100%;
-        display: grid;
-        place-items: center;
-        font-weight: bold;
-        color: rgb(255, 255, 255);
-        font-size: clamp(1rem, 2vw, 2.5rem);
-        cursor: default;
-      }
-      #text {
-        width: 60%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: bolder;
-      }
-      #text span:hover {
-        transition: 0.3s all;
-        cursor: pointer;
-        background-color: rgb(0, 0, 0);
-        color: white;
-      }
 
-      #utility-menu {
-        width: 20%;
-        height: 100%;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-      }
-      .icon {
-        width: clamp(.35rem, 1.25vw, 2.5rem);
-        height: clamp(.35rem, 1.25vw, 2.5rem);
-      }
-      .icon path {
-        scale: 1;
-      }
-      #login-btn {
-        width: 30%;
-        height: 40%;
-        background-color: orangered;
-        border-radius: 2px;
-        text-align: center;
-        color: white;
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: bolder;
-        cursor: pointer;
-      }
-      #login-btn:hover {
-        background-color: rgb(183, 49, 0);
-      }
-      #user-account{
-        width: clamp(.25rem, 3vw, 2.5rem);
-        height: clamp(.25rem, 3vw, 2.5rem);
-        z-index: 2;
-        background-color: #111;
-        border-radius: 50%;
-      }
-      #user-avatar{
-        width: 100%;
-        height: 100%;
-        border-radius: 50%;
-        object-fit: cover;
-        object-position: center 30%;
-      }
+
+
+
+/*START MENU*/
+#menu{
+    width: 100vw;
+    max-width: 1500px;
+    margin-top: clamp(0.25rem, 1vw, 1rem);
+    height: clamp(0.25rem, 2.5vw, 3rem);;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5000;
+}
+#text-menu{
+    width: 70%;
+    height: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    position: relative;
+    left: 0;
+}
+#logo{
+    position: relative;
+    left: 0;
+    width: 10%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    font-size: clamp(.25rem, 3vw, 2.5rem);
+    cursor: default;
+}
+#text{
+    width: 60%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+}
+#text span{
+    color: orange;
+    font-size: clamp(0.35rem, 1.25vw, 1rem);
+}
+#text span:hover{
+    transition: .3s all;
+    cursor: pointer;
+    background-color: rgb(0, 0, 0);
+    color: white;
+}
+
+
+#utility-menu{
+    width: 20%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: clamp(0.45rem, 1.25vw, 1rem);
+}
+.icon{
+    width: clamp(.35rem, 1.25vw, 2.5rem);
+    height: clamp(.35rem, 1.25vw, 2.5rem);
+}
+.icon path{
+    scale: 1;
+}
+#login-btn{
+    width: 30%;
+    height: 80%;
+    background-color: orangered;
+    border-radius: 2px;
+    text-align: center;
+    color: white;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    cursor: pointer;
+}
+#login-btn:hover{
+    background-color: rgb(183, 49, 0);
+}
+#user-account{
+    width: clamp(.25rem, 3vw, 2.5rem);
+    height: clamp(.25rem, 3vw, 2.5rem);
+    z-index: 2;
+    background-color: #111;
+    border-radius: 50%;
+}
+#user-avatar{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 30%;
+}
+/*Menu Button*/
+.hamburger{
+  cursor: pointer;
+}
+.hamburger input{
+  display: none;
+}
+.hamburger svg{
+  height: 2em;
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.line{
+  fill: none;
+  stroke: rgb(0, 0, 0);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3;
+  transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+              stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.line-top-bottom{
+  stroke-dasharray: 12 63;
+}
+#menu-toggle:checked + #utility-menu .hamburger svg{
+  transform: rotate(-45deg);
+}
+
+#menu-toggle:checked + #utility-menu .line-top-bottom{
+  stroke-dasharray: 20 300;
+  stroke-dashoffset: -32.42;
+}
+
+/*Menu Button*/
+/*FAST MENU*/
+#fast-menu{
+    background: linear-gradient(180deg,#111 0%,#0a0a0a 50%,#0000005d 100%);
+    color: #fff;
+    position: fixed;
+    width: 260px;
+    top: 10%;
+    right: 1%;
+    transform: translate(200%, -50%);
+    padding: 30px 40px;
+    display: grid;
+    gap: 30px;
+    box-sizing: border-box;
+    visibility: hidden;
+    opacity: 0;
+    border-radius: 12px 0 0 12px;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    transition: .4s ease;
+    z-index: 5000;
+}
+#fast-menu.open{
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(0);
+}
+.menu-item:hover .menu-title{
+    color: orangered;
+    text-decoration: underline;
+}
+.menu-item:hover .submenu{
+    color: white;
+    text-decoration: none;
+}
+.menu-title{
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+.sub-sub{
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    padding-left: 15px;
+    transition: .3s ease;
+}
+.submenu-item.active .sub-sub{
+    max-height: 100px;
+    opacity: 1;
+}
+.submenu{
+    max-height: 0;
+    overflow: hidden;
+    transition: .35s ease;
+}
+
+.menu-item.active .submenu{
+    max-height: 300px;
+}
+/*FAST MENU*/
+/*END MENU*/
       /*End section head - menu */
 
       /*Section head - banner */
@@ -169,42 +275,46 @@ $product = $conn
       }
       .type_clothing {
         width: 100%;
-        height: 500px;
+        max-width: 1500px;
+        height: 60%;
         position: relative;
         display: grid;
-        justify-content: center;
-        align-items: center;
-        margin: auto;
-        grid-template-columns: 250px 250px 250px 250px;
+        place-items: center;
+        margin: 10% auto;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 20px;
         scroll-behavior: smooth;
       }
       .type_clothing div {
-        width: 250px;
-        height: 400px;
+        width: 90%;
+        height: 100%;
         background-color: #ffffcc;
         border-radius: 20px;
+        display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         line-height: 1;
         transition: all 0.4s;
         cursor: pointer;
+        margin-bottom: 100px;
       }
       .type_clothing svg {
-        width: 100px;
-        height: 110px;
+        width: clamp(.25rem, 7vw, 5rem);
+        height: clamp(.25rem, 7vw, 5rem);
         display: block;
-        margin: 50px auto 0;
         opacity: 0.8;
+        margin: clamp(.25rem, 1vw, 2.5rem);
       }
       .type_clothing p {
         font-family: "Poppins", sans-serif;
-        font-size: 15px;
+        word-break: break-all;
+        overflow-wrap: break-word;
+        font-size: clamp(.25rem, 1.5vw, 2.5rem);
         letter-spacing: 0.5px;
         line-height: 1.6;
         color: #333;
         width: 80%;
-        margin: 20px auto 0;
         text-align: center;
         cursor: pointer;
       }
@@ -214,24 +324,32 @@ $product = $conn
         transform: translateY(-10px);
       }
       #body {
-        width: 100vw;
+        width: 100%;
         max-width: 1500px;
         height: 100svh;
         max-height: 900px;
         position: relative;
         display: flex;
         justify-content: center;
-        margin: 0 auto;
+        margin: auto;
         overflow: auto;
+      }
+      #body-products{
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        position: relative;
+        top: 10%;
       }
       .men-fashion {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        margin: 0;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         gap: 20px;
+        place-items: center;
+        margin: 0;
       }
       .men-fashion-product {
-        width: 300px;
+        width: clamp(5rem, 31vw, 19rem);
         height: 500px;
         border: 1px solid black;
         border-radius: 5%;
@@ -340,15 +458,6 @@ $product = $conn
         transition: 0.4s;
         cursor: pointer;
       }
-      .line {
-        width: 40px;
-        height: 1px;
-        background-color: white;
-        transform: rotate(90deg);
-        position: absolute;
-        margin-left: 40px;
-        margin-top: 25px;
-      }
       .product-buy {
         font-size: 15px;
         color: white;
@@ -366,21 +475,24 @@ $product = $conn
       }
       .woman-fashion {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        place-items: center;
         margin: 0;
         gap: 20px;
         margin-top: 10%;
       }
       .unisex-fashion {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        place-items: center;
         margin: 0;
         gap: 20px;
         margin-top: 10%;
       }
       .accessory-fashion {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        place-items: center;
         margin: 0;
         gap: 20px;
         margin-top: 10%;
@@ -539,36 +651,147 @@ $product = $conn
 
 
 #try-on-modal{
-  width: 50%;
-  height: 70%;
-  max-width: 400px;
-  max-height: 700px;
-  z-index: 5001;
-  background-color: white;
+  width: 90%;
+  height: 50%;
+  max-width: 420px;
+  padding: 30px;
   position: fixed;
-  bottom: 15%;
-  left: 60%;
-  translate: -50%;
-  border: 1px solid black;
-  text-align: center;
-  display: flex; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+  display: flex;
   flex-direction: column;
-  justify-content: start;
+  gap: 20px;
   align-items: center;
+  font-family: "Montserrat", sans-serif;
+  text-align: center;
   visibility: hidden;
   opacity: 0;
-  transition: .3s all;
-  font-family: "Montserrat", serif;
+  transition: .35s;
+  z-index: 5001;
 }
 #try-on-modal.show{
   visibility: visible;
   opacity: 1;
-  transition: .3s all;
 }
-    </style>
+#try-on-modal h1{
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+#try-on-modal label{
+  width: 100%;
+  padding: 35px 20px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+  transition: .25s;
+}
+#try-on-modal label:hover{
+  border-color: black;
+  color: black;
+}
+.try-warning{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #c40000;
+  background: #fff5f5;
+  border: 1px solid #ffd6d6;
+  padding: 10px;
+  border-radius: 6px;
+}
+.icon{
+  width:18px;
+  height:18px;
+  fill:#c40000;
+}
+#try-on-modal button{
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: black;
+  color: white;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: .25s;
+}
+#try-on-modal button:hover{
+  background:#333;
+}
+#progress-container{
+  color: black; 
+  text-align: center;
+}
+#progress{
+  width: 0%;
+  height: 100%;
+  background-color: black;
+  transition: 3s all;
+  color: black;
+  text-align: center;
+}
+
+
+@media(max-width: 500px){
+  #head{  
+    height: 30%;
+  }
+  #banner img{
+    object-fit: cover;
+    scale: 1.05;
+  }
+  .type_clothing{
+    top: 5%;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    width: 80%;
+    gap: 10px;
+  }
+  .type_clothing div{
+    height: 80%;
+  }
+}
+
+
+
+#search-container{
+  position: relative;
+  margin: auto;
+  display: grid;
+  place-items: center;
+  margin-top: 10%;
+}
+#search{
+  position: relative;
+  width: 30%;
+  height: 100%;
+}
+#progress-container span.animation::after{
+  animation: loadingText 3s infinite;
+  content: "Loading model";
+}
+@keyframes loadingText {
+  0%{
+    content: "Loading model";
+  }30%{
+    content: "Loading model."
+  }60%{
+    content: "Loading model..";
+  }100%{
+    content: "Loading model...";
+  }
+}
+</style>
   </head>
   <body>
     <!--HEADER-->
+    
     <section id="head">
       <section id="menu">
         <div id="text-menu">
@@ -580,8 +803,15 @@ $product = $conn
             <span>Accesorires</span>
             <span>About</span>
           </div>
-        </div>
+        </div>  
+        <input type="checkbox" id="menu-toggle" hidden>
         <div id="utility-menu">
+          <label class="hamburger" for="menu-toggle">
+                    <svg viewBox="0 0 32 32">
+                        <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
+                        <path class="line" d="M7 16 27 16"></path>
+                    </svg>
+          </label>
           <svg class="icon" viewBox="0 0 640 512" aria-hidden="true" onclick="window.location.href='cart.php'">
             <path
               fill="currentColor"
@@ -589,27 +819,78 @@ $product = $conn
             />
           </svg>
           <?php if(isset($_SESSION['username'])): ?>
-                <p><?=$_SESSION['username']?></p>
+                <p onclick="window.location.href='user.php'"><?=$_SESSION['username']?></p>
                 <?php if(!empty($_SESSION['img'])): ?>
-                    <div id="user-account">
+                    <div id="user-account" onclick="window.location.href='user.php'">
                         <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
                     </div>
                 <?php endif; ?>
             <?php else: ?>
                 <div id="login-btn">
-                    <form action="../Database/createdatabase.php" method="post" style="width: 100%; height: 100%;">
+                    <form action="../Pages/log.php" method="post" style="width: 100%; height: 100%;">
                         <input type="submit" value="Login" style="width: 100%; height: 100%; background-color: transparent; border: none; color: white;">
                     </form>
-                
                 </div>
             <?php endif; ?>
         </div>
       </section>
+<div id="fast-menu">
+    <div class="menu-item">
+        <div class="menu-title">TRINITY</div>
+            <div class="submenu">
+                <div class="submenu-item">T-shirt
+                  <div class="sub-sub search-item">Basic T-shirt</div>
+                  <div class="sub-sub search-item">Oversized T-shirt</div>
+            </div>
+            <div class="submenu-item">Polo shirt
+                  <div class="sub-sub search-item">Basic Polo</div>
+                  <div class="sub-sub search-item">Logo Polo</div>
+            </div>
+            <div class="submenu-item">Hoodie
+                  <div class="sub-sub search-item">Basic Hoodie</div>
+                  <div class="sub-sub search-item">Logo Hoodie</div>
+            </div>
+        </div>
+    </div>
+    <div class="menu-item">
+        <div class="menu-title">TRINITY LADIES</div>
+        <div class="submenu">
+            <div class="submenu-item">T-shirt
+                  <div class="sub-sub search-item">Basic T-shirt</div>
+                  <div class="sub-sub search-item">Oversized T-shirt</div>
+                  <div class="sub-sub search-item">Cropped T-shirt</div>
+            </div>
+            <div class="submenu-item">Blouse
+                  <div class="sub-sub search-item">Classic Blouse</div>
+                  <div class="sub-sub search-item">Lace Blouse</div>
+            </div>
+            <div class="submenu-item">Crop top
+                  <div class="sub-sub search-item">Basic Crop Top</div>
+                  <div class="sub-sub search-item">Ribbed Crop Top</div>
+            </div>
+        </div>
+    </div>
+    <div class="menu-item">
+        <div class="menu-title">GIFT VOUNCHER</div>
+        <div class="submenu">
+            <div>Check voucher</div>
+        </div>
+    </div>
+    <div class="menu-item">
+        <div class="menu-title">TRINITY TIER</div>
+        <div class="submenu">
+            <div>Check your shopping tier</div>
+        </div>
+    </div>
+    <div class="menu-item">
+        <div class="menu-title">ABOUT</div>
+    </div>
+</div>
       <section id="banner">
         <img src="..\Pictures\Banners\banner_product.png" alt="" />
       </section>
     </section>
-    <section class="type_clothing">
+<section class="type_clothing">
         <div onclick="scrollinto()" class="men">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <!--!Font Awesome Free v7.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
@@ -659,6 +940,11 @@ $product = $conn
           </p>
         </div>
     </section>
+    <div id="search-container">
+      <h1>Search By Name</h1>
+      <input type="text" id="search">
+    </div>
+    
     <!--BODY-->
 
     <section id="body"> 
@@ -682,11 +968,11 @@ $product = $conn
             <div class="box">
                 <div class="product-cart">
                   <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="username">
                     <input type="hidden" name="product_id" value="<?=$p['id']?>">
                     <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
                     <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
-                    <button type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
+                      <button class="add-cart-btn-big" type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
                       <svg class="icon" viewBox="0 0 640 512">
                         <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
                       </svg>
@@ -694,7 +980,6 @@ $product = $conn
                   </form>
                 </div>
               </div>
-            <div class="product-try"></div>
           </div>
             <?php endforeach; ?>
           <?php endif; ?>
@@ -707,6 +992,7 @@ $product = $conn
             Nothing in this field
           <?php else: ?>
             <?php foreach($product as $p): ?>
+              <?php if($p['product_type'] == "men"): ?>
           <div class="men-fashion-product"  data-id="<?= $p['id'] ?>"
                                             data-name="<?= htmlspecialchars($p['product_name']) ?>"
                                             data-price="<?= htmlspecialchars($p['product_price']) ?>"
@@ -718,11 +1004,11 @@ $product = $conn
             <div class="box">
                 <div class="product-cart">
                   <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="username">
                     <input type="hidden" name="product_id" value="<?=$p['id']?>">
                     <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
                     <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
-                    <button type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
+                      <button class="add-cart-btn-big" type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
                       <svg class="icon" viewBox="0 0 640 512">
                         <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
                       </svg>
@@ -732,17 +1018,19 @@ $product = $conn
               </div>
             <div class="product-try"></div>
           </div>
-            <?php endforeach; ?>
+          <?php endif; ?>
+            <?php endforeach; ?>  
           <?php endif; ?>
         </section>
         <p class="introduct">
-        <span>&ndash;&ndash;&ndash;Woman Fashion&ndash;&ndash;&ndash;</span>
+        <span>&ndash;&ndash;&ndash;Ladies Fashion&ndash;&ndash;&ndash;</span>
       </p>
         <section class="unisex-fashion">
           <?php if(empty($product)): ?>
             Nothing in this field
           <?php else: ?>
             <?php foreach($product as $p): ?>
+              <?php if($p['product_type'] == "women"): ?>
           <div class="men-fashion-product" data-id="<?= $p['id'] ?>"
                                            data-name="<?= htmlspecialchars($p['product_name']) ?>"
                                            data-price="<?= htmlspecialchars($p['product_price']) ?>"
@@ -754,11 +1042,11 @@ $product = $conn
             <div class="box">
                 <div class="product-cart">
                   <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="username">
                     <input type="hidden" name="product_id" value="<?=$p['id']?>">
                     <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
                     <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
-                    <button type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
+                      <button class="add-cart-btn-big" type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
                       <svg class="icon" viewBox="0 0 640 512">
                         <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
                       </svg>
@@ -767,6 +1055,7 @@ $product = $conn
                 </div>
               </div>
           </div>
+          <?php endif; ?>
             <?php endforeach; ?>
           <?php endif; ?>
         </section>
@@ -779,6 +1068,7 @@ $product = $conn
             Nothing in this field
           <?php else: ?>
             <?php foreach($product as $p): ?>
+              <?php if($p['product_type'] == "men"): ?>
           <div class="men-fashion-product"  data-id="<?= $p['id'] ?>"
                                             data-name="<?= htmlspecialchars($p['product_name'])?>"
                                             data-price="<?= htmlspecialchars($p['product_price'])?>"
@@ -790,11 +1080,11 @@ $product = $conn
               <div class="box">
                 <div class="product-cart">
                   <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="username">
                     <input type="hidden" name="product_id" value="<?=$p['id']?>">
                     <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
                     <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
-                    <button type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
+                    <button class="add-cart-btn-big" type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
                       <svg class="icon" viewBox="0 0 640 512">
                         <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
                       </svg>
@@ -803,6 +1093,7 @@ $product = $conn
                 </div>
               </div>
           </div>
+          <?php endif; ?>
             <?php endforeach; ?>
           <?php endif; ?>
         </section>
@@ -842,19 +1133,20 @@ $product = $conn
         </div>
       </div>
           <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+                    <input type="hidden" name="username">
                     <input type="hidden" name="product_id" value="<?=$p['id']?>" id="modal-product-id">
                     <input type="hidden" name="product_name" value="<?=$p['product_name']?>" id="modal-product-name">
                     <input type="hidden" name="product_type" value="<?=$p['product_type']?>" id="modal-product-type">
-                    <button class="modal-add" type="submit">ADD TO CART</button>
+                    <button class="modal-add add-cart-btn-big" type="submit">ADD TO CART</button>
             </form>
-      <div id="modal-detail">Details</div>
+      <div id="modal-detail" onclick="window.location.href='detail.php?id=<?=$p['id']?>'">Details</div>
     </div>
   </div>
 </div>
 <div id="try-on-modal">
   <h1>VIRTUAL TRY ON AI</h1>
-  <form action="http://127.0.0.1:5000/api/generate" method="POST" enctype="multipart/form-data">
+  <form id="tryon-form" action="http://127.0.0.1:5000/api/generate" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
     <input type="file" id="try-on-input" name="person" hidden>
     <input type="hidden" name="cloth" id="cloth">
     <label for="try-on-input">Choose your file</label>
@@ -866,8 +1158,13 @@ $product = $conn
     </h3>
     <button type="submit">Generate</button>
   </form>
+  <div id="progress-container" style="display: none; width: 100%; height: 10%; border: 1px solid black;">
+    <span></span>
+    <div id="progress"></div>
+  </div>
 </div>
 <script>
+const isLogin = <?= isset($_SESSION['username']) ? 'true' : 'false' ?>;
 const products = document.querySelectorAll(".men-fashion-product");
 const modal = document.getElementById("product-modal");
 const modalImg = document.getElementById("modal-img");
@@ -880,17 +1177,51 @@ const modalProductType = document.getElementById("modal-product-type");
 const try_on = document.getElementById("Try-on-form");
 const try_on_modal = document.getElementById("try-on-modal");
 const try_on_input = document.getElementById("cloth");
+const search = document.getElementById("search");
+const items = document.querySelectorAll(".men-fashion-product");
+const addCart = document.querySelectorAll(".add-cart-btn-big");
+
+addCart.forEach(btn =>{
+  btn.addEventListener('click', function(e){
+    if(!isLogin){
+      const goLogin = confirm("Please login first!");
+      if(!goLogin){
+        e.preventDefault();
+        return;
+    }
+    }
+  });
+});
+
+search.addEventListener('input', ()=>{
+  const keyword = search.value.toLowerCase();
+    items.forEach(item =>{
+      const search = item.textContent.toLowerCase();
+        if(search.includes(keyword)){
+          item.style.display = "";
+        }else{
+          item.style.display = "none";
+        }
+    });
+});
+
+
+document.querySelectorAll(".search-item").forEach(item =>{
+  item.addEventListener("click", function (){
+    let keyword = this.innerText.trim();
+    let search = document.getElementById("search");
+    search.value = keyword;
+    search.dispatchEvent(new Event("input"));
+    search.scrollIntoView({ behavior: "smooth" });
+  });
+});
 
 
 
- 
-
-//PRODUCT INFO
+//PRODUCT POP-UP
 products.forEach(product => {
   product.addEventListener("click", function(e){
-
     if(e.target.closest(".box")) return;
-
     modalImg.src = this.dataset.img;
     modalName.textContent = this.dataset.name;
     modalPrice.textContent = this.dataset.price + "$";
@@ -898,9 +1229,7 @@ products.forEach(product => {
     modal.style.display = "flex";
   });
 });
-
 closeBtn.onclick = () => modal.style.display = "none";
-
 window.onclick = (e) =>{
   if(e.target === modal){
     modal.style.display = "none";
@@ -909,15 +1238,14 @@ window.onclick = (e) =>{
 
 
 
-//POP-UP PRODUCT
+//PRODUCT INFO - (LOGIN CHECK)
 const detailBtn = document.getElementById("modal-detail");
 let currentProductId = null;
 
+if(isLogin){
 products.forEach(product => {
   product.addEventListener("click", function(e){
-
     if(e.target.closest(".box")) return;
-
     modalImg.src = this.dataset.img;
     modalName.textContent = this.dataset.name;
     modalPrice.textContent = this.dataset.price + "$";
@@ -928,8 +1256,7 @@ products.forEach(product => {
     modal.style.display = "flex";
   });
 });
-
-
+}
 detailBtn.onclick = function(){
   if(currentProductId){
     window.location.href = "detail.php?id=" + currentProductId;
@@ -939,10 +1266,29 @@ detailBtn.onclick = function(){
 
 
 
-//TRY ON AI
-try_on.addEventListener('click', ()=>{
-  try_on_modal.classList.toggle("show");
+//TRY ON AI - MODAL CONTROL (LOGIN CHECK)
+try_on.addEventListener('click', (e)=>{
+  if(!isLogin){
+      const goLogin = confirm("Please login first!");
+      if(goLogin)
+        window.location.href="log.php";
+      else if(!goLogin){
+        e.preventDefault();
+        return;
+    }
+}else if(isLogin){
+    try_on_modal.classList.toggle("show");
+}
 });
+document.addEventListener('click', (e) =>{
+  if(!try_on_modal.contains(e.target)){
+    if(try_on_modal.classList.contains("show") && !try_on.contains(e.target)){
+      console.log("a");
+      try_on_modal.classList.remove("show");
+    }
+  }
+});
+
 
 
 
@@ -957,6 +1303,65 @@ window.addEventListener("load", function (){
         history.replaceState(null, null, window.location.pathname);
     }
 });
+
+
+
+
+//FAST MENU 
+const menuTitles = document.querySelectorAll(".menu-title");
+  menuTitles.forEach(title =>{
+    title.addEventListener("click", ()=>{
+      const parent = title.parentElement;
+      parent.classList.toggle("active");
+  });
+        });
+const submenuItems = document.querySelectorAll(".submenu-item");
+  submenuItems.forEach(item =>{
+      item.addEventListener("click",(e)=>{
+          e.stopPropagation();
+          item.classList.toggle("active");
+      });
+  });
+const menu = document.getElementById("menu-toggle");
+  menu.addEventListener('click', ()=>{
+      document.getElementById("fast-menu").classList.toggle("open");
+  });
+
+
+
+
+//SUBMIT BY JS (BLOCK SUBMIT HTML FOR OTHER USE)
+const form = document.querySelector("#tryon-form");
+form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    document.getElementById("progress-container").style.display = "flex";
+    const formData = new FormData(this);
+    const res = await fetch("http://127.0.0.1:5000/api/generate", {
+        method: "POST",
+        body: formData
+    });
+    const data = await res.json(e);
+    if(data.status === "success"){
+      const goUser = confirm("Redirect to user page for result?");
+      if(goUser){
+        window.location.href = data.redirect;
+      }
+    }
+});
+
+
+//PROGRESS BAR
+const username = <?php echo json_encode($username); ?>;
+setInterval(async ()=>{
+   const res = await fetch(`http://localhost:5000/api/progress/${username}`)
+   const data = await res.json()
+   if(data.progress < 2){
+    document.querySelector("#progress-container span").classList.add("animation");
+   }else if(data.progress > 2){
+    document.getElementById("progress").style.width = `${data.progress + data.progress/5}%`;
+    document.querySelector("#progress-container span").classList.remove("animation");
+   }
+},10000);
 </script>
   </body>
 </html>

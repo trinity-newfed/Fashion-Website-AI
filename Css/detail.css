@@ -1,0 +1,47 @@
+.product-container{
+    display:flex;
+    gap:40px;
+    padding:40px;
+}
+
+.product-left{
+    width:50%;
+}
+
+.main-img{
+    width:100%;
+}
+
+.thumb-list{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+.thumb-list img{
+    width:80px;
+    cursor:pointer;
+}
+
+.product-right{
+    width:50%;
+}
+
+.price{
+    font-size:28px;
+    color:red;
+    margin:10px 0;
+}
+
+.size button{
+    margin-right:10px;
+    padding:8px 14px;
+}
+
+.add-cart{
+    margin-top:20px;
+    padding:12px 30px;
+    background:black;
+    color:white;
+    border:none;
+}
