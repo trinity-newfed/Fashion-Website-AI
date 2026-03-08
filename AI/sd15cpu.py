@@ -94,11 +94,27 @@ def generate_mask(image: Image.Image):
 
     mask = np.zeros_like(pred, dtype=np.uint8)
 
-    mask[pred == 4] = 255
+    mask[(pred == 4) | (pred == 7)] = 255
 
-    mask = cv2.GaussianBlur(mask, (3, 3), 0)
+    kernel = np.ones((8,8),np.uint8)
+    mask = cv2.dilate(mask,kernel,iterations=1)
+
+    mask = cv2.GaussianBlur(mask,(3,3),0)
 
     return Image.fromarray(mask)
+
+def resize_keep_ratio(img, size=768):
+    w, h = img.size
+    scale = size / max(w, h)
+    new_w = int(w * scale)
+    new_h = int(h * scale)
+
+    img = img.resize((new_w, new_h), Image.LANCZOS)
+
+    canvas = Image.new("RGB", (size, size), (0,0,0))
+    canvas.paste(img, ((size-new_w)//2, (size-new_h)//2))
+
+    return canvas
 
 #API FLASK
 @app.route("/api/generate", methods=["POST"])
@@ -115,11 +131,11 @@ def api_generate():
 
     progress_dict[username] = 0
 
-    person = Image.open(person_file).convert("RGB").resize((600, 600), Image.LANCZOS)
-    cloth = Image.open(cloth_path).convert("RGB").resize((600, 600), Image.LANCZOS)
+    person = resize_keep_ratio(Image.open(person_file).convert("RGB"),768)
+    cloth = resize_keep_ratio(Image.open(cloth_path).convert("RGB"),768)
 
     mask = generate_mask(person)
-    mask = mask.resize((600, 600), Image.NEAREST)
+    mask = mask.resize((768, 768), Image.NEAREST)
 
     person_np = np.array(person)
     mask_np = np.array(mask)
@@ -135,21 +151,21 @@ def api_generate():
     generator = torch.Generator(device).manual_seed(seed)
 
     def progress_callback(step, timestep, latents):
-        percent = int((step / 50) * 100)
+        percent = int(((step+1) / 50) * 100)
         progress_dict[username] = percent
 
 
     result = pipe(
         prompt="A photo of the same person wearing the exact clothing from the reference image, natural lighting, detailed fabric, high quality",
-        negative_prompt="blurry, distorted body, extra arms, bad anatomy, low quality, redesign, change face",
+        negative_prompt="blurry, distorted body, extra arms, bad anatomy, low quality, redesign, change face, change color",
         image=person,
         mask_image=mask,
         control_image=canny_image,
         ip_adapter_image=cloth,
         num_inference_steps=50,
-        strength=0.8,
+        strength=0.65,
         generator=generator,
-        guidance_scale=9,
+        guidance_scale=6.5,
         callback=progress_callback,
         callback_steps=1
     )
