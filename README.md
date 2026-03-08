@@ -1,3 +1,10 @@
+#PINELINE#
+SAM (SEGMENTATION)
+MASK
+CONTROLNET
+IP ADAPTER
+STABLE DIFFUSION 1.5 INPAINTING
+
 #REQUIRE#
 first time download (>5.4G)
 python ver 3.10.x
@@ -15,3 +22,5 @@ sd15\Scripts\Activate.ps1
 pip install -r requirements.txt (can't install torch + cpu)
 pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu (install this instead)
 
+#DATABASE
+pip install mysql-connector-python flask-cors
