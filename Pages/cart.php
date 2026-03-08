@@ -10,7 +10,7 @@ session_start();
 //VOUNCHER FETCH
 if(isset($_SESSION['username'])) {
     $username = $_SESSION['username'];
-    $stmt = $conn->prepare("SELECT * FROM vouncher WHERE username = ?");
+    $stmt = $conn->prepare("SELECT * FROM voucher WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $vouncher = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -22,22 +22,32 @@ if(isset($_SESSION['username'])) {
 
 //CART FETCH
 if(isset($_SESSION['username'])) {
-    $username = $_SESSION['username'];
 
-    $stmt = $conn->prepare("SELECT cart.id AS cart_id, 
-                                   cart.quantity, 
-                                   product_id AS product_id, 
-                                   product_name, product_price, 
-                                   product_img 
-    FROM cart
-    INNER JOIN products 
-        ON cart.product_id = products.id
-    WHERE cart.username = ?
+$username = $_SESSION['username'];
+
+$stmt = $conn->prepare("
+SELECT 
+    cart.id AS cart_id,
+    cart.product_id,
+    products.product_name,
+    products.product_price,
+    products.product_color,
+    products.product_category,
+    products.product_img,
+    cart.cart_size,
+    cart.quantity
+FROM cart
+JOIN products 
+    ON cart.product_id = products.id
+WHERE cart.username = ?
 ");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
 
-    $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+
+
 } else {
     $data = [];
 }
@@ -96,10 +106,10 @@ if(isset($_SESSION['username'])) {
                 <?php foreach($data as $d): ?>
                 <div class="items">
                     <input type="checkbox" class="item-checkbox">
-                    <div id="items-image-container"><img src="../picture-uploads/<?=$d['product_img']?>" alt=""></div>
+                    <div id="items-image-container"><img src="../<?=$d['product_img']?>" alt=""></div>
                     <div id="items-info-container">
                         <span style="font-weight: bolder;"></span>
-                        <span style="color: rgba(0, 0, 0, 0.5); font-weight: 400;">Black / <?=$d['product_size']?></span>
+                        <span style="color: rgba(0, 0, 0, 0.5); font-weight: 400;"><?=$d['product_color']?> / <?=$d['cart_size']?></span>
                         <form action="../Database/delete_item_cart.php" method="POST">
                             <label for="remove-input" id="label-for-remove-input">Remove</label>
                             <input type="text" name="id" value="<?=$d['cart_id']?>" hidden>

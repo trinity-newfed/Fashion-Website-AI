@@ -18,29 +18,30 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 $product_id = $_POST['product_id'];
-$product_type = $_POST['product_type'];
+$cart_size = $_POST['cart_size'];
 $quantity = 1;
 
-$sql = "SELECT * FROM cart WHERE username = ? AND product_id = ?";
+$sql = "SELECT * FROM cart WHERE username = ? AND product_id = ? AND cart_size = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("si", $username, $product_id);
+$stmt->bind_param("sis", $username, $product_id, $cart_size);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if($result->num_rows > 0){
     $sql = "UPDATE cart 
             SET quantity = quantity + 1 
-            WHERE username = ? AND product_id = ?";
+            WHERE username = ? AND product_id = ? AND cart_size = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("si", $username, $product_id);
+    $stmt->bind_param("sis", $username, $product_id, $cart_size);
     $stmt->execute();
 }else{
-    $sql = "INSERT INTO cart (username, product_id, quantity)
-            VALUES (?, ?, ?)";
+    $sql = "INSERT INTO cart (username, product_id, cart_size, quantity)
+            VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sii", $username, $product_id, $quantity);
+    $stmt->bind_param("sisi", $username, $product_id, $cart_size, $quantity);
     $stmt->execute();
 }
-header("Location: ../Pages/products.php");
+
+header("Location: " . $_SERVER['HTTP_REFERER']);
 exit();
 ?>
