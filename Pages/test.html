@@ -6,210 +6,150 @@
     <title>Document</title>
 </head>
 <style>
-    /*START MENU*/
-#menu{
-    width: 100vw;
-    max-width: 1500px;
-    margin-top: clamp(0.25rem, 1vw, 1rem);
-    height: clamp(0.25rem, 2.5vw, 3rem);;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 5000;
+#progress-container{
+    width: 319px;
+    height: 35px;
 }
-#text-menu{
-    width: 70%;
-    height: 100%;
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    position: relative;
-    left: 0;
+#progress-container span{
+  align-self: center;
 }
-#logo{
-    position: relative;
-    left: 0;
-    width: 10%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: rgb(255, 255, 255);
-    font-size: clamp(.25rem, 3vw, 2.5rem);
-    cursor: default;
+#progress-container span.animation::after{
+  animation: loadingText 3s infinite;
+  content: "Loading model";
 }
-#text{
-    width: 60%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bolder;
+#animate{
+  margin-left: 10%;
+  width: 90%; 
+  display: flex; 
+  justify-content: end; 
+  right: 0; 
+  position: relative; 
+  align-items: center;
 }
-#text span{
-    color: orange;
-    font-size: clamp(0.35rem, 1.25vw, 1rem);
-}
-#text span:hover{
+#animate span{
+    opacity: 0;
     transition: .3s all;
-    cursor: pointer;
-    background-color: rgb(0, 0, 0);
-    color: white;
 }
-
-
-#utility-menu{
-    width: 20%;
-    height: 100%;
+#animate.animated span{
+    animation: spanAnimate 1s forwards;
+    animation-delay: 8s;
+}
+#cursor{
+  position: absolute;
+  transform: translate(400%, 500%);
+  fill: black;
+}
+#animate.animated #cursor{
+  animation: cursorAnimate 5s forwards;
+}
+#animate.animated #dresser{
+    animation: dresserAnimate 1s forwards;
+    animation-delay: 2.7s;
+}
+#cloth{
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    font-size: clamp(0.45rem, 1.25vw, 1rem);
-}
-.icon{
-    width: clamp(.35rem, 1.25vw, 2.5rem);
-    height: clamp(.35rem, 1.25vw, 2.5rem);
-}
-.icon path{
-    scale: 1;
-}
-#login-btn{
-    width: 30%;
-    height: 80%;
-    background-color: orangered;
-    border-radius: 2px;
-    text-align: center;
-    color: white;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bolder;
-    cursor: pointer;
-}
-#login-btn:hover{
-    background-color: rgb(183, 49, 0);
-}
-#user-account{
-    width: clamp(.25rem, 3vw, 2.5rem);
-    height: clamp(.25rem, 3vw, 2.5rem);
-    z-index: 2;
-    background-color: #111;
-    border-radius: 50%;
-}
-#user-avatar{
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center 30%;
-}
-/*Menu Button*/
-.hamburger{
-  cursor: pointer;
-}
-#menu-toggle:checked ~ #fast-menu{
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(0);
-}
-.hamburger input{
-  display: none;
-}
-.hamburger svg{
-  height: 2em;
-  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.line{
-  fill: none;
-  stroke: rgb(0, 0, 0);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 3;
-  transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
-              stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.line-top-bottom{
-  stroke-dasharray: 12 63;
-}
-#menu-toggle:checked + #utility-menu .hamburger svg{
-  transform: rotate(-45deg);
-}
-
-#menu-toggle:checked + #utility-menu .line-top-bottom{
-  stroke-dasharray: 20 300;
-  stroke-dashoffset: -32.42;
-}
-
-/*Menu Button*/
-/*FAST MENU*/
-#fast-menu{
-    background: linear-gradient(180deg,#111 0%,#0a0a0a 50%,#0000005d 100%);
-    color: #fff;
-    position: fixed;
-    width: 260px;
-    top: 110%;
-    right: 1%;
-    transform: translate(200%, -50%);
-    padding: 30px 40px;
-    display: grid;
-    gap: 30px;
-    box-sizing: border-box;
     visibility: hidden;
     opacity: 0;
-    border-radius: 12px 0 0 12px;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-    transition: .4s ease;
+    scale: 0.8;
+    position: absolute;
+    fill: rgb(0, 0, 0);
 }
-.menu-item:hover .menu-title{
-    color: orangered;
-    text-decoration: underline;
+#animate.animated #cloth{
+    animation: clothAnimate 4s forwards;
+    animation-delay: 4s;
 }
-.menu-item:hover .submenu{
-    color: white;
-    text-decoration: none;
+#person{
+    position: relative;
+    right: 20%;
 }
-.menu-title{
-    padding: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    border-bottom: 1px solid #ddd;
+#animate.animated #person{
+    animation: personAnimate 3.05s forwards;
+    animation-delay: 5.9s;
 }
-.sub-sub{
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    padding-left: 15px;
-    transition: .3s ease;
+@keyframes cursorAnimate {
+  0%{
+    position: absolute;
+    transform: translate(400%, 500%);
+  }50%{
+    position: absolute;
+    transform: translate(0%, 50%);
+  }50.1%{
+    scale: 1;
+    position: absolute;
+    transform: translate(0%, 50%);
+  }51%{
+    scale: 1.1;
+    position: absolute;
+    transform: translate(0%, 50%);
+  }52%{
+    scale: 1;
+    position: absolute;
+    transform: translate(0%, 50%);
+  }
+  100%{
+    scale: 1;
+    position: absolute;
+    transform: translate(0%, 50%);
+  }
 }
-.submenu-item.active .sub-sub{
-    max-height: 100px;
-    opacity: 1;
+@keyframes dresserAnimate {
+    0%{
+        scale: 1.1;
+    }100%{
+        scale: 1;
+    }
 }
-.submenu{
-    max-height: 0;
-    overflow: hidden;
-    transition: .35s ease;
+@keyframes clothAnimate {
+    0%{
+        visibility: visible;
+        opacity: 1;
+    }50%{
+        visibility: visible;
+        opacity: 1;
+        transform: translateX(-425%);
+    }100%{
+        visibility: visible;
+        opacity: 1;
+        transform: translateX(-550%);
+    }
 }
-
-.menu-item.active .submenu{
-    max-height: 300px;
+@keyframes personAnimate {
+    0%{
+        fill: rgb(0, 0, 0);
+    }80%,100%{
+        transform: translateX(-100%);
+    }
 }
-/*FAST MENU*/
-/*END MENU*/
-      /*End section head - menu */
+@keyframes spanAnimate {
+    0%{
+        opacity: 0;
+    }100%{
+        opacity: 1;
+    }
+}
+@keyframes loadingText {
+  0%{
+    content: "Loading model";
+  }30%{
+    content: "Loading model."
+  }60%{
+    content: "Loading model..";
+  }100%{
+    content: "Loading model...";
+  }
+}
 </style>
 <body>
-    <label class="hamburger" for="menu-toggle">
-                    <svg viewBox="0 0 32 32">
-                        <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
-                        <path class="line" d="M7 16 27 16"></path>
-                    </svg>
-            </label>
+    <div id="progress-container" style="display: flex; border: 1px solid black;">
+    <span></span>
+    <div id="animate" class="animated">
+        <span>Trinity</span>
+      <svg id="person" xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 384 512"><path d="M248 24a56 56 0 1 0 -112 0 56 56 0 1 0 112 0zm24 212.7l46.3 62.4c10.5 14.2 30.6 17.2 44.8 6.6s17.2-30.6 6.6-44.8l-70.5-95C274 132 234.3 112 192 112s-82 20-107.2 53.9l-70.5 95c-10.5 14.2-7.6 34.2 6.6 44.8s34.2 7.6 44.8-6.6L112 236.7 112 512c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160c0-8.8 7.2-16 16-16s16 7.2 16 16l0 160c0 17.7 14.3 32 32 32s32-14.3 32-32l0-275.3z"/></svg>
+      <svg id="cloth" xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 640 512"><path d="M320.2 112c44.2 0 80-35.8 80-80l53.5 0c17 0 33.3 6.7 45.3 18.7L617.6 169.4c12.5 12.5 12.5 32.8 0 45.3l-50.7 50.7c-12.5 12.5-32.8 12.5-45.3 0l-41.4-41.4 0 224c0 35.3-28.7 64-64 64l-192 0c-35.3 0-64-28.7-64-64l0-224-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0L22.9 214.6c-12.5-12.5-12.5-32.8 0-45.3L141.5 50.7c12-12 28.3-18.7 45.3-18.7l53.5 0c0 44.2 35.8 80 80 80z"/></svg>
+    <svg id="dresser" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M160-120v-640q0-33 23.5-56.5T240-840h480q33 0 56.5 23.5T800-760v640h-80v-80H240v80h-80Zm80-400h200v-240H240v240Zm280-160h200v-80H520v80Zm0 160h200v-80H520v80ZM400-320h160v-80H400v80ZM240-440v160h480v-160H240Zm0 0v160-160Z"/></svg>
+    <svg id="cursor" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m320-410 79-110h170L320-716v306ZM551-80 406-392 240-160v-720l560 440H516l144 309-109 51ZM399-520Z"/></svg>
+    </div>
+    <div id="progress"></div>
+  </div>
 </body>
 </html>
