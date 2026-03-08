@@ -22,8 +22,9 @@ $product = $conn
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
+      rel="stylesheet" 
     />
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
       html,
       body {
@@ -347,10 +348,11 @@ $product = $conn
         gap: 20px;
         place-items: center;
         margin: 0;
+        overflow: auto;
       }
       .men-fashion-product {
         width: clamp(5rem, 31vw, 19rem);
-        height: 500px;
+        height: clamp(5rem, 33vw, 28rem);
         border: 1px solid black;
         border-radius: 5%;
         background-color: white;
@@ -366,7 +368,7 @@ $product = $conn
       }
       .product-image {
         width: 100%;
-        height: 300px;
+        height: clamp(5rem, 22vw, 20rem);
         background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
@@ -380,7 +382,7 @@ $product = $conn
         font-weight: bolder;
         font-size: 17px;
         position: relative;
-        margin: 10px 10px;
+        left: 2%;
         line-height: 1.6;
         user-select: none;
         display: flex;
@@ -393,12 +395,15 @@ $product = $conn
         color: #999;
         margin-bottom: 10px;
         font-family: "Montserrat", serif;
+        position: relative;
+        left: 2%;
       }
       .product-name {
         font-family: "Montserrat", serif;
         font-weight: bold;
         font-size: 20px;
         position: relative;
+        left: 2%;
       }
       .product-details {
         position: relative;
@@ -475,7 +480,7 @@ $product = $conn
       }
       .woman-fashion {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         place-items: center;
         margin: 0;
         gap: 20px;
@@ -483,7 +488,7 @@ $product = $conn
       }
       .unisex-fashion {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         place-items: center;
         margin: 0;
         gap: 20px;
@@ -491,7 +496,7 @@ $product = $conn
       }
       .accessory-fashion {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         place-items: center;
         margin: 0;
         gap: 20px;
@@ -605,7 +610,7 @@ $product = $conn
   margin-bottom: 40px;
 }
 
-.sizes span {
+.sizes label {
   width: 40px;
   height: 40px;
   border: 1px solid black;
@@ -615,8 +620,8 @@ $product = $conn
   transition: 0.3s;
 }
 
-.sizes span:hover,
-.sizes span.active {
+.sizes label:hover,
+.sizes label.active {
   background: black;
   color: white;
 }
@@ -772,9 +777,123 @@ $product = $conn
   width: 30%;
   height: 100%;
 }
+#progress-container span{
+  align-self: center;
+}
 #progress-container span.animation::after{
   animation: loadingText 3s infinite;
   content: "Loading model";
+}
+#animate{
+  margin-left: 10%;
+  width: 90%; 
+  display: flex; 
+  justify-content: end; 
+  right: 0; 
+  position: relative; 
+  align-items: center;
+}
+#animate span{
+    opacity: 0;
+    transition: .3s all;
+    font-family: 'Dancing Script', cursive;
+}
+#animate.animated span{
+    animation: spanAnimate 1s forwards;
+    animation-delay: 8s;
+}
+#cursor{
+  position: absolute;
+  transform: translate(400%, 500%);
+  fill: black;
+}
+#animate.animated #cursor{
+  animation: cursorAnimate 5s forwards;
+}
+#animate.animated #dresser{
+    animation: dresserAnimate 1s forwards;
+    animation-delay: 2.7s;
+}
+#cloth{
+    display: flex;
+    visibility: hidden;
+    opacity: 0;
+    scale: 0.8;
+    position: absolute;
+    fill: rgb(0, 0, 0);
+}
+#animate.animated #cloth{
+    animation: clothAnimate 4s forwards;
+    animation-delay: 4s;
+}
+#person{
+    position: relative;
+    right: 20%;
+}
+#animate.animated #person{
+    animation: personAnimate 3.05s forwards;
+    animation-delay: 5.9s;
+}
+@keyframes cursorAnimate {
+  0%{
+    position: absolute;
+    transform: translate(400%, 500%);
+  }50%{
+    position: absolute;
+    transform: translate(0%, 50%);
+  }50.1%{
+    scale: 1;
+    position: absolute;
+    transform: translate(0%, 50%);
+  }51%{
+    scale: 1.1;
+    position: absolute;
+    transform: translate(0%, 50%);
+  }52%{
+    scale: 1;
+    position: absolute;
+    transform: translate(0%, 50%);
+  }
+  100%{
+    scale: 1;
+    position: absolute;
+    transform: translate(0%, 50%);
+  }
+}
+@keyframes dresserAnimate {
+    0%{
+        scale: 1.1;
+    }100%{
+        scale: 1;
+    }
+}
+@keyframes clothAnimate {
+    0%{
+        visibility: visible;
+        opacity: 1;
+    }50%{
+        visibility: visible;
+        opacity: 1;
+        transform: translateX(-510%);
+    }100%{
+        visibility: visible;
+        opacity: 1;
+        transform: translateX(-640%);
+    }
+}
+@keyframes personAnimate {
+    0%{
+        fill: rgb(0, 0, 0);
+    }80%,100%{
+        transform: translateX(-100%);
+    }
+}
+@keyframes spanAnimate {
+    0%{
+        opacity: 0;
+    }100%{
+        opacity: 1;
+    }
 }
 @keyframes loadingText {
   0%{
@@ -840,7 +959,7 @@ $product = $conn
             <div class="submenu">
                 <div class="submenu-item">T-shirt
                   <div class="sub-sub search-item">Basic T-shirt</div>
-                  <div class="sub-sub search-item">Oversized T-shirt</div>
+                  <div class="sub-sub search-item">Oversize T-shirt</div>
             </div>
             <div class="submenu-item">Polo shirt
                   <div class="sub-sub search-item">Basic Polo</div>
@@ -857,16 +976,15 @@ $product = $conn
         <div class="submenu">
             <div class="submenu-item">T-shirt
                   <div class="sub-sub search-item">Basic T-shirt</div>
-                  <div class="sub-sub search-item">Oversized T-shirt</div>
-                  <div class="sub-sub search-item">Cropped T-shirt</div>
+                  <div class="sub-sub search-item">Oversize T-shirt</div>
             </div>
             <div class="submenu-item">Blouse
                   <div class="sub-sub search-item">Classic Blouse</div>
-                  <div class="sub-sub search-item">Lace Blouse</div>
+                  <div class="sub-sub search-item">Wrap Blouse</div>
             </div>
             <div class="submenu-item">Crop top
                   <div class="sub-sub search-item">Basic Crop Top</div>
-                  <div class="sub-sub search-item">Ribbed Crop Top</div>
+                  <div class="sub-sub search-item">Tank Crop Top</div>
             </div>
         </div>
     </div>
@@ -957,30 +1075,17 @@ $product = $conn
             Nothing in this field
           <?php else: ?>
             <?php foreach($product as $p): ?>
+              <?php if($p['product_category'] == "collections"): ?>
           <div class="men-fashion-product"  data-id="<?= $p['id'] ?>"
                                             data-name="<?= htmlspecialchars($p['product_name']) ?>"
                                             data-price="<?= htmlspecialchars($p['product_price']) ?>"
-                                            data-img="../picture-uploads/<?= htmlspecialchars($p['product_img']) ?>">
-            <div class="product-image" style="background-image: url(../picture-uploads/<?=$p['product_img']?>);"></div>
+                                            data-img="../<?= htmlspecialchars($p['product_img']) ?>">
+            <div class="product-image" style="background-image: url(../<?=$p['product_img']?>);"></div>
             <div class="product-price"><?=$p['product_price']?>$</div>
             <div class="product-brand">TRINITY</div>
             <div class="product-name"><?=$p['product_name']?></div>
-            <div class="box">
-                <div class="product-cart">
-                  <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username">
-                    <input type="hidden" name="product_id" value="<?=$p['id']?>">
-                    <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
-                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
-                      <button class="add-cart-btn-big" type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
-                      <svg class="icon" viewBox="0 0 640 512">
-                        <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
-                      </svg>
-                    </button>
-                  </form>
-                </div>
-              </div>
           </div>
+          <?php endif; ?>
             <?php endforeach; ?>
           <?php endif; ?>
         </section>
@@ -992,31 +1097,15 @@ $product = $conn
             Nothing in this field
           <?php else: ?>
             <?php foreach($product as $p): ?>
-              <?php if($p['product_type'] == "men"): ?>
+              <?php if($p['product_category'] == "men"): ?>
           <div class="men-fashion-product"  data-id="<?= $p['id'] ?>"
                                             data-name="<?= htmlspecialchars($p['product_name']) ?>"
                                             data-price="<?= htmlspecialchars($p['product_price']) ?>"
-                                            data-img="../picture-uploads/<?= htmlspecialchars($p['product_img']) ?>">
-            <div class="product-image" style="background-image: url(../picture-uploads/<?=$p['product_img']?>);"></div>
+                                            data-img="../<?= htmlspecialchars($p['product_img']) ?>">
+            <div class="product-image" style="background-image: url(../<?=$p['product_img']?>);"></div>
             <div class="product-price"><?=$p['product_price']?>$</div>
             <p class="product-brand">TRINITY</p>
             <div class="product-name"><?=$p['product_name']?></div>
-            <div class="box">
-                <div class="product-cart">
-                  <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username">
-                    <input type="hidden" name="product_id" value="<?=$p['id']?>">
-                    <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
-                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
-                      <button class="add-cart-btn-big" type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
-                      <svg class="icon" viewBox="0 0 640 512">
-                        <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
-                      </svg>
-                    </button>
-                  </form>
-                </div>
-              </div>
-            <div class="product-try"></div>
           </div>
           <?php endif; ?>
             <?php endforeach; ?>  
@@ -1030,30 +1119,15 @@ $product = $conn
             Nothing in this field
           <?php else: ?>
             <?php foreach($product as $p): ?>
-              <?php if($p['product_type'] == "women"): ?>
+              <?php if($p['product_category'] == "women"): ?>
           <div class="men-fashion-product" data-id="<?= $p['id'] ?>"
                                            data-name="<?= htmlspecialchars($p['product_name']) ?>"
                                            data-price="<?= htmlspecialchars($p['product_price']) ?>"
-                                           data-img="../picture-uploads/<?= htmlspecialchars($p['product_img']) ?>">
-            <div class="product-image" style="background-image: url(../picture-uploads/<?=$p['product_img']?>);"></div>
+                                           data-img="../<?= htmlspecialchars($p['product_img']) ?>">
+            <div class="product-image" style="background-image: url(../<?=$p['product_img']?>);"></div>
             <div class="product-price"><?=$p['product_price']?>$</div>
             <div class="product-brand">Trinity</div>
             <div class="product-name"><?=$p['product_name']?></div>
-            <div class="box">
-                <div class="product-cart">
-                  <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username">
-                    <input type="hidden" name="product_id" value="<?=$p['id']?>">
-                    <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
-                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
-                      <button class="add-cart-btn-big" type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
-                      <svg class="icon" viewBox="0 0 640 512">
-                        <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
-                      </svg>
-                    </button>
-                  </form>
-                </div>
-              </div>
           </div>
           <?php endif; ?>
             <?php endforeach; ?>
@@ -1068,7 +1142,7 @@ $product = $conn
             Nothing in this field
           <?php else: ?>
             <?php foreach($product as $p): ?>
-              <?php if($p['product_type'] == "men"): ?>
+              <?php if($p['product_category'] == "accesories"): ?>
           <div class="men-fashion-product"  data-id="<?= $p['id'] ?>"
                                             data-name="<?= htmlspecialchars($p['product_name'])?>"
                                             data-price="<?= htmlspecialchars($p['product_price'])?>"
@@ -1077,21 +1151,7 @@ $product = $conn
             <div class="product-price"><?=$p['product_price']?>$</div>
             <div class="product-brand">Trinity</div>
             <div class="product-name"><?=$p['product_name']?></div>
-              <div class="box">
-                <div class="product-cart">
-                  <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; height: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username">
-                    <input type="hidden" name="product_id" value="<?=$p['id']?>">
-                    <input type="hidden" name="product_name" value="<?=$p['product_name']?>">
-                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>">
-                    <button class="add-cart-btn-big" type="submit" style="border: none; background-color: transparent; width: 100%; height: 100%;">
-                      <svg class="icon" viewBox="0 0 640 512">
-                        <path fill="white" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
-                      </svg>
-                    </button>
-                  </form>
-                </div>
-              </div>
+          </div>
           </div>
           <?php endif; ?>
             <?php endforeach; ?>
@@ -1125,18 +1185,22 @@ $product = $conn
       <p id="modal-price"></p>
       <div class="size-select">
         <p>Size</p>
-        <div class="sizes">
-          <span>S</span>
-          <span>M</span>
-          <span>L</span>
-          <span>XL</span>
+        <div class="sizes">      
+          <label for="S-size-<?=$p['id']?>">S</label>
+          <label for="M-size-<?=$p['id']?>">M</label>        
+          <label for="L-size-<?=$p['id']?>">L</label>        
+          <label for="XL-size-<?=$p['id']?>">XL</label>
         </div>
       </div>
           <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; display: grid; place-items: center;">     
-                    <input type="hidden" name="username">
                     <input type="hidden" name="product_id" value="<?=$p['id']?>" id="modal-product-id">
                     <input type="hidden" name="product_name" value="<?=$p['product_name']?>" id="modal-product-name">
-                    <input type="hidden" name="product_type" value="<?=$p['product_type']?>" id="modal-product-type">
+                    <input type="hidden" name="product_category" value="<?=$p['product_category']?>" id="modal-product-type">
+                    <input type="hidden" name="product_color" value="<?=$p['product_color']?>" id="modal-product-color">
+                    <input type="radio" name="cart_size" value="S" id="S-size-<?=$p['id']?>" hidden checked>
+                    <input type="radio" name="cart_size" value="M" id="M-size-<?=$p['id']?>" hidden>
+                    <input type="radio" name="cart_size" value="L" id="L-size-<?=$p['id']?>" hidden>
+                    <input type="radio" name="cart_size" value="XL" id="XL-size-<?=$p['id']?>" hidden>       
                     <button class="modal-add add-cart-btn-big" type="submit">ADD TO CART</button>
             </form>
       <div id="modal-detail" onclick="window.location.href='detail.php?id=<?=$p['id']?>'">Details</div>
@@ -1159,7 +1223,14 @@ $product = $conn
     <button type="submit">Generate</button>
   </form>
   <div id="progress-container" style="display: none; width: 100%; height: 10%; border: 1px solid black;">
-    <span></span>
+    <span style="position: absolute;"></span>
+    <div id="animate">
+        <span>Trinity</span>
+      <svg id="person" xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 384 512"><path d="M248 24a56 56 0 1 0 -112 0 56 56 0 1 0 112 0zm24 212.7l46.3 62.4c10.5 14.2 30.6 17.2 44.8 6.6s17.2-30.6 6.6-44.8l-70.5-95C274 132 234.3 112 192 112s-82 20-107.2 53.9l-70.5 95c-10.5 14.2-7.6 34.2 6.6 44.8s34.2 7.6 44.8-6.6L112 236.7 112 512c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160c0-8.8 7.2-16 16-16s16 7.2 16 16l0 160c0 17.7 14.3 32 32 32s32-14.3 32-32l0-275.3z"/></svg>
+      <svg id="cloth" xmlns="http://www.w3.org/2000/svg" height="24px" width="24px" viewBox="0 0 640 512"><path d="M320.2 112c44.2 0 80-35.8 80-80l53.5 0c17 0 33.3 6.7 45.3 18.7L617.6 169.4c12.5 12.5 12.5 32.8 0 45.3l-50.7 50.7c-12.5 12.5-32.8 12.5-45.3 0l-41.4-41.4 0 224c0 35.3-28.7 64-64 64l-192 0c-35.3 0-64-28.7-64-64l0-224-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0L22.9 214.6c-12.5-12.5-12.5-32.8 0-45.3L141.5 50.7c12-12 28.3-18.7 45.3-18.7l53.5 0c0 44.2 35.8 80 80 80z"/></svg>
+    <svg id="dresser" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="black"><path d="M160-120v-640q0-33 23.5-56.5T240-840h480q33 0 56.5 23.5T800-760v640h-80v-80H240v80h-80Zm80-400h200v-240H240v240Zm280-160h200v-80H520v80Zm0 160h200v-80H520v80ZM400-320h160v-80H400v80ZM240-440v160h480v-160H240Zm0 0v160-160Z"/></svg>
+    <svg id="cursor" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m320-410 79-110h170L320-716v306ZM551-80 406-392 240-160v-720l560 440H516l144 309-109 51ZM399-520Z"/></svg>
+    </div>
     <div id="progress"></div>
   </div>
 </div>
@@ -1174,12 +1245,26 @@ const closeBtn = document.querySelector(".close-modal");
 const modalProductId = document.getElementById("modal-product-id");
 const modalProductName = document.getElementById("modal-product-name");
 const modalProductType = document.getElementById("modal-product-type");
+const modalProductColor = document.getElementById("modal-product-color");
+const modalProductSize = document.getElementById("modal-product-size");
 const try_on = document.getElementById("Try-on-form");
 const try_on_modal = document.getElementById("try-on-modal");
 const try_on_input = document.getElementById("cloth");
 const search = document.getElementById("search");
 const items = document.querySelectorAll(".men-fashion-product");
 const addCart = document.querySelectorAll(".add-cart-btn-big");
+const sizeAdd = document.querySelectorAll(".sizes label");
+
+sizeAdd.forEach(label =>
+  label.addEventListener('click', ()=>{
+    sizeAdd.forEach(label =>{
+      label.style.color = "black";
+      label.style.background = "white";
+    })
+    label.style.color = "white";
+    label.style.background = "black";
+  })
+)
 
 addCart.forEach(btn =>{
   btn.addEventListener('click', function(e){
@@ -1251,7 +1336,8 @@ products.forEach(product => {
     modalPrice.textContent = this.dataset.price + "$";
     modalProductId.value = this.dataset.id;
     modalProductName.value = this.dataset.name;
-    modalProductType.value = "default";
+    modalProductType.value = this.dataset.type;
+    modalProductType.value = this.dataset.color;
     currentProductId = this.dataset.id;
     modal.style.display = "flex";
   });
@@ -1352,16 +1438,52 @@ form.addEventListener("submit", async function(e){
 
 //PROGRESS BAR
 const username = <?php echo json_encode($username); ?>;
-setInterval(async ()=>{
-   const res = await fetch(`http://localhost:5000/api/progress/${username}`)
-   const data = await res.json()
-   if(data.progress < 2){
-    document.querySelector("#progress-container span").classList.add("animation");
-   }else if(data.progress > 2){
-    document.getElementById("progress").style.width = `${data.progress + data.progress/5}%`;
-    document.querySelector("#progress-container span").classList.remove("animation");
-   }
-},10000);
+let abc = 0;
+let animationInterval = null;
+
+setInterval(async () => {
+  const res = await fetch(`http://localhost:5000/api/progress/${username}`);
+  const data = await res.json();
+
+  if (data.progress < 2) {
+
+    document.querySelector("#progress-container span")
+      .classList.add("animation");
+
+    if (!animationInterval) {
+      animationInterval = setInterval(() => {
+        abc++;
+        if (abc == 1) {
+          document.getElementById("animate").style.opacity = "1";
+          document.getElementById("animate").classList.add("animated");
+        } else if (abc > 12) {
+          document.getElementById("animate").style.opacity = "0";
+          document.getElementById("animate").classList.remove("animated");
+          abc = 0;
+        }
+      }, 1000);
+    }
+
+  } 
+  else if (data.progress > 2) {
+
+    document.getElementById("progress").style.width =
+      `${data.progress + data.progress / 4.75}%`;
+
+    document.querySelector("#progress-container span")
+      .classList.remove("animation");
+
+    document.getElementById("animate").classList.remove("animated");
+    document.getElementById("animate").style.display = "none";
+
+    if (animationInterval) {
+      clearInterval(animationInterval);
+      animationInterval = null;
+    }
+  }
+
+}, 10000);
+
 </script>
   </body>
 </html>

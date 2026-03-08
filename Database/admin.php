@@ -233,19 +233,19 @@ $vouncher = $conn
                 <div class="input-container" style="flex-direction: column;">
                     <div style="display: flex; justify-content: space-between; width: 150px;">
                         <label style="width: 10px;">Collections</label>
-                        <input type="radio" name="product_type" class="input-radio" value="collections"  checked>
+                        <input type="radio" name="product_category" class="input-radio" value="collections"  checked>
                     </div>
                     <div style="display: flex; justify-content: space-between; width: 150px;">
                         <label style="width: 10px;">Men</label>
-                        <input type="radio" name="product_type" class="input-radio" value="men">
+                        <input type="radio" name="product_category" class="input-radio" value="men">
                     </div>
                     <div style="display: flex; justify-content: space-between; width: 150px;">
                         <label style="width: 10px;">Women</label>
-                        <input type="radio" name="product_type" class="input-radio" value="women">
+                        <input type="radio" name="product_category" class="input-radio" value="women">
                     </div>
                     <div style="display: flex; justify-content: space-between; width: 150px;">
                         <label style="width: 10px;">Accesories</label>
-                        <input type="radio" name="product_type" class="input-radio" value="accesories">
+                        <input type="radio" name="product_category" class="input-radio" value="accesories">
                     </div>
                 </div>
                 <div class="input-container" style="display: grid;">
@@ -283,7 +283,7 @@ $vouncher = $conn
                             <?php if($p['product_is_delete'] == 1): ?>
                                 <div class="items" style="opacity: 0.7;">
                                     <span style="color: red; position: absolute; transform: rotateZ(40deg); font-size: 20px; z-index: 3;">Deleted</span>
-                                    <img src="../picture-uploads/<?=$p['product_img']?>" alt="">
+                                    <img src="../<?=$p['product_img']?>" alt="">
                                     <span><?=$p['product_name']?></span>
                                     <div style="width: 100%; display: flex; font-size: 13px; justify-content: space-around;">
                                         <form action="restore_item_admin.php" method="post">
@@ -299,7 +299,7 @@ $vouncher = $conn
                                 </div>
                             <?php else: ?>
                                 <div class="items" style="opacity: 1;">
-                                    <img src="../picture-uploads/<?=$p['product_img']?>" alt="">
+                                    <img src="../<?=$p['product_img']?>" alt="">
                                     <span><?=$p['product_name']?></span>
                                     <div style="width: 100%; display: flex; font-size: 13px; justify-content: space-around;">
                                         <form action="delete_item_admin.php" method="post">
@@ -354,6 +354,9 @@ $vouncher = $conn
                                                  height: 110%;">
                                 Add new product
                     </div>
+                    <form action="insert_database_admin.php" method="post">
+                        <input type="submit" value="add full database">
+                    </form>
                 </div>
                 <div id="s-user" style="display: none;" class="search-div">
                     <label id="total-users" style="text-align: center;"></label>

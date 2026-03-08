@@ -472,6 +472,10 @@ $stmt->close();
               <div class="line3">
                 <img src="../AI/static/outputs/user_<?=$_SESSION['username']?>/<?=$row['result_img']?>" alt="">
                 <?=$row['created_at']?>
+                <form action="../Database/detele_user_tryon.php" method="POST">
+                  <input type="text" name="id" value="<?=$row['id']?>" hidden>
+                  <button type="submit">Delete</button>
+                </form>
               </div>
             <?php endwhile; ?>
             </div>

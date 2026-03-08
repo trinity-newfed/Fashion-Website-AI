@@ -19,11 +19,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = $_POST['username'] ?? '';
     $userpassword = $_POST['user_password'] ?? '';
 
-    if ($username === "Admin" && $userpassword === "Operationer") {
-        $_SESSION['username'] = "Admin";
+    if ($username === "Tan1206" && $userpassword === "T@n77Dt"){
+        $_SESSION['username'] = "[Admin]: Tân";
         $_SESSION['role'] = "admin";
         header("Location: ../Database/admin.php");
         exit;
+    }else if($username === "Trung09" && $userpassword === "050509"){
+         $_SESSION['username'] = "[Admin]: Trung";
+        $_SESSION['role'] = "admin";
+        header("Location: ../Database/admin.php");
     }
 
     $stmt = $conn->prepare("SELECT * FROM userdata WHERE username = ?");
