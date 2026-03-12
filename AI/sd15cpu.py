@@ -66,7 +66,7 @@ pipe.load_ip_adapter(
     weight_name="ip-adapter-plus_sd15.bin"
 )
 
-pipe.set_ip_adapter_scale(1.3)
+pipe.set_ip_adapter_scale(1.0)
 
 print("Diffusion pipeline loaded")
 
@@ -94,12 +94,10 @@ def generate_mask(image: Image.Image):
 
     mask = np.zeros_like(pred, dtype=np.uint8)
 
-    mask[(pred == 4) | (pred == 7)] = 255
+    mask[pred == 4] = 255
 
     kernel = np.ones((8,8),np.uint8)
     mask = cv2.dilate(mask,kernel,iterations=1)
-
-    mask = cv2.GaussianBlur(mask,(3,3),0)
 
     return Image.fromarray(mask)
 
@@ -131,19 +129,25 @@ def api_generate():
 
     progress_dict[username] = 0
 
-    person = resize_keep_ratio(Image.open(person_file).convert("RGB"),768)
-    cloth = resize_keep_ratio(Image.open(cloth_path).convert("RGB"),768)
+    person = Image.open(person_file).convert("RGB").resize((768,1024), Image.LANCZOS)
+    cloth = Image.open(cloth_path).convert("RGB").resize((768,1024), Image.LANCZOS)
 
     mask = generate_mask(person)
-    mask = mask.resize((768, 768), Image.NEAREST)
+    mask = mask.resize((768,1024), Image.NEAREST)
 
     person_np = np.array(person)
+    cloth_np = np.array(cloth)
     mask_np = np.array(mask)
+
+    cloth_np = cv2.resize(cloth_np, (person_np.shape[1], person_np.shape[0]))
+    person_np[mask_np > 200] = cloth_np[mask_np > 200]
+
+    person = Image.fromarray(person_np)
 
     person_bg = person_np.copy()
     person_bg[mask_np > 128] = 0
 
-    edges = cv2.Canny(person_bg, 50, 150)
+    edges = cv2.Canny(person_np, 50, 150)
     edges = np.stack([edges] * 3, axis=-1)
     canny_image = Image.fromarray(edges)
 
@@ -151,21 +155,30 @@ def api_generate():
     generator = torch.Generator(device).manual_seed(seed)
 
     def progress_callback(step, timestep, latents):
-        percent = int(((step+1) / 50) * 100)
+        percent = int(((step+1) / 40) * 100)
         progress_dict[username] = percent
 
 
     result = pipe(
-        prompt="A photo of the same person wearing the exact clothing from the reference image, natural lighting, detailed fabric, high quality",
-        negative_prompt="blurry, distorted body, extra arms, bad anatomy, low quality, redesign, change face, change color",
+        prompt="""
+        A realistic photo of the same person wearing the clothing from the reference image,
+        natural lighting,
+        realistic fabric texture,
+        preserve original cloth color,
+        slightly soft shadows on white fabric,
+        realistic wrinkles and folds""",
+        negative_prompt="""
+        color change, faded colors,
+        blurry, distorted body, extra arms
+        """,
         image=person,
         mask_image=mask,
         control_image=canny_image,
         ip_adapter_image=cloth,
-        num_inference_steps=50,
+        num_inference_steps=40,
         strength=0.65,
         generator=generator,
-        guidance_scale=6.5,
+        guidance_scale=8,
         callback=progress_callback,
         callback_steps=1
     )
