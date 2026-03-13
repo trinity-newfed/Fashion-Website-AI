@@ -32,10 +32,11 @@
         height: 100%;
         border-bottom-right-radius: 20px;
         border-top-right-radius: 20px;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.6);
         backdrop-filter: blur(20px);
         border-right: 1px solid rgba(255, 255, 255, 0.3);
         z-index: 10;
+        box-shadow: 1px 1px 12px black;
       }
 
       .input-group {
@@ -165,12 +166,94 @@
         width: 15px;
         height: 15px;
       }
+      .change-to-log {
+        position: absolute;
+        display: flex;
+        width: 70px;
+        height: 30px;
+        background-color: rgb(255, 255, 255);
+        top: 10px;
+        right: 10px;
+        justify-content: center;
+        align-items: center;
+        font-size: 30px;
+        text-align: center;
+        color: black;
+        transition: 0.4s;
+        overflow: hidden;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+      .change-to-log-line::before {
+        content: "";
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background: #000;
+        left: 0;
+        color: white;
+        bottom: -100%;
+        transition: 0.4s;
+        z-index: 1;
+      }
+      .change-to-log:hover .change-to-log-line::before,
+      .change-to-log:focus .change-to-log-line::before {
+        bottom: 0;
+      }
+
+      .change-to-log:hover .btn-text,
+      .change-to-log:focus .btn-text {
+        color: #fff;
+      }
+      .change-to-log:hover .LoginArrow,
+      .change-to-log:focus  .LoginArrow{
+          z-index: 2;
+      }
+      .change-to-log:hover .change-to-log-line svg,
+      .change-to-log:focus  .change-to-log-line svg{
+          z-index: 2;
+      }
+      .LoginArrow {
+        width: 20px;
+        height: 20px;
+        margin-top: -15px;
+        position: absolute;
+        z-index: 1;
+      }
+      .change-to-log-line svg{
+        position: absolute;
+        z-index: 1;
+        text-align: center;
+        top: 6px;
+        left: 25px;
+        width: 20px;
+        height: 20px;
+      }
     </style>
   </head>
   <body>
     <div class="banner">
       <form action="register.php" method="POST" class="form-reg">
         <div class="info-box">
+          <div class="change-to-log">
+            <span style="position: absolute; z-index: 2" class="LoginArrow"
+              ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path
+                  fill="rgb(0, 0, 0)"
+                  d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"
+                />
+              </svg>
+              ></span
+            >
+            <div class="change-to-log-line">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path
+                  fill="rgb(255, 255, 255)"
+                  d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"
+                />
+              </svg>
+            </div>
+          </div>
           <div class="input-group">
             <input type="text" required />
             <label>Username</label>
@@ -225,6 +308,7 @@
           <button class="Create-Account">Create Account</button>
         </div>
       </form>
+
     </div>
   </body>
 </html>
