@@ -3,56 +3,86 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sign In / Log In</title>
+    <title>Trinity Style - Auth</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      html,
-      body {
-        width: 100vw;
-        height: 100vh;
+      body,
+      html {
         margin: 0;
         padding: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        overflow-x: hidden;
+        width: 100%;
+        height: 100%;
+        font-family: "Montserrat", sans-serif;
+        overflow: hidden;
       }
-      .banner img{
+
+      .banner {
+        position: relative;
         width: 100vw;
         height: 100vh;
-        position: absolute;
-        z-index: -1;
+        background: url("../Pictures/Banners/banner_yellow.png") no-repeat
+          center;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
+
       .info-box {
-        position: absolute;
-        left: 0;
+        position: relative;
+        width: 250px;
+        height: 100vh;
+        padding: 0 50px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
-        width: 300px;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.2);
-        backdrop-filter: blur(15px), saturate(150%);
         z-index: 10;
-        box-shadow: 1px 1px 12px rgb(255, 255, 255);
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .login-box {
+        background: rgba(0, 0, 0, 0.05);
+        border-left: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .brand-header {
+        margin-bottom: 40px;
+      }
+      .brand-header h2 {
+        font-weight: 600;
+        font-size: 28px;
+        margin: 0;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .brand-header p {
+        font-size: 13px;
+        color: #333;
+        margin-top: 5px;
       }
 
       .input-group {
         position: relative;
         margin-bottom: 30px;
+        width: 100%;
       }
-
       .input-group input {
-        font-size: 16px;
+        font-size: 15px;
         padding: 10px 0;
         display: block;
         width: 100%;
         border: none;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1.5px solid #000;
         background: transparent;
         outline: none;
       }
-
       .input-group label {
-        color: #000000;
+        color: #000;
         font-size: 14px;
         position: absolute;
         pointer-events: none;
@@ -60,252 +90,185 @@
         top: 10px;
         transition: 0.3s ease all;
       }
-
       .input-group input:focus ~ label,
       .input-group input:valid ~ label {
-        top: -15px;
-        font-size: 12px;
-        color: #000;
-        letter-spacing: 1px;
-      }
-
-      .input-group .bar {
-        position: relative;
-        display: block;
-        width: 100%;
-      }
-
-      .input-group .bar:before {
-        content: "";
-        height: 2px;
-        width: 0;
-        bottom: 0;
-        position: absolute;
-        background: #000;
-        transition: 0.4s ease all;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-
-      .input-group input:focus ~ .bar:before {
-        width: 100%;
-      }
-      .Create-Account {
-        background: transparent;
-        color: #000;
-        border: 1px solid #000;
-        padding: 15px 40px;
-        font-family: "Montserrat", sans-serif;
+        top: -18px;
         font-size: 12px;
         font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        cursor: pointer;
-        transition: all 0.4s ease;
-        position: relative;
-        overflow: hidden;
       }
 
-      .Create-Account:hover {
-        background: #000;
-        color: #fff;
+      .gender-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        display: block;
       }
       .gender-container {
-        background-color: transparent;
-        width: 150px;
-        height: 40px;
-        perspective: 1000px;
         display: flex;
-        flex-direction: row;
-        flex-shrink: 0;
         gap: 10px;
+        margin-bottom: 25px;
       }
       .gender-box {
         position: relative;
-        width: 100%;
-        height: 100%;
-        text-align: center;
-        transition: 0.8s;
-        transform-style: preserve-3d;
+        flex: 1;
+        height: 40px;
+        perspective: 1000px;
         cursor: pointer;
-      }
-      .gender-box:hover {
-        transform: rotateY(180deg);
       }
       .male-front,
       .male-back {
         position: absolute;
         width: 100%;
         height: 100%;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
         backface-visibility: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        transition: 0.6s;
+        border: 1px solid rgba(0, 0, 0, 0.1);
       }
       .male-front {
-        background-color: #fff;
-        color: black;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
+        background: #fff;
+        color: #000;
       }
       .male-back {
-        background-color: #007bff;
-        color: white;
         transform: rotateY(180deg);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 14px;
+        color: #fff;
+        font-weight: bold;
       }
-      .male-back svg {
-        width: 15px;
-        height: 15px;
+      .gender-box:hover .male-front {
+        transform: rotateY(180deg);
       }
-      .change-to-log {
-        position: absolute;
-        display: flex;
-        width: 70px;
-        height: 30px;
-        background-color: rgb(255, 255, 255);
-        top: 10px;
-        right: 10px;
-        justify-content: center;
-        align-items: center;
-        font-size: 30px;
-        text-align: center;
-        color: black;
-        transition: 0.4s;
-        overflow: hidden;
-        border-radius: 10px;
-        cursor: pointer;
-      }
-      .change-to-log-line::before {
-        content: "";
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        background: #000;
-        left: 0;
-        color: white;
-        bottom: -100%;
-        transition: 0.4s;
-        z-index: 1;
-      }
-      .change-to-log:hover .change-to-log-line::before,
-      .change-to-log:focus .change-to-log-line::before {
-        bottom: 0;
+      .gender-box:hover .male-back {
+        transform: rotateY(360deg);
       }
 
-      .change-to-log:hover .btn-text,
-      .change-to-log:focus .btn-text {
+      .btn-action {
+        background: #000;
         color: #fff;
+        border: 1px solid #000;
+        padding: 15px;
+        width: 100%;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 10px;
       }
-      .change-to-log:hover .LoginArrow,
-      .change-to-log:focus  .LoginArrow{
-          z-index: 2;
+      .btn-action:hover {
+        background: #b8860b;
+        border-color: #b8860b;
       }
-      .change-to-log:hover .change-to-log-line svg,
-      .change-to-log:focus  .change-to-log-line svg{
-          z-index: 2;
-      }
-      .LoginArrow {
-        width: 20px;
-        height: 20px;
-        margin-top: -15px;
-        position: absolute;
-        z-index: 1;
-      }
-      .change-to-log-line svg{
-        position: absolute;
-        z-index: 1;
+
+      .extra-link {
+        margin-top: 20px;
         text-align: center;
-        top: 6px;
-        left: 25px;
-        width: 20px;
-        height: 20px;
+        font-size: 12px;
+      }
+      .extra-link a {
+        color: #000;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      @media (max-width: 850px) {
+        .banner {
+          flex-direction: column;
+          overflow-y: auto;
+          justify-content: flex-start;
+        }
+        .info-box {
+          width: 100%;
+          height: auto;
+          padding: 50px 20px;
+        }
+      }
+      .login-link {
+        margin-top: 25px;
+        text-align: center;
+        font-size: 13px;
+      }
+
+      .login-link a {
+        color: #000;
+        font-weight: 600;
+        text-decoration: none;
+        border-bottom: 1px solid #000;
       }
     </style>
   </head>
   <body>
     <div class="banner">
-      <img src="../Pictures/Banners/banner-white.png">
-      <form action="register.php" method="POST" class="form-reg">
+      <form action="register.php" method="POST">
         <div class="info-box">
-          <div class="change-to-log">
-            <span style="position: absolute; z-index: 2" class="LoginArrow"
-              ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path
-                  fill="rgb(0, 0, 0)"
-                  d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"
-                />
-              </svg>
-              ></span
-            >
-            <div class="change-to-log-line">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path
-                  fill="rgb(255, 255, 255)"
-                  d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"
-                />
-              </svg>
-            </div>
+          <div class="brand-header">
+            <h2>Register</h2>
+            <p>Tạo tài khoản mới tại Trinity.</p>
           </div>
           <div class="input-group">
             <input type="text" required />
             <label>Username</label>
-            <span class="bar"></span>
           </div>
           <div class="input-group">
-            <input type="text" required />
+            <input type="password" required />
             <label>Password</label>
-            <span class="bar"></span>
           </div>
-          <div class="gender-group">
-            <div class="gender-container">
-              <div class="gender-box">
-                <div class="male-front">Male</div>
-                <div class="male-back">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                    <path
-                      d="M320 32c0-17.7 14.3-32 32-32L480 0c17.7 0 32 14.3 32 32l0 128c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-50.7-95 95c19.5 28.4 31 62.7 31 99.8 0 97.2-78.8 176-176 176S32 401.2 32 304 110.8 128 208 128c37 0 71.4 11.4 99.8 31l95-95-50.7 0c-17.7 0-32-14.3-32-32zM208 416a112 112 0 1 0 0-224 112 112 0 1 0 0 224z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div class="gender-box">
-                <div class="male-front">Female</div>
-                <div class="male-back" style="background-color: pink">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                    <path
-                      d="M80 176a112 112 0 1 1 224 0 112 112 0 1 1 -224 0zM223.9 349.1C305.9 334.1 368 262.3 368 176 368 78.8 289.2 0 192 0S16 78.8 16 176c0 86.3 62.1 158.1 144.1 173.1-.1 1-.1 1.9-.1 2.9l0 64-32 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l32 0 0 32c0 17.7 14.3 32 32 32s32-14.3 32-32l0-32 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-32 0 0-64c0-1 0-1.9-.1-2.9z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div class="gender-box">
-                <div class="male-front">Other</div>
-                <div class="male-back" style="background-color: black">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                    <path
-                      fill="rgb(255, 255, 255)"
-                      d="M117-4C106-17.8 85.8-20 72.1-9s-16 31.2-5 45C74.9 45.7 83.7 54.5 93.5 62.1 46.7 93.7 16 147.3 16 208 16 294.3 78.1 366.1 160 381.1l0 34.9-32 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l32 0 0 32c0 17.7 14.3 32 32 32s32-14.3 32-32l0-32 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-32 0 0-34.9c81.9-15 144-86.8 144-173.1 0-60.7-30.7-114.3-77.5-145.9 9.8-7.7 18.7-16.4 26.4-26.1 11.1-13.8 8.8-33.9-5-45S278-17.8 267-4c-17.6 22-44.7 36-75 36S134.7 18 117-4zm75 324c-61.9 0-112-50.1-112-112S130.1 96 192 96 304 146.1 304 208c0 61.8-50.1 112-111.9 112l-.1 0z"
-                    />
-                  </svg>
-                </div>
+          <span class="gender-label">Giới tính</span>
+          <div class="gender-container">
+            <div class="gender-box">
+              <div class="male-front">Male</div>
+              <div class="male-back" style="background-color: #333">Male</div>
+            </div>
+            <div class="gender-box">
+              <div class="male-front">Female</div>
+              <div class="male-back" style="background-color: #b8860b">
+                Female
               </div>
             </div>
+            <div class="gender-box">
+              <div class="male-front">Other</div>
+              <div class="male-back" style="background-color: #888">Other</div>
+            </div>
           </div>
-          <br />
           <div class="input-group">
             <input type="text" required />
             <label>Email or Phone</label>
-            <span class="bar"></span>
           </div>
-          <button class="Create-Account">Create Account</button>
+          <button type="submit" class="btn-action">Create Account</button>
+          <div class="login-link">
+            Đã có tài khoản? <a href="#">Đăng nhập</a>
+          </div>
         </div>
       </form>
 
+      <form action="login.php" method="POST">
+        <div class="info-box login-box">
+          <div class="brand-header">
+            <h2>Login</h2>
+            <p>Chào mừng bạn trở lại.</p>
+          </div>
+          <div class="input-group">
+            <input type="text" required />
+            <label>Username / Email</label>
+          </div>
+          <div class="input-group">
+            <input type="password" required />
+            <label>Password</label>
+          </div>
+          <button type="submit" class="btn-action">Sign In</button>
+          <div class="extra-link">
+            <a href="#">Quên mật khẩu?</a>
+            <div class="login-link">
+            Chưa có tài khoản? <a href="#">Đăng kí</a>
+          </div>
+          </div>
+        </div>
+      </form>
     </div>
   </body>
 </html>
