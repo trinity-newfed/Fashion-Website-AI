@@ -155,6 +155,14 @@ html,body{
     z-index: 10;
     border: none;
     background: transparent;
+    transition: .5s all;
+    transition-delay: .6s;
+}
+#next-btn.rotate{
+    transition: .5s all;
+    transition-delay: .6s;
+    transform: rotate(180deg);
+    fill: white;
 }
 .title{
   position: absolute;
@@ -211,16 +219,17 @@ html,body{
     height: 100%;
     transform: translateX(-100%);
     position: absolute;
+    border-right: 2px solid black;
     background: linear-gradient(
-        to right,
-        rgba(245,238,230,0.95) 60%,
-        rgba(245,238,230,0.85) 70%,
-        rgba(245,238,230,0.55) 85%,
-        rgba(245,238,230,0.25) 90%,
-        rgba(245, 238, 230, 0.114) 100%
+        to bottom,
+      rgba(255,255,255,0.1),
+      rgba(255,255,255,0.6),
+      rgba(255,255,255,0.1)
     );
-    border-right: 1px solid black;
-    box-shadow: 1px 1px 10px rgb(255, 255, 255);
+    box-shadow:
+        0 0 10px rgba(255,255,255,0.4),
+        0 0 20px rgba(255,255,255,0.2);
+    backdrop-filter: blur(5px);
 }
 #body-content-container.b-show::before{
     content: "";
@@ -229,46 +238,73 @@ html,body{
     height: 100%;
     transform: translateX(0);
     position: absolute;
+    border-right: 2px solid black;
     background: linear-gradient(
-        to right,
-        rgba(245,238,230,0.75) 60%,
-        rgba(245,238,230,0.65) 70%,
-        rgba(245,238,230,0.35) 85%,
-        rgba(245,238,230,0.05) 90%,
-        rgba(245, 238, 230, 0) 100%
+        to bottom,
+      rgba(255,255,255,0.1),
+      rgba(255,255,255,0.6),
+      rgba(255,255,255,0.1)
     );
-    border-right: 1px solid black;
-    box-shadow: 1px 1px 10px rgb(255, 255, 255);
+    box-shadow:
+        0 0 10px rgba(255,255,255,0.4),
+        0 0 20px rgba(255,255,255,0.2);
     transition: 1.5s all;
+    backdrop-filter: blur(5px);
 }
 #category{
     width: 100%;
+    max-width: 1300px;
     height: 220px;
+    position: relative;
+    margin: auto;
     display: flex;
     justify-content: center;
-    align-items: center;
+    gap: clamp(.5rem, 3vw, 3rem);
+    align-items: start;
+    padding-bottom: 100px;
 }
 #category div{
+    width: clamp(4rem, 40vw, 35rem);
+    height: clamp(10rem, 40vh, 40rem);
+    max-width: 500px;
+    max-height: 300px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    text-align: center;
-    font-size: clamp(.5rem, 1.5vw, 2rem);
     font-weight: 500;
     font-family: Arial, Helvetica, sans-serif;
+    border-radius: 4px;
+    transition: .3s all;
+}
+#category div label{
+    width: 100%;
+    height: 20%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 0;
+    font-size: clamp(.5rem, 1vw, 2rem);
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+#icon-5{
+    min-height: 80%;
 }
 #category img{
-    width: clamp(1rem, 23vw, 30rem);
-    height: clamp(1rem, 11vw, 30rem);
-    max-width: 290px;
-    max-height: 180px;
+    width: 100%;
+    height: 80%;
     transition: .1s all;
+    border-radius: 3px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
-#category img:hover{
-    filter: brightness(90%);
+#category div:hover{
+    filter: brightness(80%);
     scale: 1.1;
-    transition: .3s all;
+    transition: .4s all;
     cursor: pointer;
 }
 #newest-collection{
@@ -395,7 +431,7 @@ html,body{
     height: 80%;
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 30px;
     align-items: center;
 }
 #footer div div{
@@ -408,10 +444,10 @@ html,body{
     background: #fff;
     border-radius: 15px;
     box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
-    transition: .1s all;
+    transition: .3s all;
 }
 #footer div div:hover{
-    scale: 1.025;
+    scale: 1.03;
     transition: .3s all;
 }
 #footer div div img{
@@ -457,8 +493,57 @@ html,body{
 /*END FOOTER */
 
 
-
-
+#footer-2{
+    position: relative;
+    margin: auto;
+    bottom: 0;
+    width: 100%;
+    height: 100svh;
+    max-width: 1500px;
+    max-height: 1000px;
+    background: black;
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-rows: repeat(2, 200px);
+    color: white;
+    overflow: hidden;
+}
+.footer-info{
+    height: 30%;
+    display: grid;
+    place-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.footer-info h2{
+    text-align: center;
+    font-size: clamp(.7rem, 1.3vw, 2.3rem);
+}
+.footer-info span{
+    text-align: center;
+    font-size: clamp(.6rem, .9vw, 2rem);
+    color: gray;
+}
+.footer-info p{
+    font-size: clamp(.6rem, .9vw, 2rem);
+    color: gray;
+}
+.footer-info p:hover{
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+.footer-info input{
+    width: 80%;
+    font-size: clamp(.7rem, 1vw, 2rem);
+    color: gray;
+    border: 1px solid white;
+    background: transparent;
+}
+.footer-info input:hover{
+    color: gray;
+    border: 1px dashed white;
+    background: transparent;
+}
 
 
 
@@ -602,12 +687,18 @@ html,body{
     max-width: 1500px;
     max-height: 100px;
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
     align-items: center;
     font-weight: bold;
-    font-size: clamp(1rem, 2vw, 3rem);
+    font-size: clamp(1rem, 2vw, 2rem);
+    font-family: "Montserrat", serif;
     position: relative;
     margin: auto;
+}
+.territory p{
+    font-weight: normal;
+    font-size: clamp(1rem, 1vw, 1.6rem);
 }
 /*END SEPERATE*/
 

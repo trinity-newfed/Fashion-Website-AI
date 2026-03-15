@@ -441,9 +441,68 @@ html, body{
     margin: 0 auto;
     left: 0;
     border-radius: 10px;
-    background-color: orangered;
+    background-color: transparent;
+    color: rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
 }
 #order-btn:hover{
-    background-color: rgb(209, 56, 0);
+    background-color: white;
+    border: 1px solid rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
 }
 /*END BODY*/
+
+
+
+
+#footer-2{
+    position: relative;
+    margin: auto;
+    bottom: 0;
+    width: 100%;
+    height: 100svh;
+    max-width: 1500px;
+    max-height: 1000px;
+    background: black;
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-rows: repeat(2, 200px);
+    color: white;
+    overflow: hidden;
+}
+.footer-info{
+    height: 30%;
+    display: grid;
+    place-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.footer-info h2{
+    text-align: center;
+    font-size: clamp(.7rem, 1.3vw, 2.3rem);
+}
+.footer-info span{
+    text-align: center;
+    font-size: clamp(.6rem, .9vw, 2rem);
+    color: gray;
+}
+.footer-info p{
+    font-size: clamp(.6rem, .9vw, 2rem);
+    color: gray;
+}
+.footer-info p:hover{
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+}
+.footer-info input{
+    width: 80%;
+    font-size: clamp(.7rem, 1vw, 2rem);
+    color: gray;
+    border: 1px solid white;
+    background: transparent;
+}
+.footer-info input:hover{
+    color: gray;
+    border: 1px dashed white;
+    background: transparent;
+}

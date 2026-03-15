@@ -10,6 +10,8 @@ if($conn->connect_error){
     die("Lỗi kết nối".$conn->error);
 }
 
+session_start();
+
 $id = $_GET['id'] ?? 0;
 $id = intval($id);
 
@@ -42,6 +44,7 @@ if($ptmt->num_rows>0){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../Css/detail.css">
+    <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
     <?php foreach($data as $row): ?>
     <title>Trinity <?=$row['product_name']?></title>
     <?php endforeach; ?>
@@ -433,6 +436,43 @@ body{
         <div class="menu-title">ABOUT</div>
     </div>
 </div>
+</section>
+<section id="footer-2">
+            <div class="footer-info" id="fi-1">
+                <h2>POLICY</h2>
+                <p>Term of delivery</p>
+                <p>Term of return</p>
+                <p>Purchase policy</p>
+            </div>
+
+            <div class="footer-info" id="fi-2">
+                <h2>ABOUT US</h2>
+                <p>Trinity</p>
+                <p>Leadership Team</p>
+            </div>
+
+            <div class="footer-info" id="fi-3">
+                <h2>GET LATEST DEALS AND MORE</h2>
+                <span>Email: triple3tbusiness@gmail.com</span>
+                <span>Hotline: 0909.xxx.xxx</span>
+                <input placeholder="Contact us...">
+            </div>
+
+
+            <div class="footer-info" id="fi-4">
+                <h2>SUPPORT</h2>
+                <span>Direct chat</span>
+                <span>Hotline: 0808.xxx.xxx</span>
+                <div style="display: grid; place-items: center;">
+                    <h2>Follow up</h2>
+                    <input placeholder="Enter your email...">
+                </div>
+            </div>
+
+            <div class="footer-info" id="fi-5" style="position: absolute; bottom: 5%; width: 100%; height: 10%; border-top: 1px solid gray;">
+                <h1>CONTACT US</h1>
+            </div>
+</section>
 </body>
 <script>
     const items = document.querySelectorAll(".items");

@@ -5,13 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact Us</title>
 <link rel="stylesheet" href="../Css/contact.css">
+<link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
 </head>
 
 <body>
 
 <div class="container">
-
-<!-- LEFT SIDE -->
 <div class="left">
 
     <div class="logo">
@@ -34,45 +33,30 @@
     </div>
 
 </div>
-
-
-<!-- RIGHT SIDE -->
 <div class="right">
-
 <nav>
     <a>About</a>
     <a>Services</a>
     <button>Contact us</button>
 </nav>
-
 <h2>Contact us</h2>
-
 <form>
-
-<div class="row">
-<input type="text" placeholder="First name">
-<input type="text" placeholder="Last name">
-</div>
-
-<div class="row">
-<input type="email" placeholder="Enter your email">
-<input type="tel" placeholder="Enter your phone number">
-</div>
-
-<textarea placeholder="Enter your message"></textarea>
-
-<button class="submit">Submit →</button>
-
+    <div class="row">
+        <input type="text" placeholder="First name">
+        <input type="text" placeholder="Last name">
+    </div>
+    <div class="row">
+        <input type="email" placeholder="Enter your email">
+        <input type="tel" placeholder="Enter your phone number">
+    </div>
+    <textarea placeholder="Enter your message"></textarea>
+    <button class="submit">Submit →</button>
 </form>
-
 <div class="contact-email">
 EMAIL US <br>
-enquiries@glassmoon.co
+triple3tbusiness@gmail.com
 </div>
-
 </div>
-
 </div>
-
 </body>
 </html>
