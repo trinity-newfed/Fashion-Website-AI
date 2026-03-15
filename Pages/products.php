@@ -19,965 +19,14 @@ $product = $conn
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Products</title>
+    <link rel="stylesheet" href="../Css/products.css">
+    <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
     <link
       href="https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        box-sizing: border-box;
-        width: 100vw;
-        height: 100vh;
-        overflow-x: hidden;
-        scroll-behavior: smooth;
-        user-select: none;
-      }
-#menu{
-    width: 100%;
-    max-width: 1500px;
-    height: 70px;
-    position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 60px;
-    background:rgba(255,255,255,0.6);
-    backdrop-filter:blur(10px);
-    z-index: 10;
-}
-#text span{
-    position:relative;
-    cursor:pointer;
-}
-
-#text span::after{
-    content:"";
-    position:absolute;
-    left:0;
-    bottom:-4px;
-    width:0;
-    height:2px;
-    background:black;
-    transition:0.3s;
-}
-
-#text span:hover::after{
-    width:100%;
-}
-#text-menu{
-    width: 70%;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    left: 0;
-}
-#logo{
-    position: relative;
-    left: 2%;
-    width: 10%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-family: "Montserrat", serif;
-    color: rgb(0, 0, 0);
-    font-size: clamp(.25rem, 1.75vw, 2.5rem);
-    cursor: default;
-}
-#text{
-    width: 60%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bolder;
-}
-#text span{
-    font-size: clamp(0.35rem, 1.25vw, 1rem);
-}
-#text span:hover{
-    transition: .3s all;
-    cursor: pointer;
-    background-color: rgb(0, 0, 0);
-    color: white;
-}
-
-
-#utility-menu{
-    width: 20%;
-    height: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    font-size: clamp(0.45rem, 1.25vw, 1rem);
-}
-.icon{
-    width: clamp(.35rem, 1.25vw, 1.9rem);
-    height: clamp(.35rem, 1.25vw, 1.9rem);
-}
-.icon path{
-    scale: 1;
-}
-#login-btn{
-    width: 30%;
-    height: 80%;
-    background-color: orangered;
-    border-radius: 2px;
-    text-align: center;
-    color: white;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: bolder;
-    cursor: pointer;
-}
-#login-btn:hover{
-    background-color: rgb(183, 49, 0);
-}
-#user-account{
-    width: clamp(.25rem, 3vw, 2.5rem);
-    height: clamp(.25rem, 3vw, 2.5rem);
-    z-index: 2;
-    background-color: #111;
-    border-radius: 50%;
-}
-#user-avatar{
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    object-position: center 30%;
-}
-/*Menu Button*/
-.hamburger{
-  cursor: pointer;
-}
-#menu-toggle:checked ~ #fast-menu{
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(0);
-}
-.hamburger input{
-  display: none;
-}
-.hamburger svg{
-  height: 2em;
-  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.line{
-  fill: none;
-  stroke: rgb(0, 0, 0);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 3;
-  transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
-              stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.line-top-bottom{
-  stroke-dasharray: 12 63;
-}
-#menu-toggle:checked + #utility-menu .hamburger svg{
-  transform: rotate(-45deg);
-}
-
-#menu-toggle:checked + #utility-menu .line-top-bottom{
-  stroke-dasharray: 20 300;
-  stroke-dashoffset: -32.42;
-}
-
-/*Menu Button*/
-/*FAST MENU*/
-#fast-menu{
-    background: linear-gradient(180deg,#111 0%,#0a0a0a 50%,#0000005d 100%);
-    color: #fff;
-    position: fixed;
-    width: 260px;
-    top: 110%;
-    right: 1%;
-    transform: translate(200%, -50%);
-    padding: 30px 40px;
-    display: grid;
-    gap: 30px;
-    box-sizing: border-box;
-    visibility: hidden;
-    opacity: 0;
-    border-radius: 12px 0 0 12px;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-    transition: .4s ease;
-}
-.menu-item:hover .menu-title{
-    text-decoration: underline;
-}
-.menu-item:hover .submenu{
-    color: white;
-    text-decoration: none;
-}
-.menu-title{
-    padding: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    border-bottom: 1px solid #ddd;
-}
-.sub-sub{
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    padding-left: 15px;
-    transition: .3s ease;
-}
-.sub-sub:hover{
-    text-decoration: underline;
-}
-.submenu-item.active .sub-sub{
-    max-height: 100px;
-    opacity: 1;
-}
-.submenu{
-    max-height: 0;
-    overflow: hidden;
-    transition: .35s ease;
-}
-
-.menu-item.active .submenu{
-    max-height: 300px;
-}
-/*FAST MENU*/
-/*END MENU*/
-      .head {
-        position: relative;
-        inset: 0;
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-      }
-      .banner {
-        width: 100%;
-        max-width: 1500px;
-        max-height: 700px;
-        height: 100svh;
-        display: flex;
-        overflow: hidden;
-        position: relative;
-        margin: auto;
-        background-color: #fff;
-      }
-
-      .banner-left {
-        width: 40%;
-        height: 100%;
-        background-color: #f5f1e8;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 0 5%;
-        z-index: 2;
-        clip-path: polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%);
-      }
-
-      .banner-right {
-        width: 65%;
-        height: 100%;
-        position: absolute;
-        right: 0;
-        top: 0;
-        background-image: url("../Pictures/Banners/banner-products.png");
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-        z-index: 1;
-      }
-
-      .banner-content .sub-title {
-        font-size: 14px;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        color: #e1c140;
-        margin-bottom: 10px;
-        font-weight: 600;
-      }
-
-      .banner-content h1 {
-        font-size: 4rem;
-        font-family: "Playfair Display", serif;
-        line-height: 1.1;
-        margin: 0 0 20px 0;
-        color: #222;
-      }
-
-      .banner-content .description {
-        font-size: 16px;
-        color: #666;
-        max-width: 80%;
-        margin-bottom: 30px;
-        line-height: 1.6;
-      }
-
-      .btn-shop {
-        padding: 12px 35px;
-        background-color: #222;
-        color: #fff;
-        text-decoration: none;
-        text-transform: uppercase;
-        font-size: 13px;
-        letter-spacing: 1px;
-        transition: 0.3s;
-        scroll-behavior: smooth;
-        border: 2px solid #ffdeac;
-      }
-
-      .btn-shop:hover {
-        background-color: transparent;
-        color: #ffe79d;
-      }
-      .product-section {
-        padding: 80px 0;
-        background-color: #ffffff;
-        font-family: Arial, sans-serif;
-      }
-
-      .product-collection{
-        text-align: center;
-        margin-bottom: 50px;
-      }
-      .product-collection .product-container{
-        display: grid;
-        place-items: center;
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .product-header {
-        text-align: center;
-        margin-bottom: 50px;
-      }
-
-      .product-subtitle {
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        font-size: 12px;
-        color: #c5a059;
-        margin-bottom: 10px;
-      }
-
-      .product-title {
-        font-size: 32px;
-        font-weight: normal;
-        margin-bottom: 15px;
-        color: #111;
-      }
-
-      .line {
-        width: 40px;
-        height: 2px;
-        background-color: #111;
-        margin: 0 auto;
-      }
-
-      .product-container {
-        display: grid;
-        justify-content: center;
-        gap: 30px;
-        padding: 60px 20px;
-        font-family: Arial, sans-serif;
-        max-width: 1300px;
-        margin: 0 auto;
-        grid-template-columns: repeat(4, 1fr);
-      }
-      @media (max-width: 1200px) {
-        .product-container {
-          grid-template-columns: repeat(3, 1fr);
-        }
-      }
-
-      @media (max-width: 992px) {
-        .product-container {
-          grid-template-columns: repeat(2, 1fr);
-          gap: 20px;
-        }
-      }
-
-      @media (max-width: 576px) {
-        .product-container {
-          grid-template-columns: 1fr;
-          padding: 40px 15px;
-        }
-
-        .product-card {
-          max-width: 320px;
-        }
-      }
-      .product-card {
-        width: 280px;
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        overflow: hidden;
-        position: relative;
-        transition: 0.3s;
-      }
-
-      .product-card:hover {
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        transform: translateY(-10px);
-      }
-
-      .image-box {
-        width: 100%;
-        height: 350px;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .image-box img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: 0.5s;
-      }
-
-      .image-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.2);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        opacity: 0;
-        transition: 0.3s;
-      }
-
-      .product-card:hover .image-overlay {
-        opacity: 1;
-      }
-
-      .product-card:hover .image-box img {
-        transform: scale(1.1);
-      }
-
-      .details-btn {
-        padding: 10px 20px;
-        background: #000;
-        color: #fff;
-        border: none;
-        text-transform: uppercase;
-        font-size: 11px;
-        letter-spacing: 1px;
-        cursor: pointer;
-        transition: 0.4s;
-      }
-      .details-btn:hover {
-        background: #fff;
-        color: #000;
-        border: 1px solid black;
-      }
-      .info-box {
-        padding: 20px;
-        text-align: center;
-      }
-
-      .brand {
-        font-size: 10px;
-        color: #c5a059;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-      }
-
-      .title {
-        font-size: 18px;
-        margin: 10px 0;
-        font-weight: normal;
-        color: #1a1a1a;
-      }
-
-      .price-wrapper {
-        margin-bottom: 20px;
-      }
-
-      .new-price {
-        font-weight: bold;
-        font-size: 16px;
-      }
-
-      .old-price {
-        color: #888;
-        text-decoration: line-through;
-        margin-left: 10px;
-        font-size: 14px;
-      }
-
-      .add-to-cart-btn {
-        width: 100%;
-        padding: 12px;
-        background: #000;
-        color: #fff;
-        border: 1px solid #000;
-        text-transform: uppercase;
-        font-size: 11px;
-        letter-spacing: 1px;
-        cursor: pointer;
-        transition: 0.3s;
-      }
-
-      .add-to-cart-btn:hover {
-        background: #fff;
-        color: #000;
-      }
-
-      .wishlist-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: #fff;
-        border: none;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        cursor: pointer;
-        z-index: 10;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      .wishlist-btn:hover {
-        color: #e74c3c;
-      }
-      .details-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.3);
-        backdrop-filter: blur(8px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.4s;
-      }
-      .active {
-        opacity: 1;
-        visibility: visible;
-      }
-      .details {
-        width: 800px;
-        height: 500px;
-        background-color: #fff;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
-        transition: all 0.4s;
-      }
-#product-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 101;
-  backdrop-filter: blur(5px);
-}
-
-.modal-container {
-  width: 900px;
-  height: 550px;
-  background: white;
-  display: flex;
-  animation: luxuryFade 0.4s ease;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.4);
-}
-
-.modal-left {
-  width: 50%;
-  background: #f5f5f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-left img {
-  width: 80%;
-  height: 80%;
-  object-fit: contain;
-}
-#tooltip-explain{
-  position: absolute;
-  width: 150px;
-  height: 70px;
-  background-color: rgba(0, 0, 0, 0.65);
-  margin: -100px 25px;
-  visibility: hidden;
-  opacity: 0;
-  transition: .3s all;
-  color: white;
-  font-size: clamp(0.35rem, 0.7vw, 1rem); 
-  text-align: center;
-  font-family: "Montserrat", serif;
-}
-#Try-on-form:hover #tooltip-explain{
-  visibility: visible;
-  opacity: 1;
-  transition: .3s all;
-}
-.modal-right {
-  width: 50%;
-  padding: 60px 40px;
-  position: relative;
-  font-family: "Montserrat", serif;
-}
-
-.close-modal {
-  position: absolute;
-  top: 20px;
-  right: 25px;
-  font-size: 28px;
-  cursor: pointer;
-  transition: 0.3s;
-  transition: .1s all;
-}
-
-.close-modal:hover {
-  transition: .3s all;
-  transform: scale(1.3);
-}
-
-.modal-brand {
-  letter-spacing: 4px;
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 10px;
-}
-
-#modal-name {
-  font-size: 28px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-#modal-price {
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 40px;
-}
-
-.size-select p {
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.sizes {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 40px;
-}
-
-.sizes label {
-  width: 40px;
-  height: 40px;
-  border: 1px solid black;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.sizes label:hover,
-.sizes label.active {
-  background: black;
-  color: white;
-}
-
-.modal-add {
-  width: 100%;
-  height: 50px;
-  background: black;
-  color: white;
-  border: none;
-  letter-spacing: 2px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.modal-add:hover {
-  background: #333;
-}
-
-@keyframes luxuryFade {
-  from {opacity: 0; transform: translateY(40px);}
-  to {opacity: 1; transform: translateY(0);}
-}
-
-
-@keyframes fadeIn {
-  from {transform: scale(0.8); opacity: 0;}
-  to {transform: scale(1); opacity: 1;}
-}
-
-
-
-#try-on-modal{
-  width: 50%;
-  height: 70%;
-  max-width: 400px;
-  max-height: 700px;
-  z-index: 5001;
-  background-color: white;
-  position: fixed;
-  bottom: 15%;
-  left: 60%;
-  translate: -50%;
-  border: 1px solid black;
-  text-align: center;
-  display: flex; 
-  flex-direction: column;
-  justify-content: start;
-  align-items: center;
-  visibility: hidden;
-  opacity: 0;
-  transition: .3s all;
-  font-family: "Montserrat", serif;
-  z-index: 103;
-}
-#try-on-modal.show{
-  visibility: visible;
-  opacity: 1;
-  transition: .3s all;
-}
-#alertNotice{
-  width: 80vw;
-  max-width: 400px;
-  height: clamp(5rem, 22vh, 12rem);
-  background: white;
-  box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
-  position: fixed;
-  left: 50%;
-  transform: translate(-50%, -100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
-  opacity: 0;
-  visibility: hidden;
-  transition: .3s all;
-  z-index: 9999;
-}
-#alertNotice.tryon{
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, 20%);
-  transition: .3s all;
-}
-#alertNotice.tryon-close{
-  display: flex; 
-  justify-content: start;
-  max-width: 80px;
-  max-height: 40px;
-  opacity: 1;
-  visibility: visible;
-  left: 0;
-  transform: translate(0, 170%);
-  transition: .3s all;
-}
-#alertNotice.tryon-close *{
-  opacity: 0;
-}
-#closeAlertBtn{
-  position: absolute;
-  right: 0;
-  border: none;
-  background: transparent;
-  transition: .1s all;
-  font-size: clamp(1rem, 1.5vw, 2rem);
-  opacity: 0;
-  visibility: hidden;
-}
-#closeAlertBtn:hover{
-  scale: 1.1;
-  transition: .3s all;
-}
-#alertNotice.tryon #closeAlertBtn{
-  opacity: 1;
-  visibility: visible;
-}
-#alertNotice h4{
-  font-family: Arial, Helvetica, sans-serif;
-  font-weight: 600;
-  position: relative;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  font-size: clamp(.6rem, 1vw, 2.25rem);
-}
-#alertNotice span{
-  font-family: Arial, Helvetica, sans-serif;
-  position: relative;
-  text-align: center;
-  font-size: clamp(.5rem, 1vw, 2rem);
-}
-#alertNotice.alert{
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, 40%);
-  transition: .3s all;
-}
-#alert-div{
-  align-self: end;
-  position: absolute;
-  display: flex;
-  gap: 3px;
-  bottom: 5%;
-  margin-right: 20px;
-}
-#CANCEL-btn{
-  width: clamp(3rem, 6.3vw, 6rem);
-  height: clamp(1rem, 3.5vh, 3rem);
-  font-size: clamp(.5rem, .7vw, 2rem);
-  background: white;
-  color: black;
-}
-#CANCEL-btn:hover{
-  background: black;
-  color: white;
-}
-.alertBtn{
-  background: black;
-  color: white;
-  border: 1px solid black;
-  text-align: center;
-  display: flex; 
-  justify-content: center;
-  align-items: center;
-  width: clamp(1.5rem, 5.5vw, 5rem);
-  height: clamp(1rem, 3.5vh, 3rem);
-  font-size: clamp(.5rem, 1vw, 2rem);
-}
-.alertBtn:hover{
-  background: white;
-  color: black;
-  border: 1px solid black;
-  padding: 7px 15px;
-  cursor: pointer;
-  scale: 1.01;
-  transition: .4s all;
-}
-#try-on-modal{
-  width: 90%;
-  height: 50%;
-  max-width: 420px;
-  padding: 30px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 15px 50px rgba(0,0,0,0.25);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
-  font-family: "Montserrat", sans-serif;
-  text-align: center;
-  visibility: hidden;
-  opacity: 0;
-  transition: .35s;
-  z-index: 5001;
-}
-#try-on-modal.show{
-  visibility: visible;
-  opacity: 1;
-}
-#tryon-form h1{
-  font-size: 20px;
-  letter-spacing: 2px;
-}
-#tryon-form label{
-  width: 20%;
-  height: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 2px dashed #ccc;
-  position: absolute;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: clamp(.5rem, 1vw, 1rem);
-  color: #555;
-  transition: .25s;
-  text-align: center;
-  top: 30%;
-}
-#tryon-form label:hover{
-  border-color: black;
-  color: black;
-}
-#tryon-form button{
-  width: 30%;
-  height: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  position: absolute;
-  padding: 12px;
-  border: none;
-  background: black;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-weight: 600;
-  letter-spacing: 1px;
-  font-size: clamp(.5rem, 1vw, 1rem);
-  cursor: pointer;
-  transition: .25s;
-  z-index: 1;
-  top: 60%;
-}
-#tryon-form button:hover{
-  background:#333;
-}
-#progress-container{
-  display: none;
-  border: 1px solid black;
-  width: 80vw;
-  max-width: 350px;
-  height: clamp(1rem, 3vh, 2rem);
-  color: black; 
-  text-align: center;
-}
-#progress{
-  width: 0%;
-  height: 100%;
-  background-color: black;
-  transition: 3s all;
-  color: black;
-  text-align: center;
-}
-    </style>
   </head>
   <body>
     <div id="alertNotice">
@@ -1018,7 +67,7 @@ $product = $conn
         <div class="banner-right"></div>
       </div>
     </div>
-    <div class="body">
+<div class="body">
       <section class="product-section" id="product-section">
         <div class="product-collection">
           <p class="product-subtitle">Collection</p>
@@ -1049,7 +98,7 @@ $product = $conn
                 <h2 class="title"><?=$p['product_name']?></h2>
 
                 <div class="price-wrapper">
-                  <span class="new-price"><?=$p['product_price']?>$</span>
+                  <span class="new-price">$<?=$p['product_price']?></span>
                 </div>
               </div>
             </div>
@@ -1087,7 +136,7 @@ $product = $conn
                 <h2 class="title"><?=$p['product_name']?></h2>
 
                 <div class="price-wrapper">
-                  <span class="new-price"><?=$p['product_price']?>$</span>
+                  <span class="new-price">$<?=$p['product_price']?></span>
                 </div>
               </div>
             </div>
@@ -1096,7 +145,7 @@ $product = $conn
           </div>
         </div>
       </section>
-<div id="product-modal">
+  <div id="product-modal">
   <div class="modal-container">
     <div class="modal-left">
       <form action="" method="POST" style="align-self: end; left: 80%; position: relative;" id="Try-on-form">
@@ -1140,9 +189,9 @@ $product = $conn
       <div id="modal-detail">Details</div>
     </div>
   </div>
-</div>  
-    </div>
-    <section id="menu">
+  </div>  
+</div>
+<section id="menu">
         <div id="text-menu">
             <div id="logo" onclick="window.location.href='../Pages/'">TRINITY</div>
             <div id="text">
@@ -1229,6 +278,43 @@ $product = $conn
         <div class="menu-title">ABOUT</div>
     </div>
 </div>
+</section>
+<section id="footer-2">
+            <div class="footer-info" id="fi-1">
+                <h2>POLICY</h2>
+                <p>Term of delivery</p>
+                <p>Term of return</p>
+                <p>Purchase policy</p>
+            </div>
+
+            <div class="footer-info" id="fi-2">
+                <h2>ABOUT US</h2>
+                <p>Trinity</p>
+                <p>Leadership Team</p>
+            </div>
+
+            <div class="footer-info" id="fi-3">
+                <h2>GET LATEST DEALS AND MORE</h2>
+                <span>Email: triple3tbusiness@gmail.com</span>
+                <span>Hotline: 0909.xxx.xxx</span>
+                <input placeholder="Contact us...">
+            </div>
+
+
+            <div class="footer-info" id="fi-4">
+                <h2>SUPPORT</h2>
+                <span>Direct chat</span>
+                <span>Hotline: 0808.xxx.xxx</span>
+                <div style="display: grid; place-items: center;">
+                    <h2>Follow up</h2>
+                    <input placeholder="Enter your email...">
+                </div>
+            </div>
+
+            <div class="footer-info" id="fi-5" style="position: absolute; bottom: 5%; width: 100%; height: 10%; border-top: 1px solid gray;">
+                <h1>CONTACT US</h1>
+            </div>
+</section>
     <script>
       const isLogin = <?= isset($_SESSION['username']) ? 'true' : 'false' ?>;
       const products = document.querySelectorAll(".product-card");
@@ -1276,7 +362,7 @@ $product = $conn
             viewBtn.addEventListener('click', ()=>{
               modalImg.src = product.dataset.img;
               modalName.textContent = product.dataset.name;
-              modalPrice.textContent = product.dataset.price + "$";
+              modalPrice.textContent = "$" + product.dataset.price;
               modalProductId.value = product.dataset.id;
               modalProductName.value = product.dataset.name;
               modalProductType.value = "default";
@@ -1299,21 +385,21 @@ $product = $conn
             const pType = product.dataset.category;
             const pName = product.dataset.name;
             const show = pType === "collections" ||
-            (pType === fType && pName.includes(fName));
+            ((fType === "all" || pType === fType) && pName.includes(fName));
             product.style.display = show ? "" : "none";
           });
         });
       });
 
-      if(category){
-        filter.forEach(fil=>{
-      if(
-        fil.dataset.category === category &&
-        fil.dataset.name === name
-      ){
-        fil.click();
-      }
-      });
+      if(name){
+        title.textContent = name;
+        products.forEach(product =>{
+          const pType = product.dataset.category;
+          const pName = product.dataset.name;
+          const show =
+          pType === "collections" || ((category === "all" || pType === category) && pName.includes(name));
+          product.style.display = show ? "" : "none";
+        });
       }
 
 
