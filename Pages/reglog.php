@@ -8,6 +8,7 @@
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
     <style>
       body,
       html {
