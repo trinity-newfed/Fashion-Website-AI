@@ -45,9 +45,8 @@ $conn->query("CREATE TABLE IF NOT EXISTS cart(
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS userdata(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(40) UNIQUE NOT NULL,
-    img VARCHAR(255),
     email VARCHAR(40) UNIQUE NOT NULL,
+    img VARCHAR(255),
     user_password VARCHAR(255) NOT NULL,
     user_address VARCHAR(100),
     user_hotline VARCHAR(20),
