@@ -69,7 +69,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <section id="body">
+<section id="body">
         <div id="cart-header">SHOPPING CART</div>
         <div id="cart-item-container">
             <div id="item-list">
