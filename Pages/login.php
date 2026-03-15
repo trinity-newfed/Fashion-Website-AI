@@ -16,22 +16,23 @@ if ($conn->connect_error) {
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $username = $_POST['username'] ?? '';
+    $email = $_POST['username'] ?? '';
     $userpassword = $_POST['user_password'] ?? '';
 
-    if ($username === "Tan1206" && $userpassword === "T@n77Dt"){
+    if ($email === "Tan1206" && $userpassword === "T@n77Dt"){
         $_SESSION['username'] = "[Admin]: Tân";
         $_SESSION['role'] = "admin";
         header("Location: ../Database/admin.php");
         exit;
-    }else if($username === "Trung09" && $userpassword === "050509"){
+    }else if($email === "Trung09" && $userpassword === "050509"){
          $_SESSION['username'] = "[Admin]: Trung";
         $_SESSION['role'] = "admin";
         header("Location: ../Database/admin.php");
+        exit;
     }
 
-    $stmt = $conn->prepare("SELECT * FROM userdata WHERE username = ?");
-    $stmt->bind_param("s", $username);
+    $stmt = $conn->prepare("SELECT * FROM userdata WHERE email = ?");
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -43,9 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
         if (password_verify($userpassword, $hashedPassword)) {
-            $_SESSION['img'] = $row['img'];
-            $_SESSION['username'] = $row['username'];
-            $_SESSION['email'] = $row['email'];
+            $_SESSION['username'] = $row['email'];
             $_SESSION['role'] = 'user';
 
             header("Location: home.php");
@@ -56,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     echo "
     <script>
     alert('Wrong username or password!');
-    window.location.href='log.php';
+    window.location.href='reglog.php';
     </script>
     ";
 }

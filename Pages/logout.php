@@ -21,5 +21,5 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-header("Location: ../Pages/log.php");
+header("Location: ../Pages/reglog.php");
 exit;
