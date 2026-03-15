@@ -13,6 +13,7 @@ $product = $conn
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <link rel="stylesheet" href="../Css/home.css">
+    <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
     <link
       href="https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"/>
@@ -27,7 +28,7 @@ $product = $conn
         <img src="../Pictures/Banners/BannerImg-1.png">
         <div id="hero-text">
             <h1>NEW<br>COLLECTION</h1>
-            <p>Discover the latest trends now</p>
+            <p>Timeless essentials for the modern wardrobe</p>
             <button onclick="window.location.href='products.php'">Shop Now</button>
         </div>
     </div>
@@ -46,35 +47,38 @@ $product = $conn
     </div>  
     </div>
 
-    <button id="next-btn">Next</button>
+    <button id="next-btn">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+            <path d="M566.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L466.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l434.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"/>
+        </svg>
+    </button>
 </section>
     <div class="territory">
         <div class="line"></div>
-        <span>
-            Category
-        </span>
+        <span>CATEGORY</span>
+        <p>Discover pieces that define your style</p>
         <div class="line"></div>
     </div>
     <div id="category">
                 <div>
-                    <img src="../Pictures/Icon/T-shirt.png" id="icon-1" alt="">
-                    <label for="icon-1">T-shirt</label>
+                    <img onclick="window.location.href='products.php?category=all&name=T-shirt#product-header'" src="../Pictures/Icon/T-shirt.png" id="icon-1" alt="">
+                    <label for="icon-1" onclick="window.location.href='products.php?category=all&name=T-shirt#product-header'">T-SHIRT</label>
                 </div>
                 <div>
-                    <img src="../Pictures/Icon/Polo.png" id="icon-2" alt="">
-                    <label for="icon-2">Polo</label>
+                    <img onclick="window.location.href='products.php?category=all&name=Polo#product-header'" src="../Pictures/Icon/Polo.png" id="icon-2" alt="">
+                    <label onclick="window.location.href='products.php?category=all&name=Polo#product-header'" for="icon-2">POLO</label>
                 </div>
                 <div>
-                    <img src="../Pictures/Icon/Hoodie.png" id="icon-3" alt="">
-                    <label for="icon-3">Hoodie</label>
+                    <img onclick="window.location.href='products.php?category=all&name=Hoodie#product-header'" src="../Pictures/Icon/Hoodie.png" id="icon-3" alt="">
+                    <label onclick="window.location.href='products.php?category=all&name=Hoodie#product-header'" for="icon-3">HOODIE</label>
                 </div>
                 <div>
-                    <img src="../Pictures/Icon/Blouse.png" id="icon-4" alt="">
-                    <label for="icon-4">Blouse</label>
+                    <img onclick="window.location.href='products.php?category=all&name=Blouse#product-header'" src="../Pictures/Icon/Blouse.png" id="icon-4" alt="">
+                    <label onclick="window.location.href='products.php?category=all&name=Blouse#product-header'" for="icon-4">BLOUSE</label>
                 </div>
                 <div>
-                    <img src="../Pictures/Icon/CropTop.png" id="icon-5" alt="">
-                    <label for="icon-5">CropTop</label>
+                    <img onclick="window.location.href='products.php?category=all&name=Crop Top#product-header'" src="../Pictures/Icon/CropTop.png" id="icon-5" alt="">
+                    <label onclick="window.location.href='products.php?category=all&name=Crop Top#product-header'" for="icon-5">CROPTOP</label>
                 </div>
             </div>
     <section id="body">
@@ -106,7 +110,7 @@ $product = $conn
             <div>
                 <img src="../<?=$p['product_img']?>" alt="" id="f-img1">
                 <span><?=$p['product_name']?></span>
-                <p><?=$p['product_price']?>$</p>
+                <p>$<?=$p['product_price']?></p>
                 <button onclick="window.location.href='products.php#product-<?=$p['id']?>'">Try with AI</button>
             </div>
                 <?php endif; ?>
@@ -114,7 +118,7 @@ $product = $conn
             <div>
                 <img src="../<?=$p['product_img']?>" alt="" id="f-img2">
                 <span><?=$p['product_name']?></span>
-                <p><?=$p['product_price']?>$</p>
+                <p>$<?=$p['product_price']?></p>
                 <button onclick="window.location.href='products.php#product-<?=$p['id']?>'">View Product</button>
             </div>
                 <?php endif; ?>
@@ -122,7 +126,7 @@ $product = $conn
             <div>
                 <img src="../<?=$p['product_img']?>" alt="" id="f-img3">
                 <span><?=$p['product_name']?></span>
-                <p><?=$p['product_price']?>$</p>
+                <p>$<?=$p['product_price']?></p>
                 <button onclick="window.location.href='products.php#product-<?=$p['id']?>'">Try with AI</button>
             </div>
                 <?php endif; ?>
@@ -130,7 +134,7 @@ $product = $conn
             <div>
                 <img src="../<?=$p['product_img']?>" alt="" id="f-img4">
                 <span><?=$p['product_name']?></span>
-                <p><?=$p['product_price']?>$</p>
+                <p>$<?=$p['product_price']?></p>
                 <button onclick="window.location.href='products.php#product-<?=$p['id']?>'">View Product</button>
             </div>
                 <?php endif; ?>
@@ -159,7 +163,7 @@ $product = $conn
                 <path fill="currentColor" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
             </svg>
             <?php if(isset($_SESSION['username'])): ?>
-                <p onclick="window.location.href='user.php'"><?=$_SESSION['username']?></p>
+                <p onclick="window.location.href='user.php'">Hi, <?=$_SESSION['username']?></p>
                 <?php if(!empty($_SESSION['img'])): ?>
                     <div id="user-account" onclick="window.location.href='user.php'">
                         <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
@@ -224,20 +228,77 @@ $product = $conn
         <div class="menu-title">ABOUT</div>
     </div>
 </div>
+</section>
+<section id="footer-2">
+            <div class="footer-info" id="fi-1">
+                <h2>POLICY</h2>
+                <p>Term of delivery</p>
+                <p>Term of return</p>
+                <p>Purchase policy</p>
+            </div>
+
+            <div class="footer-info" id="fi-2">
+                <h2>ABOUT US</h2>
+                <p>Trinity</p>
+                <p>Leadership Team</p>
+            </div>
+
+            <div class="footer-info" id="fi-3">
+                <h2>GET LATEST DEALS AND MORE</h2>
+                <span>Email: triple3tbusiness@gmail.com</span>
+                <span>Hotline: 0909.xxx.xxx</span>
+                <input placeholder="Contact us...">
+            </div>
+
+
+            <div class="footer-info" id="fi-4">
+                <h2>SUPPORT</h2>
+                <span>Direct chat</span>
+                <span>Hotline: 0808.xxx.xxx</span>
+                <div style="display: grid; place-items: center;">
+                    <h2>Follow up</h2>
+                    <input placeholder="Enter your email...">
+                </div>
+            </div>
+
+            <div class="footer-info" id="fi-5" style="position: absolute; bottom: 5%; width: 100%; height: 10%; border-top: 1px solid gray;">
+                <h1>CONTACT US</h1>
+            </div>
+</section>
     <script>
         const head = document.getElementById("head");
         const body = document.getElementById("body");
         const footer = document.getElementById("footer");       
         const slider = document.getElementById("head-slider");
         const nextBtn = document.getElementById("next-btn");
-
         let index = 0;
+        let bannerInterval = setInterval(() => {
+            index++;
+            if(index > 1){
+                index = 0;
+            }
+            nextBtn.classList.toggle("rotate");
+            slider.style.transform = `translateX(-${index * 100}%)`;
+        }, 8000);
+
         nextBtn.addEventListener("click", () =>{
-        index++;
-        if(index > 1){
-        index = 0;
-        }
-        slider.style.transform = `translateX(-${index * 100}%)`;
+            clearInterval(bannerInterval);
+            index++;
+            if(index > 1){
+                index = 0;
+            }
+
+            bannerInterval = setInterval(() => {
+                index++;
+                if(index > 1){
+                    index = 0;
+                }
+                nextBtn.classList.toggle("rotate");
+                slider.style.transform = `translateX(-${index * 100}%)`;
+            }, 8000);
+
+            nextBtn.classList.toggle("rotate");
+            slider.style.transform = `translateX(-${index * 100}%)`;
         });
 
 
@@ -262,7 +323,7 @@ $product = $conn
                             document.getElementById("b-img3").classList.remove("b-show");
                         }
                     }
-                }, 3000);
+                }, 2000);
                 }
             });
         });
