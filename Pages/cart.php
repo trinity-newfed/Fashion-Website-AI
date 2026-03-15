@@ -186,14 +186,14 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 <path fill="currentColor" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
             </svg>
             <?php if(isset($_SESSION['username'])): ?>
-                <p onclick="window.location.href='user.php'"><?=$_SESSION['username']?></p>
+                <p onclick="window.location.href='user.php'" id="menu-Username"><?=$_SESSION['username']?></p>
                 <?php if(!empty($_SESSION['img'])): ?>
                     <div id="user-account" onclick="window.location.href='user.php'">
                         <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
                     </div>
                 <?php endif; ?>
             <?php else: ?>
-                    <input type="submit" value="Login" id="login-input" onclick="window.location.href='log.php'" hidden>
+                    <input type="submit" value="Login" id="login-input" onclick="window.location.href='reglog.php'" hidden>
                     <label for="login-input">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 448 512">
                             <path d="M144 128a80 80 0 1 1 160 0 80 80 0 1 1 -160 0zm208 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0zM48 480c0-70.7 57.3-128 128-128l96 0c70.7 0 128 57.3 128 128l0 8c0 13.3 10.7 24 24 24s24-10.7 24-24l0-8c0-97.2-78.8-176-176-176l-96 0C78.8 304 0 382.8 0 480l0 8c0 13.3 10.7 24 24 24s24-10.7 24-24l0-8z"/>
@@ -289,6 +289,9 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             </div>
 </section>
     <script>
+        let email = "abc@gmail.com";
+        let username1 = email.replace("@gmail.com", "");
+        document.getElementById("menu-Username").textContent = "Hi, " + username1;
         const items = document.querySelectorAll(".items");
         const finalTotal = document.getElementById("final-total");
 

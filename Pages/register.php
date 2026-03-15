@@ -12,15 +12,11 @@ if ($conn->connect_error) {
 session_start();     
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    $username = trim($_POST['username']);
-    $img      = trim($_SESSION['avatar_temp']);
     $email    = trim($_POST['email']);
     $password = $_POST['user_password'];
-    $address  = trim($_POST['user_address']);
+    $address  = trim($_POST['user_address'] ?? null);
     $user_sex = isset($_POST["user_sex"]) ? $_POST["user_sex"] : "";
     $hotline  = trim($_POST['user_hotline']);
-
     $password = $_POST['user_password'];
 
     if (empty($password)) {
@@ -41,9 +37,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     $stmt = $conn->prepare(
-        "SELECT id FROM userdata WHERE username = ? OR email = ?"
+        "SELECT id FROM userdata WHERE email = ?"
     );
-    $stmt->bind_param("ss", $username, $email);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
 
@@ -57,13 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $stmt = $conn->prepare("
         INSERT INTO userdata 
-        (username, img, email, user_password, user_address, user_sex, user_hotline)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        (email, user_password, user_address, user_sex, user_hotline)
+        VALUES (?, ?, ?, ?, ?)
     ");
     $stmt->bind_param(
-        "sssssss",
-        $username,
-        $img,
+        "sssss",
         $email,
         $hashedPassword,
         $address,
@@ -74,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($stmt->execute()) {
         echo "<script>
                 alert('Register success!');
-                window.location.href = 'log.php';
+                window.location.href = 'reglog.php';
               </script>";
         exit;
     } else {
