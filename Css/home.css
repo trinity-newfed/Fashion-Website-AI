@@ -309,7 +309,7 @@ html,body{
     align-items: center;
     font-family: "Montserrat", serif;
 }
-#newest-collection div{
+#container-body{
     width: 100%;
     height: 100%;
     display: flex;
@@ -318,48 +318,31 @@ html,body{
     text-align: center;
     letter-spacing: 3px;
 }
-#newest-collection div img{
+#container-body img{
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center 80%;
 }
-#newest-collection span{
-    position: absolute;
-    top: 30%;
-    left: 5%;
-    transform: translateX(-130%);
+#cta-tryon h3{
+    position: relative;
     z-index: 3;
-    font-size: clamp(.5rem, 5vw, 3rem);
+    font-size: clamp(.9rem, 5vw, 3rem);
     font-weight: 600;
     font-family: "Cormorant Garamond", serif;
     letter-spacing: normal;
 }
-#newest-collection span.b-show{
-    transition: 1.5s all;
-    transform: translateX(0);
-}
-#newest-collection p{
-    position: absolute;
-    top: 35%;
-    width: 30%;
-    left: 2.5%;
-    transform: translateX(-120%);
+#cta-tryon p{
+    position: relative;
     z-index: 3;
-    font-size: clamp(.5rem, 1.3vw, 3rem);
+    font-size: clamp(.8rem, 1.3vw, 3rem);
     overflow-wrap: break-word;
 }
-#newest-collection p.b-show{
-    transition: 1.5s all;
-    transform: translateX(0);
-}
-#newest-collection button{
-    position: absolute;
-    top: 40%;
-    left: 10%;
+#cta-tryon button{
+    position: relative;
     z-index: 3;
-    margin-top: 25px;
-    padding: 12px 45px;
+    width: 30%;
+    height: 10%;
     border: none;
     background: #000000;
     color: rgb(252, 237, 194);
@@ -368,16 +351,29 @@ html,body{
     cursor: pointer;
     transition: 0.3s;
     border: 1px solid rgb(252, 237, 194);
-    transform: translateX(-200%);
 }
-#newest-collection button.b-show{
-    transition: 1.5s all;
-    transform: translateX(0);
-}
-#newest-collection button:hover{
+#cta-tryon button:hover{
     background-color: #ffffff;
     color: rgb(0, 0, 0);
     border: 1px solid black;
+    transition: .25s;
+}
+#cta-tryon{
+    position: absolute;
+    left: -7%;
+    transform: translateX(-200%);
+    width: 50%;
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 1.5s;
+}
+#cta-tryon.b-show{
+    z-index: 100;
+    transform: translateX(0);
+    transition: 3s;
 }
 #b-img2,#b-img3{
     opacity: 0;
@@ -1077,5 +1073,8 @@ html,body{
     }
     #bannerVideo{
         object-fit: cover;
+    }
+    #newest-collection button{
+        width: 30%;
     }
 }

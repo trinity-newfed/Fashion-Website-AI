@@ -82,13 +82,15 @@ $product = $conn
     <section id="body">
         <div id="body-content-container">
             <div id="newest-collection">
-                <div>
+                <div id="container-body">
                     <video id="bannerVideo" style="object-fit: cover; height: 100%;" muted>
                         <source src="..\Pictures\Banners\VideoBanner1.mp4" type="video/mp4">
                     </video>
-                    <span>Try on with AI</span>
-                    <p>Upload your photo and experience <br> virtual fiting powered by AI</p>
-                    <button onclick="window.location.href='products.php#product-section'">Try now</button>
+                    <div id="cta-tryon">
+                        <h3>Try on with AI</h3>
+                        <p>Upload your photo and experience <br> virtual fiting powered by AI</p>
+                        <button onclick="window.location.href='products.php#product-section'">Try now</button>
+                    </div>
                 </div>
             </div>
             <div class="territory">
@@ -333,9 +335,7 @@ $product = $conn
                         num++;
                         if(num == 1){
                             document.getElementById("body-content-container").classList.add("b-show");
-                            document.querySelector("#newest-collection span").classList.add("b-show");
-                            document.querySelector("#newest-collection p").classList.add("b-show");
-                            document.querySelector("#newest-collection button").classList.add("b-show");
+                            document.getElementById("cta-tryon").classList.add("b-show");
                         }else if(num == 2){
                             video.play();
                         }
