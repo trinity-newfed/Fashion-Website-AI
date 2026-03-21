@@ -266,6 +266,7 @@ $stmt->close();
       const userWelcome = document.getElementById("menu-Username");
       const menuTitles = document.querySelectorAll(".menu-title");
 
+      
 
       if(userWelcome){
             userWelcome.textContent = "Hi, " + username1;
