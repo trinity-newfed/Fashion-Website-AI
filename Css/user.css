@@ -2,14 +2,8 @@ html,body {
       user-select: none;
       top: 0;
       left: 0;
-      position: relative;
-      margin: auto;
       background-color: whitesmoke;
-      height: 100%;
-      width: 100vw;
       scroll-behavior: smooth;
-      max-width: 1500px;
-      max-height: 900px;
     }
     /*section head - menu*/
     #head {
@@ -249,34 +243,33 @@ html,body {
     .body {
       display: flex;
       position: relative;
-      margin: 0;
-      max-height: 900px;
-      justify-content: right;
-      align-items: right;
+      align-items: stretch;
+      margin: auto;
+      z-index: 10;
+      height: 100%;
     }
     .user-box {
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
       max-width: 1500px;
-      max-height: 900px;
-      border: 1px solid black;
-      position: relative;
-      padding-top: 5%;
       margin: auto;
       display: flex;
-      flex-direction: row;
+      align-items: stretch;
     }
+
     .user-information {
-      width: 20vw;
-      height: 100vh;
-      max-width: 1000px;
-      max-height: 900px;
+      width: 260px;
       background-color: black;
       color: white;
       display: flex;
-      align-items: center;
       flex-direction: column;
+      justify-content: start;
+      align-items: center;
+      position: sticky;
+      top: 80px;
+      height: fit-content;
+      overflow-y: auto;
     }
+
     .user-avatar {
       width: 140px;
       height: 140px;
@@ -369,15 +362,11 @@ html,body {
       color: black;
     }
     .user-cart {
-      position: relative;
-      max-width: 1239px;
-      width: 80vw;
-      height: 100vh;
-      max-height: 900px;
-      right: 0;
-      background-color: rgb(255, 255, 255); 
-      overflow: auto;
+      flex: 1;
+      background: white;
+      padding-top: 2%;
     }
+
     .user-cart p {
       color: black;
       font-family: "Segoe UI", Helvetica, Arial, sans-serif;
@@ -398,19 +387,23 @@ html,body {
       position: absolute;
       margin: -20px 15px;
     }
-    #order-history{
+    #order-history {
       display: grid;
-      place-items: center;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 24px;
+      max-height: 600px;
+      overflow-y: auto;
+      width: 100%;
+      padding: 10px;
     }
+
     .order-name{
-      font-size: clamp(.8rem, 1.3vw, 2rem);
+      font-size: clamp(.8rem, 1.3vw, 1.3rem);
       font-weight: 500;
       font-family: "Montserrat", serif;
     }
     .order-block{
-      width: 350px;
+      width: 330px;
       height: 250px;
       display: flex;
       flex-direction: column;
@@ -510,8 +503,8 @@ html,body {
       cursor: pointer;
     }
     #try-on-container{
-      max-width: 1000px;
       display: grid;
+      max-width: 1300px;
       place-items: center;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 30px;
@@ -571,14 +564,12 @@ html,body {
     }
     .user-history {
       position: relative;
-      width: 80vw;
-      margin-top: 50%;
+      margin-top: 10%;
     }
     .user-history-AI {
       position: relative;
-      width: 80vw;
-      margin-top: 50%;
-      margin-bottom: 10%;
+      margin-top: 10%;
+
     }
     .user-history-text {
       color: black;
@@ -775,4 +766,9 @@ html,body {
         background: rgba(0, 0, 0, 0.05);
         color: #ffffff;
     }
+}
+@media (min-width: 2560px) {
+  .user-information{
+    height: calc(100svh - 80px);
+  }
 }
