@@ -215,7 +215,7 @@ def api_generate():
     "status": "success",
     "image": f"outputs/user_{username}/{filename}",
     "seed": seed,
-    "redirect": "/Trinity%20Fashion%20Group/Pages/user.php"
+    "redirect": "/Trinity-Style-AI/Pages/user.php"
 })
 
 

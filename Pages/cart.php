@@ -10,8 +10,8 @@ session_start();
 //VOUNCHER FETCH
 if(isset($_SESSION['username'])) {
     $voucher_id = $_GET['voucher_id'] ?? null;
-    $stmt = $conn->prepare("SELECT * FROM voucher WHERE voucher_id = ?");
-    $stmt->bind_param("s", $voucher_id);
+    $stmt = $conn->prepare("SELECT * FROM user_voucher WHERE username = ?");
+    $stmt->bind_param("s", $username);
     $stmt->execute();
     $vouncher = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 } else {
