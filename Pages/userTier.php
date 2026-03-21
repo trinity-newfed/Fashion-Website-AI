@@ -261,7 +261,6 @@ $stmt->close();
 </footer>
 </body>
 <script>
-    cons
     const email = <?= isset($_SESSION['username']) ? json_encode($_SESSION['username']) : '""' ?>;
       let username1 = email.replace("@gmail.com", "");
       const userWelcome = document.getElementById("menu-Username");
