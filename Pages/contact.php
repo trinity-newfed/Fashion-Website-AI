@@ -13,7 +13,7 @@
 <div class="container">
 <div class="left">
 
-    <div class="logo">
+    <div onclick="window.location.href='home.php'" class="logo">
         trinity
     </div>
 

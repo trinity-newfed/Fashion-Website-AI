@@ -18,7 +18,7 @@ $product = $conn
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Products</title>
+    <title>Trinity Style - Products</title>
     <link rel="stylesheet" href="../Css/products.css">
     <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
     <link
@@ -80,7 +80,8 @@ $product = $conn
                                       data-name="<?=$p['product_name']?>" 
                                       data-price="<?=$p['product_price']?>"
                                       data-id="<?=$p['id']?>"
-                                      data-category="<?=$p['product_category']?>">
+                                      data-category="<?=$p['product_category']?>"
+                                      data-color="<?=$p['product_color']?>">
               <button class="wishlist-btn">❤</button>
 
               <div class="image-box">
@@ -118,7 +119,9 @@ $product = $conn
                                       data-name="<?=$p['product_name']?>" 
                                       data-price="<?=$p['product_price']?>"
                                       data-id="<?=$p['id']?>"
-                                      data-category="<?=$p['product_category']?>">
+                                      data-category="<?=$p['product_category']?>"
+                                      data-category="<?=$p['product_category']?>"
+                                      data-color="<?=$p['product_color']?>">
               <button class="wishlist-btn">❤</button>
 
               <div class="image-box">
@@ -148,17 +151,6 @@ $product = $conn
   <div id="product-modal">
   <div class="modal-container">
     <div class="modal-left">
-      <form action="" method="POST" style="align-self: end; left: 80%; position: relative;" id="Try-on-form">
-        <h1 style="width: 20px; height: 20px; display: grid; place-items: center;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
-          <path d="M320.2 112c44.2 0 80-35.8 80-80l53.5 0c17 0 33.3 6.7 45.3 18.7L617.6 169.4c12.5 12.5 12.5 32.8 0 45.3l-50.7 50.7c-12.5 12.5-32.8 12.5-45.3 0l-41.4-41.4 0 224c0 35.3-28.7 64-64 64l-192 0c-35.3 0-64-28.7-64-64l0-224-41.4 41.4c-12.5 12.5-32.8 12.5-45.3 0L22.9 214.6c-12.5-12.5-12.5-32.8 0-45.3L141.5 50.7c12-12 28.3-18.7 45.3-18.7l53.5 0c0 44.2 35.8 80 80 80z"/>
-        </svg>
-        </h1>
-        <div id="tooltip-explain">
-          <h3>Virtual AI Try On</h3>
-          <span>This is an experiment feature for customers to try on our product</span>
-        </div>
-      </form>
       <img id="modal-img" src="" alt="">
     </div>
     <div class="modal-right">
@@ -175,9 +167,12 @@ $product = $conn
           <label for="XL-size-<?=$p['id']?>">XL</label>
         </div>
       </div>
-          <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; display: grid; place-items: center;"> 
+          <div id="form-container">
+            <form action="../Database/add_item_to_cart.php" method="POST" style="display: grid;" id="addCartForm"> 
                     <input type="hidden" name="username" value="<?=htmlspecialchars($username)?>">    
                     <input type="hidden" name="product_id" id="modal-product-id">
+                    <input type="hidden" name="product_category" id="modal-product-category">
+                    <input type="hidden" name="product_color" id="modal-product-color">
                     <input type="hidden" name="product_name" id="modal-product-name">
                     <input type="hidden" name="product_type" id="modal-product-type">
                     <input type="radio" name="cart_size" value="S" id="S-size-<?=$p['id']?>" hidden checked>
@@ -185,7 +180,15 @@ $product = $conn
                     <input type="radio" name="cart_size" value="L" id="L-size-<?=$p['id']?>" hidden>
                     <input type="radio" name="cart_size" value="XL" id="XL-size-<?=$p['id']?>" hidden> 
                     <button class="modal-add add-cart-btn-big" type="submit">ADD TO CART</button>
-            </form>
+          </form>
+      <div style="align-self: end; position: relative;" id="Try-on-form">
+        <button class="modal-try add-cart-btn-big" type="submit">Try with AI✨</button>
+        <div id="tooltip-explain">
+          <h3>Virtual AI Try On</h3>
+          <span>This is an feature for customers to try on our product</span>
+        </div>
+            </div>
+          </div>
       <div id="modal-detail">Details</div>
     </div>
   </div>
@@ -271,7 +274,7 @@ $product = $conn
     <div class="menu-item">
         <div class="menu-title">TRINITY TIER</div>
         <div class="submenu">
-            <div>Check your shopping tier</div>
+            <div onclick="window.location.href='userTier.php'">Check your shopping tier</div>
         </div>
     </div>
     <div class="menu-item">
@@ -279,47 +282,65 @@ $product = $conn
     </div>
 </div>
 </section>
-<section id="footer-2">
-            <div class="footer-info" id="fi-1">
-                <h2>POLICY</h2>
-                <p>Term of delivery</p>
-                <p>Term of return</p>
-                <p>Purchase policy</p>
-            </div>
+<footer class="footer-2">
+  <div class="footer-container">
+    <div class="footer-left">
+      <p class="footer-label">CONTACT US</p>
+      <h2 class="footer-title">
+        Let’s Discuss Your <br> Style. With Us
+      </h2>
+      <button class="footer-btn">
+        Schedule a call now →
+      </button>
+      <p class="footer-email-label">OR EMAIL US AT</p>
 
-            <div class="footer-info" id="fi-2">
-                <h2>ABOUT US</h2>
-                <p>Trinity</p>
-                <p>Leadership Team</p>
-            </div>
+      <div class="footer-email">
+        triple3tbusiness@gmail.com
+        <span>📋</span>
+      </div>
+    </div>
 
-            <div class="footer-info" id="fi-3">
-                <h2>GET LATEST DEALS AND MORE</h2>
-                <span>Email: triple3tbusiness@gmail.com</span>
-                <span>Hotline: 0909.xxx.xxx</span>
-                <input placeholder="Contact us...">
-            </div>
+    <div class="footer-right">
+      <div class="footer-col">
+        <p class="footer-col-title">QUICK LINKS</p>
+        <a href="#">Home</a>
+        <a href="#">Case Studies</a>
+        <a href="#">Gallery</a>
+        <a href="#">Blogs</a>
+        <a href="#">About Us</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">INFORMATION</p>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Cookies Settings</a>
+      </div>
 
+    </div>
 
-            <div class="footer-info" id="fi-4">
-                <h2>SUPPORT</h2>
-                <span>Direct chat</span>
-                <span>Hotline: 0808.xxx.xxx</span>
-                <div style="display: grid; place-items: center;">
-                    <h2>Follow up</h2>
-                    <input placeholder="Enter your email...">
-                </div>
-            </div>
+  </div>
 
-            <div class="footer-info" id="fi-5" style="position: absolute; bottom: 5%; width: 100%; height: 10%; border-top: 1px solid gray;">
-                <h1>CONTACT US</h1>
-            </div>
-</section>
+  <div class="footer-bottom">
+    <p>Copyright (c) 2026 trinity-newfed</p>
+
+    <div class="footer-social">
+      <span>f</span>
+      <span>t</span>
+      <span>ig</span>
+      <span>in</span>
+    </div>
+  </div>
+</footer>
     <script>
-      let email = "abc@gmail.com";
+      console.log("JS START");
+
+setTimeout(() => {
+  console.log("TIMEOUT OK");
+}, 2000);
+      const email = <?= isset($_SESSION['username']) ? json_encode($_SESSION['username']) : '""' ?>;
       let username1 = email.replace("@gmail.com", "");
-      document.getElementById("menu-Username").textContent = "Hi, " + username1;
-      const isLogin = <?= isset($_SESSION['username']) ? 'true' : 'false' ?>;
+      const userWelcome = document.getElementById("menu-Username");
+      const isLogin = <?=isset($_SESSION['username']) ? 'true' : 'false'?>;
       const products = document.querySelectorAll(".product-card");
       const conModal = document.querySelector(".modal-container");
       const modal = document.getElementById("product-modal");
@@ -328,10 +349,11 @@ $product = $conn
       const modalPrice = document.getElementById("modal-price");
       const closeBtn = document.querySelector(".close-modal");
       const modalProductId = document.getElementById("modal-product-id");
+      const modalProductCategory = document.getElementById("modal-product-category");
+      const modalProductColor = document.getElementById("modal-product-color");
       const modalProductName = document.getElementById("modal-product-name");
       const modalProductType = document.getElementById("modal-product-type");
       const try_on = document.getElementById("Try-on-form");
-      const try_on_modal = document.getElementById("try-on-modal");
       const try_on_input = document.getElementById("cloth");
       const addCart = document.querySelectorAll(".add-cart-btn-big");
       const sizeAdd = document.querySelectorAll(".sizes label");
@@ -345,6 +367,10 @@ $product = $conn
       const params = new URLSearchParams(window.location.search);
       const category = params.get("category");
       const name = params.get("name");
+      
+      if(userWelcome){
+            userWelcome.textContent = "Hi, " + username1;
+        }
 
       sizeAdd.forEach(label =>
         label.addEventListener('click', ()=>{
@@ -367,6 +393,8 @@ $product = $conn
               modalName.textContent = product.dataset.name;
               modalPrice.textContent = "$" + product.dataset.price;
               modalProductId.value = product.dataset.id;
+              modalProductCategory.value = product.dataset.category;
+              modalProductColor.value = product.dataset.color;
               modalProductName.value = product.dataset.name;
               modalProductType.value = "default";
               currentProductId = product.dataset.id;
@@ -460,12 +488,18 @@ $product = $conn
           const cancelClick = alertCancelBtn.addEventListener('click', ()=>{
             alert.classList.remove("alert");
           });
+          timer = setTimeout(function(){
+              alert.classList.remove("alert");
+            }, 5000);
         }else if(isLogin){
             if(!alert.classList.contains("tryon-close") && !alert.classList.contains("tryon")){
               alertName.textContent = "TRINITY VIRTUAL AI TRY ON";
               alertOkBtn.style.display = "none";
               formTryOn.style.display = "flex";
               alert.classList.add("alert");
+              const cancelClick = alertCancelBtn.addEventListener('click', ()=>{
+              alert.classList.remove("alert");
+          });
             }
         }
       });
@@ -518,7 +552,7 @@ $product = $conn
           method: "POST",
           body: formData
       });
-      const data = await res.json(e);
+      const data = await res.json();
       if(data.status === "success"){
         const goUser = confirm("Redirect to user page for result?");
       if(goUser){
@@ -531,42 +565,30 @@ $product = $conn
       let abc = 0;
       let animationInterval = null;
 
-      setInterval(async () =>{
-        const res = await fetch(`http://localhost:5000/api/progress/${username}`);
-        const data = await res.json();
-        if(data.progress < 2){
-          document.querySelector("#progress-container span").classList.add("animation");
-        if(!animationInterval){
-          animationInterval = setInterval(() =>{
-            abc++;
-            if(abc == 1){
-              document.getElementById("animate").style.opacity = "1";
-              document.getElementById("animate").classList.add("animated");
-            }else if(abc > 12){
-              document.getElementById("animate").style.opacity = "0";
-              document.getElementById("animate").classList.remove("animated");
-              abc = 0;
+      if(username){
+        setInterval(async () =>{
+          try{
+            const res = await fetch(`http://localhost:5000/api/progress/${username}`);
+            const data = await res.json();
+
+            if(data.progress < 2){
+              document.querySelector("#progress-container span").classList.add("animation");
             } 
-          }, 1000);
-        }
-        } 
-        else if(data.progress > 2){
-          let percent = data.progress + data.progress / 4.75; 
-          if(alert.classList.contains("tryon-close")){
-            alert.querySelector("h4").style.opacity = "1";
-            alert.querySelector("h4").style.visibility = "visible";
-            alert.querySelector("h4").textContent = `${parseFloat(percent.toFixed(2))}%`;
+            else if(data.progress > 2){
+              let percent = data.progress + data.progress / 4.75; 
+              document.getElementById("progress").style.width = `${percent}%`;
+              if(alert.classList.contains("tryon-close")){
+                alert.querySelector("h4").style.opacity = "1";
+                alert.querySelector("h4").style.visibility = "visible";
+                alert.querySelector("h4").textContent = `${parseFloat(percent.toFixed(2))}%`;
+              }
+            }
+          }catch(err){
+            console.error(err);
           }
-          document.getElementById("progress").style.width = `${percent}%`;
-          document.querySelector("#progress-container span").classList.remove("animation");
-          document.getElementById("animate").classList.remove("animated");
-          document.getElementById("animate").style.display = "none";
-        if(animationInterval){
-          clearInterval(animationInterval);
-          animationInterval = null;
-        }
-        }
-      }, 10000);
+        }, 10000);
+      }
+
     </script>
   </body>
 </html>

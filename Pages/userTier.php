@@ -1,10 +1,11 @@
-<?php
+<?php 
 $host = "localhost";
 $user = "root";
 $password = "";
 $dbname = "TF_Database";
 
 $conn = new mysqli($host, $user, $password, $dbname);
+
 session_start();
 
 if(!isset($_SESSION['username']) || $_SESSION['role'] != "user"){
@@ -25,30 +26,16 @@ $stmt->execute();
 $userdata = $stmt->get_result();
 $users = $userdata->fetch_assoc();;
 $stmt->close();
-
-$voucher = $conn
-  ->query("SELECT * FROM vouchers")
-  ->fetch_all(MYSQLI_ASSOC);
-
-$user_claim = "SELECT * FROM user_voucher WHERE username = ?";
-$stmt = $conn->prepare($user_claim);
-$stmt->bind_param("s", $username);
-$stmt->execute();
-$user_all = $stmt->get_result();
-$claimed = [];
-while($row = $user_all->fetch_assoc()){
-    $claimed[] = $row['voucher_id'];
-}
-$stmt->close();
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trinity Style - Vouchers</title>
+    <title>Trinity - Tier</title>
+    <link rel="stylesheet" href="../Css/userTier.css">
     <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
-    <link rel="stylesheet" href="../Css/voucher.css">
     <link
       href="https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"/>
@@ -57,105 +44,92 @@ $stmt->close();
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
 </head>
 <body>
-<section class="voucher-page">
 
-<h1>TRINITY Vouchers</h1>
-<div class="voucher-filter">
-<button class="active">All</button>
-<button>Available</button>
-<button>Expiring</button>
-<button>Used</button>
-</div>
-
-
-
-<form action="../Database/user_voucher.php" method="POST">
- <div class="voucher-list">
-  <?php foreach($voucher as $v): ?>
-<div class="voucher-card">
-    <div class="voucher-brand">
-        <h4>TRINITY</h4>
-        <?php
-        $tierNames = ["All", "🥈 Silver", "🪙 Gold", "💎 Diamond"];
-        $tier = (int)$v['voucher_min_tier'];
-        ?>
-        <span class="tier tier-<?=$tier?>">
-            <?=$tierNames[$tier - 1] ?? "Unknown"?>
-        </span>
-    </div>
-    <div class="voucher-discount">
-        $<?=$v['voucher_discount']?> OFF
-    </div>
-    <div class="voucher-condition">
-        On orders over $<?=$v['voucher_condition']?>
-    </div>
-    <div class="voucher-condition">
-        Max discount $<?=$v['voucher_max']?>
-    </div>
-    <div class="voucher-footer">
-        <?php if(in_array($v['id'], $claimed)): ?>
-            <button disabled>✔ Claimed</button>
-        <?php elseif((int)$users['user_tier'] >= (int)$v['voucher_min_tier']): ?>
-            <form action="../Database/user_voucher.php" method="POST">
-                <input type="hidden" name="voucher_id" value="<?=$v['id']?>">
-                <button type="submit">Claim</button>
-            </form>
-        <?php else: ?>
-            <button disabled>
-                🔒 Unlock at <?=$tierNames[$tier - 1]?>
-            </button>
+<div class="container">
+        <?php if($users['user_tier'] == "1"): ?>
+        <div class="row row-tier-1">
+            <div class="card bronze">
+                <div class="card-header">
+                    <div class="user-info">
+                        <div class="avatar"></div>
+                        <span><?=$_SESSION['username']?></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>New Member</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 10%;"></div></div>
+                    <p class="next-step">Spend $200 more to upgrade your tier to silver</p>
+                </div>
+                <div class="card-footer">
+                    <span>Get more deals for loyal customer</span>
+                    <i>&rsaquo;</i>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+        <?php if($users['user_tier'] == "2"): ?>
+        <div class="row row-tier-2">
+            <div class="card silver">
+                <div class="card-header">
+                    <div class="user-info">
+                        <div class="avatar"></div>
+                        <span><?=$_SESSION['username']?></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>Silver</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 15%;"></div></div>
+                    <p class="next-step">Spend $1000 more to upgrade your tier to gold</p>
+                </div>
+                <div class="card-footer">
+                    <span>Get more deals for loyal customer</span>
+                    <i>&rsaquo;</i>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+        <?php if($users['user_tier'] == "3"): ?>
+        <div class="row row-tier-3">
+            <div class="card gold">
+                <div class="card-header">
+                    <div class="user-info">
+                        <div class="avatar"></div>
+                        <span><?=$_SESSION['username']?></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>Gold</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 20%;"></div></div>
+                    <p class="next-step">Spend $4000 more to upgrade your tier to diamond</p>
+                </div>
+                <div class="card-footer">
+                    <span>Get more deals for loyal customer</span>
+                    <i>&rsaquo;</i>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
+        <?php if($users['user_tier'] == "4"): ?>
+        <div class="row row-tier-4">
+            <div class="card diamond">
+                <div class="card-header">
+                    <div class="user-info">
+                        <div class="avatar"></div>
+                        <span><?=$_SESSION['username']?></span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>Diamond</h3>
+                    <div class="progress-bar"><div class="progress" style="width: 30%;"></div></div>
+                </div>
+                <div class="card-footer">
+                    <span>Get more deals for loyal customer</span>
+                    <i>&rsaquo;</i>
+                </div>
+            </div>
+        </div>
         <?php endif; ?>
     </div>
-</div>
-<?php endforeach; ?>
- </div>
-</form>
-</section>
-<footer class="footer-2">
-  <div class="footer-container">
-    <div class="footer-left">
-      <p class="footer-label">CONTACT US</p>
-      <h2 class="footer-title">
-        Let’s Discuss Your <br> Style. With Us
-      </h2>
-      <button class="footer-btn">
-        Schedule a call now →
-      </button>
-      <p class="footer-email-label">OR EMAIL US AT</p>
-      <div class="footer-email">
-        triple3tbusiness@gmail.com
-        <span>📋</span>
-      </div>
-    </div>
-
-    <div class="footer-right">
-      <div class="footer-col">
-        <p class="footer-col-title">QUICK LINKS</p>
-        <a href="#">Home</a>
-        <a href="#">Case Studies</a>
-        <a href="#">Gallery</a>
-        <a href="#">Blogs</a>
-        <a href="#">About Us</a>
-      </div>
-      <div class="footer-col">
-        <p class="footer-col-title">INFORMATION</p>
-        <a href="#">Terms of Service</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Cookies Settings</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer-bottom">
-    <p>Copyright (c) 2026 trinity-newfed</p>
-    <div class="footer-social">
-      <span>f</span>
-      <span>t</span>
-      <span>ig</span>
-      <span>in</span>
-    </div>
-  </div>
-</footer>
 <section id="menu">
         <div id="text-menu">
             <div id="logo" onclick="window.location.href='../Pages/'">TRINITY</div>
@@ -179,11 +153,6 @@ $stmt->close();
             </svg>
             <?php if(isset($_SESSION['username'])): ?>
                 <p onclick="window.location.href='user.php'" id="menu-Username"><?=$_SESSION['username']?></p>
-                <?php if(!empty($_SESSION['img'])): ?>
-                    <div id="user-account" onclick="window.location.href='user.php'">
-                        <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
-                    </div>
-                <?php endif; ?>
             <?php else: ?>
                     <input type="submit" value="Login" id="login-input" onclick="window.location.href='reglog.php'" hidden>
                     <label for="login-input">
@@ -244,23 +213,71 @@ $stmt->close();
     </div>
 </div>
 </section>
+<footer class="footer-2">
+  <div class="footer-container">
+    <div class="footer-left">
+      <p class="footer-label">CONTACT US</p>
+      <h2 class="footer-title">
+        Let’s Discuss Your <br> Style. With Us
+      </h2>
+      <button class="footer-btn">
+        Schedule a call now →
+      </button>
+      <p class="footer-email-label">OR EMAIL US AT</p>
+      <div class="footer-email">
+        triple3tbusiness@gmail.com
+        <span>📋</span>
+      </div>
+    </div>
+
+    <div class="footer-right">
+      <div class="footer-col">
+        <p class="footer-col-title">QUICK LINKS</p>
+        <a href="#">Home</a>
+        <a href="#">Case Studies</a>
+        <a href="#">Gallery</a>
+        <a href="#">Blogs</a>
+        <a href="#">About Us</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">INFORMATION</p>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Cookies Settings</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>Copyright (c) 2026 trinity-newfed</p>
+
+    <div class="footer-social">
+      <span>f</span>
+      <span>t</span>
+      <span>ig</span>
+      <span>in</span>
+    </div>
+  </div>
+</footer>
 </body>
 <script>
+    cons
     const email = <?= isset($_SESSION['username']) ? json_encode($_SESSION['username']) : '""' ?>;
-    let username1 = email.replace("@gmail.com", "");
-    const userWelcome = document.getElementById("menu-Username");
-    const menuTitles = document.querySelectorAll(".menu-title");
-    if(userWelcome){
+      let username1 = email.replace("@gmail.com", "");
+      const userWelcome = document.getElementById("menu-Username");
+      const menuTitles = document.querySelectorAll(".menu-title");
+
+
+      if(userWelcome){
             userWelcome.textContent = "Hi, " + username1;
         }
-
-    menuTitles.forEach(title =>{
+        menuTitles.forEach(title =>{
                 title.addEventListener("click", ()=>{
                     const parent = title.parentElement;
                     parent.classList.toggle("active");
             });
         });
-    const submenuItems = document.querySelectorAll(".submenu-item");
+        const submenuItems = document.querySelectorAll(".submenu-item");
             submenuItems.forEach(item =>{
                 item.addEventListener("click",(e)=>{
                     e.stopPropagation();

@@ -9,9 +9,9 @@ $conn = new mysqli($host, $user, $password, $dbname);
 session_start();
 
 
-if(isset($_POST['id']) && isset($_SESSION['username'])) {
+if(isset($_GET['id']) && isset($_SESSION['username'])) {
     $stmt = $conn->prepare("DELETE FROM cart WHERE id = ? AND username = ?");
-    $stmt->bind_param("is", $_POST['id'], $_SESSION['username']);
+    $stmt->bind_param("is", $_GET['id'], $_SESSION['username']);
     $stmt->execute();
 }
 

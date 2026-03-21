@@ -31,8 +31,33 @@ $stmt->bind_param("s", $username);
 $stmt->execute();
 
 $fetchData = $stmt->get_result();
+$tryonData = $fetchData->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
 
+$sql = "SELECT 
+        orders.id,
+        orders.order_state,
+        orders.order_name,
+        orders.order_final_price,
+        order_items.product_name,
+        order_items.img,    
+        order_items.quantity
+        FROM orders
+        JOIN order_items ON orders.id = order_items.order_id
+        WHERE orders.username = ?
+        ORDER BY orders.id DESC
+";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+$data = $result->fetch_all(MYSQLI_ASSOC);
+$groupedOrders = [];
+
+foreach ($data as $d) {
+    $groupedOrders[$d['id']][] = $d;
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -40,7 +65,7 @@ $stmt->close();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="../Css/user.css">
-    <title>User Page</title>
+    <title>Trinity Style - User</title>
     <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
     <link
       href="https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
@@ -58,7 +83,7 @@ $stmt->close();
                 <span onclick="window.location.href='../Pages/'">Home</span>
                 <span onclick="window.location.href='products.php?#product-section'">Shop</span>
                 <span onclick="window.location.href='products.php?#product-section'">Collection</span>
-                <span>Contact</span>
+                <span onclick="window.location.href='contact.php'">Contact</span>
             </div>
         </div>
         <input type="checkbox" id="menu-toggle" hidden>
@@ -74,11 +99,6 @@ $stmt->close();
             </svg>
             <?php if(isset($_SESSION['username'])): ?>
                 <p onclick="window.location.href='user.php'" id="menu-Username"><?=$_SESSION['username']?></p>
-                <?php if(!empty($_SESSION['img'])): ?>
-                    <div id="user-account" onclick="window.location.href='user.php'">
-                        <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
-                    </div>
-                <?php endif; ?>
             <?php else: ?>
                     <input type="submit" value="Login" id="login-input" onclick="window.location.href='reglog.php'" hidden>
                     <label for="login-input">
@@ -93,15 +113,15 @@ $stmt->close();
         <div class="menu-title">TRINITY</div>
             <div class="submenu">
                 <div class="submenu-item">T-shirt
-                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic T-shirt'">Basic</div>
-                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Oversize T-shirt'">Oversize</div>
+                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic T-shirt#product-header'">Basic</div>
+                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Oversize T-shirt#product-header'">Oversize</div>
             </div>
             <div class="submenu-item">Polo shirt
-                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic Polo'">Basic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Logo Polo'">Logo</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic Polo#product-header'">Basic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Logo Polo#product-header'">Logo</div>
             </div>
             <div class="submenu-item">Hoodie
-                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Hoodie'">Signature</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Hoodie#product-header'">Signature</div>
             </div>
         </div>
     </div>
@@ -109,16 +129,16 @@ $stmt->close();
         <div class="menu-title">TRINITY LADIES</div>
         <div class="submenu">
             <div class="submenu-item">T-shirt
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic T-shirt'">Basic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Oversize T-shirt'">Oversize</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic T-shirt#product-header'">Basic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Oversize T-shirt#product-header'">Oversize</div>
             </div>
             <div class="submenu-item">Blouse
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Classic Blouse'">Classic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Wrap Blouse'">Warp</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Classic Blouse#product-header'">Classic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Wrap Blouse#product-header'">Warp</div>
             </div>
             <div class="submenu-item">Crop top
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic CropTop'">Basic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Tank CropTop'">Tank</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic CropTop#product-header'">Basic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Tank CropTop#product-header'">Tank</div>
             </div>
         </div>
     </div>
@@ -131,7 +151,7 @@ $stmt->close();
     <div class="menu-item">
         <div class="menu-title">TRINITY TIER</div>
         <div class="submenu">
-            <div>Check your shopping tier</div>
+            <div onclick="window.location.href='userTier.php'">Check your shopping tier</div>
         </div>
     </div>
     <div class="menu-item">
@@ -145,111 +165,216 @@ $stmt->close();
           <?php if(isset($_SESSION['username'])): ?>
           <div class="user-avatar">
             <?php if(empty($user['img'])): ?>
+                <img src="../Pictures/Banners/BA.webp" alt="">
             <?php else: ?>
               <img style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" src="../upload/<?=htmlspecialchars($_SESSION['img'])?>" alt="">
             <?php endif; ?>
           </div>
           <div class="user-name"><?=$_SESSION['username']?></div>
-          <div class="user-tier"><?=$user['user_tier']?></div>
+          <?php if(empty($user)): ?>
+            <div class="user-tier"></div>
+          <?php else: ?>
+            <?php if($user['user_tier'] == "1"): ?>
+                <div class="user-tier" style="color: white;">New Member</div>
+            <?php elseif($user['user_tier'] == "2"): ?>
+                <div class="user-tier" style="color: silver; background: #2d3036;">Silver</div>
+            <?php elseif($user['user_tier'] == "3"): ?>
+                <div class="user-tier" style="color: gold; background: #504420;">Gold</div>
+            <?php elseif($user['user_tier'] == "4"): ?>
+                <div class="user-tier" style="color: lightblue; background: #202e50;">Diamond</div>
+            <?php endif; ?>
+          <?php endif; ?>
           <div class="line1">_________________________</div>
           <div class="user-details">
             <div class="info-row">
               <span>Sex:</span>
+              <?php if(empty($user)): ?>
+              <span></span>
+              <?php else: ?>
               <span><?=$user['user_sex']?></span>
+              <?php endif; ?>
             </div>
             <div class="info-row">
               <span>Hotline:</span>
+              <?php if(empty($user)): ?>
+              <span></span>
+              <?php else: ?>
               <span><?=$user['user_hotline']?></span>
+              <?php endif; ?>
             </div>
             <div class="info-row">
               <span>Email:</span>
+              <?php if(empty($user)): ?>
+              <span></span>
+              <?php else: ?>
               <span><?=$user['email']?></span>
+              <?php endif; ?>
             </div>
             <div class="info-row">
               <span>Address: </span>
+              <?php if(empty($user)): ?>
+              <span></span>
+              <?php else: ?>
               <span><?=$user['user_address']?></span>
+              <?php endif; ?>
             </div>
           </div>
           <div class="user-setting">Edit informations</div>
-          <div class="user-setting">
-            <form action="logout.php">
-              <input type="submit" id="log-out" hidden>
-              <label for="log-out">Log out</label>
-            </form>
+          <div class="user-setting" onclick="window.location.href='logout.php'">
+            Log out
           </div>
           <?php endif; ?>
         </div>
         <div class="user-cart">
-          <p>Order state</p>
-          <div class="line2"></div>
-          <!--<div class="add-more" onclick="window.location.href='https://cosplaytele.com';">Thêm mới <br> + </div>-->
-          <p class="user-cart-alert">Nothing here...</p>
-          <div class="user-history">
-            <p class="user-history-text">Purchase history</p>
-            <div class="line2"></div>
-            <p class="user-cart-alert">Nothing here...</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-right: 5%;">
+            <p>Your Orders</p>
+            <select id="order-state-option">
+                <option value="Success">Success</option>
+                <option value="Delivery">Delivery</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancel">Cancel</option>
+                <option value="All">All</option>
+            </select>
           </div>
+          <div class="line2"></div>
+          <div id="order-history">
+            <?php if(!empty($groupedOrders)): ?>
+                <?php foreach($groupedOrders as $order_id => $items): ?>
+                    <div class="order-block">
+                        <div class="order-state" style="width: 100%; display: flex; justify-content: space-around; align-items: center;">
+                            <h3 class="order-name">#<?= $items[0]['order_name'] ?></h3>
+                            <?php if($items[0]['order_state'] == "success"): ?>
+                                <span class="state" style="color: #16a34a; background: #e6f9ed;"><?=$items[0]['order_state']?></span>
+                            <?php elseif($items[0]['order_state'] == "cancel"): ?>
+                                <span class="state" style="color: #dc2626; background: #ffeaea;"><?=$items[0]['order_state']?></span>
+                            <?php elseif($items[0]['order_state'] == "delivery"): ?>
+                                <span class="state" style="color: #f59e0b; background: #fff4e5;"><?=$items[0]['order_state']?></span>
+                            <?php elseif($items[0]['order_state'] == "delivered"): ?>
+                                <span class="state" style="color: #6b7280c7; background: #f3f4f6;"><?=$items[0]['order_state']?></span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="order-img">
+                            <img src="../<?= $items[0]['img'] ?>" alt="">
+                            <div class="order-img-info">
+                                <h3><?=$items[0]['product_name']?></h3>
+                                <span>Order totals: $<?=$items[0]['order_final_price']?></span>
+                                <span style="color: gray;"><?= count($items) ?> items</span>
+                            </div>
+                        </div>
+                        <div class="order-info">
+                            <button class="re-order">Re-Buy</button>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                <?php else: ?>
+                    <h3 class="h3-alert">Nothing here...</h3>
+                <?php endif; ?>
+          </div>
+          <p class="user-cart-alert"></p>
           <div class="user-history-AI">
             <p class="user-history-text">Try on history</p>
+            <div class="line2"></div>
             <div id="try-on-container">
-              <?php while($row = $fetchData->fetch_assoc()): ?>
+            <?php if(!empty($tryonData)): ?>
               <div class="line3">
-                <img src="../AI/static/outputs/user_<?=$_SESSION['username']?>/<?=$row['result_img']?>" alt="">
-                <?=$row['created_at']?>
+                <img src="../AI/static/outputs/user_<?=$_SESSION['username']?>/<?=$tryonData['result_img']?>" alt="">
+                <?=$tryonData['created_at']?>
                 <form action="../Database/detele_user_tryon.php" method="POST">
-                  <input type="text" name="id" value="<?=$row['id']?>" hidden>
+                  <input type="text" name="id" value="<?=$tryonData['id']?>" hidden>
                   <button type="submit">Delete</button>
                 </form>
               </div>
-            <?php endwhile; ?>
+            <?php else: ?>
+                <h3 class="h3-alert">Nothing here...</h3>
+            <?php endif; ?>
             </div>
             <p class="user-cart-alert"></p>
           </div>
         </div>
       </div>
     </section>
-    <section id="footer-2">
-            <div class="footer-info" id="fi-1">
-                <h2>POLICY</h2>
-                <p>Term of delivery</p>
-                <p>Term of return</p>
-                <p>Purchase policy</p>
-            </div>
+<footer class="footer-2">
+  <div class="footer-container">
+    <div class="footer-left">
+      <p class="footer-label">CONTACT US</p>
+      <h2 class="footer-title">
+        Let’s Discuss Your <br> Style. With Us
+      </h2>
+      <button class="footer-btn">
+        Schedule a call now →
+      </button>
+      <p class="footer-email-label">OR EMAIL US AT</p>
+      <div class="footer-email">
+        triple3tbusiness@gmail.com
+        <span>📋</span>
+      </div>
+    </div>
 
-            <div class="footer-info" id="fi-2">
-                <h2>ABOUT US</h2>
-                <p>Trinity</p>
-                <p>Leadership Team</p>
-            </div>
+    <div class="footer-right">
+      <div class="footer-col">
+        <p class="footer-col-title">QUICK LINKS</p>
+        <a href="#">Home</a>
+        <a href="#">Case Studies</a>
+        <a href="#">Gallery</a>
+        <a href="#">Blogs</a>
+        <a href="#">About Us</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">INFORMATION</p>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Cookies Settings</a>
+      </div>
+    </div>
+  </div>
 
-            <div class="footer-info" id="fi-3">
-                <h2>GET LATEST DEALS AND MORE</h2>
-                <span>Email: triple3tbusiness@gmail.com</span>
-                <span>Hotline: 0909.xxx.xxx</span>
-                <input placeholder="Contact us...">
-            </div>
+  <div class="footer-bottom">
+    <p>Copyright (c) 2026 trinity-newfed</p>
 
+    <div class="footer-social">
+      <span>f</span>
+      <span>t</span>
+      <span>ig</span>
+      <span>in</span>
+    </div>
+  </div>
+</footer>
 
-            <div class="footer-info" id="fi-4">
-                <h2>SUPPORT</h2>
-                <span>Direct chat</span>
-                <span>Hotline: 0808.xxx.xxx</span>
-                <div style="display: grid; place-items: center;">
-                    <h2>Follow up</h2>
-                    <input placeholder="Enter your email...">
-                </div>
-            </div>
-
-            <div class="footer-info" id="fi-5" style="position: absolute; bottom: 5%; width: 100%; height: 10%; border-top: 1px solid gray;">
-                <h1>CONTACT US</h1>
-            </div>
-</section>
     <script>
-      let email = "abc@gmail.com";
+      const email = <?= isset($_SESSION['username']) ? json_encode($_SESSION['username']) : '""' ?>;
       let username1 = email.replace("@gmail.com", "");
-      document.getElementById("menu-Username").textContent = "Hi, " + username1;
+      const userWelcome = document.getElementById("menu-Username");
       const menuTitles = document.querySelectorAll(".menu-title");
-            menuTitles.forEach(title =>{
+
+      const select = document.getElementById("order-state-option");
+      select.addEventListener("change", function (){
+      const state = this.value.toLowerCase();
+      const orderBlocks = document.querySelectorAll(".order-block");
+      orderBlocks.forEach(block =>{
+        const blockState = block.querySelector(".state").textContent.toLowerCase();
+        if(blockState.includes(state) || state == "all"){
+            block.style.display = "";
+        }else{
+            block.style.display = "none";
+        }
+    });
+});
+        
+        const Blocks = document.querySelectorAll(".order-block");
+        Blocks.forEach(blocks =>{
+            const blockStates = blocks.querySelector(".state").textContent.toLowerCase();
+            if(blockStates == "success"){
+                blocks.style.display = "";
+            }else{
+                blocks.style.display = "none";
+            }
+        })
+
+
+      if(userWelcome){
+            userWelcome.textContent = "Hi, " + username1;
+        }
+        menuTitles.forEach(title =>{
                 title.addEventListener("click", ()=>{
                     const parent = title.parentElement;
                     parent.classList.toggle("active");

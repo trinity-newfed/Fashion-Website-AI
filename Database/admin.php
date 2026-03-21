@@ -25,7 +25,7 @@ $userdata = $conn
 
 //VOUNCHER FETCH
 $vouncher = $conn
-    ->query("SELECT * FROM voucher")
+    ->query("SELECT * FROM vouchers")
     ->fetch_all(MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
@@ -291,10 +291,7 @@ $vouncher = $conn
                                             <input type="hidden" name="id" value="<?=$p['id']?>">
                                             <label style="background-color: orangered; color: white;" for="p-restore-<?=$p['id']?>">Restore Product</label>
                                         </form>
-                                        <form action="update_item_admin.php" method="post">
-                                            <input type="submit" id="p-update" hidden>
-                                            <label style="background-color: black; color: white;" for="p-update">Update Product</label>
-                                        </form>
+                                        <span onclick="window.location.href='../Pages/update.php?id=<?=$p['id']?>'">update product</span>
                                     </div>
                                 </div>
                             <?php else: ?>
@@ -307,17 +304,14 @@ $vouncher = $conn
                                             <input type="hidden" name="id" value="<?=$p['id']?>">
                                             <label style="background-color: orangered; color: white;" for="p-delete-<?=$p['id']?>">Delete Product</label>
                                         </form>
-                                        <form action="update_item_admin.php" method="post">
-                                            <input type="submit" id="p-update" hidden>
-                                            <label style="background-color: black; color: white;" for="p-update">Update Product</label>
-                                        </form>
+                                        <span onclick="window.location.href='../Pages/update.php?id=<?=$p['id']?>'">update product</span>
                                     </div>
                                 </div>
                             <?php endif; ?>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-                <div id="user" style="display: none;">
+                <div id="user" style="display: none;" class="list-view">
                     <?php if(empty($userdata)): ?>
                         <span>Nothing in user table</span>
                     <?php else: ?>
@@ -331,7 +325,7 @@ $vouncher = $conn
                                                       font-size: 10px; 
                                                       border: none;">
                                 <img style="width: 60px; height: 60px; border-radius: 50%;" src="../upload/<?=$u['img']?>" alt="">
-                                <span><?=$u['username']?></span>
+                                <span><?=$u['email']?></span>
                             </div>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -355,7 +349,7 @@ $vouncher = $conn
                                 Add new product
                     </div>
                     <form action="insert_database_admin.php" method="post">
-                        <input type="submit" value="add full database">
+                        <input type="submit" value="add full database (product)">
                     </form>
                 </div>
                 <div id="s-user" style="display: none;" class="search-div">
@@ -372,6 +366,9 @@ $vouncher = $conn
                                                   height: 110%;">
                                 Add new vouncher
                     </div>
+                    <form action="insert_voucher_database_admin.php">
+                        <input type="submit" value="add full database (voucher)">
+                    </form>
                 </div>
             </div>
         </div>

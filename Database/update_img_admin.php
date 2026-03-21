@@ -10,10 +10,10 @@ if ($conn->connect_error) {
 }
 
 $id  = $_POST['id'];
-$img = $_POST['img'];
+$img = $_POST['product_img'];
 
-$sql = "UPDATE employeedata SET
-            img = '$img'
+$sql = "UPDATE products SET
+            product_img = '$img'
         WHERE id = $id";
 
 if ($conn->query($sql)) {

@@ -46,7 +46,7 @@ if($ptmt->num_rows>0){
     <link rel="stylesheet" href="../Css/detail.css">
     <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
     <?php foreach($data as $row): ?>
-    <title>Trinity <?=$row['product_name']?></title>
+    <title>Trinity Style - <?=$row['product_name']?></title>
     <?php endforeach; ?>
     <link
       href="https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
@@ -391,15 +391,15 @@ body{
         <div class="menu-title">TRINITY</div>
             <div class="submenu">
                 <div class="submenu-item">T-shirt
-                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic T-shirt'">Basic</div>
-                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Oversize T-shirt'">Oversize</div>
+                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic T-shirt#product-header'">Basic</div>
+                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Oversize T-shirt#product-header'">Oversize</div>
             </div>
             <div class="submenu-item">Polo shirt
-                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic Polo'">Basic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Logo Polo'">Logo</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic Polo#product-header'">Basic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Logo Polo#product-header'">Logo</div>
             </div>
             <div class="submenu-item">Hoodie
-                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Hoodie'">Signature</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Hoodie#product-header'">Signature</div>
             </div>
         </div>
     </div>
@@ -407,16 +407,16 @@ body{
         <div class="menu-title">TRINITY LADIES</div>
         <div class="submenu">
             <div class="submenu-item">T-shirt
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic T-shirt'">Basic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Oversize T-shirt'">Oversize</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic T-shirt#product-header'">Basic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Oversize T-shirt#product-header'">Oversize</div>
             </div>
             <div class="submenu-item">Blouse
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Classic Blouse'">Classic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Wrap Blouse'">Warp</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Classic Blouse#product-header'">Classic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Wrap Blouse#product-header'">Warp</div>
             </div>
             <div class="submenu-item">Crop top
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic CropTop'">Basic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Tank CropTop'">Tank</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic CropTop#product-header'">Basic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Tank CropTop#product-header'">Tank</div>
             </div>
         </div>
     </div>
@@ -429,7 +429,7 @@ body{
     <div class="menu-item">
         <div class="menu-title">TRINITY TIER</div>
         <div class="submenu">
-            <div>Check your shopping tier</div>
+            <div onclick="window.location.href='userTier.php'">Check your shopping tier</div>
         </div>
     </div>
     <div class="menu-item">
@@ -437,52 +437,67 @@ body{
     </div>
 </div>
 </section>
-<section id="footer-2">
-            <div class="footer-info" id="fi-1">
-                <h2>POLICY</h2>
-                <p>Term of delivery</p>
-                <p>Term of return</p>
-                <p>Purchase policy</p>
-            </div>
+<footer class="footer-2">
+  <div class="footer-container">
+    <div class="footer-left">
+      <p class="footer-label">CONTACT US</p>
+      <h2 class="footer-title">
+        Let’s Discuss Your <br> Style. With Us
+      </h2>
+      <button class="footer-btn">
+        Schedule a call now →
+      </button>
+      <p class="footer-email-label">OR EMAIL US AT</p>
+      <div class="footer-email">
+        triple3tbusiness@gmail.com
+        <span>📋</span>
+      </div>
+    </div>
 
-            <div class="footer-info" id="fi-2">
-                <h2>ABOUT US</h2>
-                <p>Trinity</p>
-                <p>Leadership Team</p>
-            </div>
+    <div class="footer-right">
+      <div class="footer-col">
+        <p class="footer-col-title">QUICK LINKS</p>
+        <a href="#">Home</a>
+        <a href="#">Case Studies</a>
+        <a href="#">Gallery</a>
+        <a href="#">Blogs</a>
+        <a href="#">About Us</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">INFORMATION</p>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Cookies Settings</a>
+      </div>
+    </div>
+  </div>
 
-            <div class="footer-info" id="fi-3">
-                <h2>GET LATEST DEALS AND MORE</h2>
-                <span>Email: triple3tbusiness@gmail.com</span>
-                <span>Hotline: 0909.xxx.xxx</span>
-                <input placeholder="Contact us...">
-            </div>
+  <div class="footer-bottom">
+    <p>Copyright (c) 2026 trinity-newfed</p>
 
+    <div class="footer-social">
+      <span>f</span>
+      <span>t</span>
+      <span>ig</span>
+      <span>in</span>
+    </div>
+  </div>
+</footer>
 
-            <div class="footer-info" id="fi-4">
-                <h2>SUPPORT</h2>
-                <span>Direct chat</span>
-                <span>Hotline: 0808.xxx.xxx</span>
-                <div style="display: grid; place-items: center;">
-                    <h2>Follow up</h2>
-                    <input placeholder="Enter your email...">
-                </div>
-            </div>
-
-            <div class="footer-info" id="fi-5" style="position: absolute; bottom: 5%; width: 100%; height: 10%; border-top: 1px solid gray;">
-                <h1>CONTACT US</h1>
-            </div>
-</section>
 </body>
 <script>
-    let email = "abc@gmail.com";
+    const email = <?= isset($_SESSION['username']) ? json_encode($_SESSION['username']) : '""' ?>;
     let username1 = email.replace("@gmail.com", "");
-    document.getElementById("menu-Username").textContent = "Hi, " + username1;
+    const userWelcome = document.getElementById("menu-Username");
     const items = document.querySelectorAll(".items");
     const mainId = document.getElementById("mainId").dataset.id;
     const mainType = document.getElementById("mainType").dataset.type;
     const mainColor = document.getElementById("mainColor").dataset.color;
     const sizeAdd = document.querySelectorAll(".size label");
+
+    if(userWelcome){
+            userWelcome.textContent = "Hi, " + username1;
+        }
 
     items.forEach(item =>{
         const type = item.dataset.type;

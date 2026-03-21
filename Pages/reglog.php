@@ -256,7 +256,7 @@
         color: white;
         cursor: pointer;
         position: relative;
-        transition: .2s all;
+        transition: .5s all;
         padding-left: 30px;
       }
       #leftContainer span::before{
@@ -268,13 +268,13 @@
         height: 2px;
         background: white;
         transform: translateY(-50%);
-        transition: .01ms all;
+        transition: .001ms all;
         opacity: 0;
       }
       #leftContainer span:hover::before{
         opacity: 1;
-        transition: .3s all;
-        width: 30px;
+        transition: .6s all;
+        width: 15%;
       }
       input[type="number"]::-webkit-outer-spin-button,
       input[type="number"]::-webkit-inner-spin-button {

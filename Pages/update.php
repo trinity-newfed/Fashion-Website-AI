@@ -4,18 +4,23 @@ $conn = new mysqli("localhost", "root", "", "TF_Database");
 if ($conn->connect_error) {
     die("error" . $conn->connect_error);
 }
-
-$employee = $conn
-  ->query("SELECT * FROM employeedata")
-  ->fetch_all(MYSQLI_ASSOC);
+if($_SESSION['role'] !== "admin"){
+    echo "<script>
+        alert('Restrict permission!');
+        window.location.href='../Pages/';
+    </script>";
+    exit();
+}
+$id = $_GET['id'];
+$products = $conn->query("SELECT * FROM products WHERE id = $id")
 ?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Update Employee</title>
-
+<title>Update Admin</title>
+<link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -80,8 +85,9 @@ input:focus {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    object-fit: cover;
+    object-fit: scale-down;
     border: 2px solid #eee;
+    background: #b2b2b2;
 }
 
 button {
@@ -104,58 +110,58 @@ button:hover {
 <body>
 <div class="container">
 
-<?php foreach ($employee as $row): ?>
+<?php foreach ($products as $row): ?>
 <form action="update_employee.php" method="post" enctype="multipart/form-data">
 
 <div class="card">
-    <h2>Cập nhật nhân viên #<?= $row['id'] ?></h2>
+    <h2>Product Update #<?= $row['id']?></h2>
 
     <input type="hidden" name="id" value="<?= $row['id'] ?>">
-    <input type="hidden" name="old_img" value="<?= $row['img'] ?>">
+    <input type="hidden" name="old_img" value="../<?=$row['product_img'] ?>">
 
     <div class="form-grid">
 
         <div class="form-group">
-            <label>Họ tên</label>
-            <input type="text" name="name" value="<?= $row['name'] ?>">
+            <label>Product Name</label>
+            <input type="text" name="name" value="<?= $row['product_name']?>">
         </div>
 
         <div class="form-group">
-            <label>Email</label>
-            <input type="email" name="email" value="<?= $row['email'] ?>">
+            <label>Product Price</label>
+            <input type="email" name="email" value="<?= $row['product_price'] ?>">
         </div>
 
         <div class="form-group">
-            <label>Địa chỉ</label>
-            <input type="text" name="address" value="<?= $row['address'] ?>">
+            <label>Product Type</label>
+            <input type="text" name="address" value="<?= $row['product_type'] ?>">
         </div>
 
         <div class="form-group">
-            <label>Hotline</label>
-            <input type="text" name="hotline" value="<?= $row['hotline'] ?>">
+            <label>Product Describe</label>
+            <input type="text" name="hotline" value="<?= $row['product_describe'] ?>">
         </div>
 
         <div class="form-group">
-            <label>Rating</label>
-            <input type="text" name="rating" value="<?= $row['rating'] ?>">
+            <label>Product Color</label>
+            <input type="text" name="rating" value="<?= $row['product_color'] ?>">
         </div>
         <div class="avatar">
-            <img src="../../pictures/<?= $row['img'] ?>">
+            <img src="../<?= $row['product_img'] ?>">
         </div>
     </div>
-    <button type="submit">Cập nhật</button>
+    <button type="submit">Update</button>
 </div>
 </form>
 <?php endforeach; ?>
 
-<?php foreach ($employee as $row): ?>
+<?php foreach ($products as $row): ?>
 <form action="update_employee_img.php" method="post">
     <div class="form-group">
-        <label>Ảnh mới</label>
+        <label>New Image</label>
         <input type="hidden" name="id" value="<?= $row['id'] ?>">
         <input type="file" placeholder="Ảnh" name="img" value="img3.jpg">
     </div>
-    <button style="left: 10px; position: relative;" type="submit">Cập nhật ảnh</button>
+    <button style="left: 10px; position: relative;" type="submit">Update Image</button>
 </form>
 <?php endforeach; ?>
 </div>

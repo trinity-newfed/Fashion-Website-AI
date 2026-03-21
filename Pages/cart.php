@@ -9,9 +9,9 @@ $conn = new mysqli($host, $user, $password, $dbname);
 session_start();
 //VOUNCHER FETCH
 if(isset($_SESSION['username'])) {
-    $username = $_SESSION['username'];
-    $stmt = $conn->prepare("SELECT * FROM voucher WHERE username = ?");
-    $stmt->bind_param("s", $username);
+    $voucher_id = $_GET['voucher_id'] ?? null;
+    $stmt = $conn->prepare("SELECT * FROM voucher WHERE voucher_id = ?");
+    $stmt->bind_param("s", $voucher_id);
     $stmt->execute();
     $vouncher = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 } else {
@@ -31,7 +31,7 @@ SELECT
     cart.product_id,
     products.product_name,
     products.product_price,
-    products.product_color,
+    cart.product_color,
     products.product_category,
     products.product_img,
     cart.cart_size,
@@ -60,7 +60,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../Css/cart.css">
     <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
-    <title>TRINITY CART</title>
+    <title>Trinity Style - Cart</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Birthstone&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"/>
@@ -71,6 +71,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 <body>
 <section id="body">
         <div id="cart-header">SHOPPING CART</div>
+    <form action="../Database/checkout.php" method="POST" style="width: 100%; height: 100%; top: 12.5%; position: relative;">
         <div id="cart-item-container">
             <div id="item-list">
                 <div id="item-info">
@@ -87,37 +88,23 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 <?php else: ?>
                 <?php foreach($data as $d): ?>
                 <div class="items">
-                    <input type="checkbox" class="item-checkbox">
-                    <div id="items-image-container"><img src="../<?=$d['product_img']?>" alt=""></div>
+                    <input type="checkbox" class="item-checkbox" name="cart_ids[]" value="<?=$d['cart_id']?>">
+                    <div id="items-image-container"><img src="../<?=$d['product_img']?>" onclick="window.location.href='detail.php?id=<?=$d['product_id']?>'"></div>
                     <div id="items-info-container">
-                        <span style="font-weight: bolder;"></span>
+                        <span style="font-weight: bolder;"><?=$d['product_name']?></span>
                         <span style="color: rgba(0, 0, 0, 0.5); font-weight: 400;"><?=$d['product_color']?> / <?=$d['cart_size']?></span>
-                        <form action="../Database/delete_item_cart.php" method="POST">
-                            <label for="remove-input" id="label-for-remove-input">Remove</label>
-                            <input type="text" name="id" value="<?=$d['cart_id']?>" hidden>
-                            <input type="submit" id="remove-input" hidden>
-                        </form>
+                            <label for="remove-input" id="label-for-remove-input" onclick="window.location.href='../Database/delete_item_cart.php?id=<?=$d['cart_id']?>'">Remove</label>
                     </div>
                     <div class="items-price-container" style="font-size: clamp(0.35rem, 0.9vw, 1rem); width: 20%;">
                         <?=$d['product_price']?> $
                     </div>
                     <div id="items-quantity-container">
-                        <form action="../Database/cart_update.php" method="post">
-                            <input type="text" name="username" value="<?=$_SESSION['username']?>" hidden>
-                            <input type="text" name="product_id" value="<?=$d['product_id']?>" hidden>
-                            <input type="text" name="action" value="minus" hidden>
-                            <button type="submit" id="minus-input" class="operation-button">-</button>
-                        </form>
+                            <button type="button" id="minus-input" class="operation-button" data-id="<?=$d['cart_id']?>" data-action="minus">-</button>
                         <span class="item-quantity"><?=$d['quantity']?></span>
-                        <form action="../Database/cart_update.php" method="post">
-                            <input type="text" name="username" value="<?=$_SESSION['username']?>" hidden>
-                            <input type="text" name="product_id" value="<?=$d['product_id']?>" hidden>
-                            <input type="text" name="action" value="plus" hidden>
-                            <button type="submit" id="plus-input" class="operation-button">+</button>
-                        </form>
+                            <button type="button" id="plus-input" class="operation-button" data-id="<?=$d['cart_id']?>" data-action="plus">+</button>
                     </div>
                     <div class="items-total-container">
-                        <span style="font-size: clamp(0.35rem, 0.9vw, 1rem); position: relative; left: 70%;">0</span>
+                        <span style="font-size: clamp(0.35rem, 0.9vw, 1rem); position: relative;">0</span>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -158,11 +145,12 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                         <?php else: ?>
                         <span id="final-total">0$</span>
                         <?php endif; ?>
-                    </div>
-                    <div id="order-btn">Check out</div>
+                    </div>       
+                    <button type="submit" id="order-btn">Checkout</button>
                 </div>
             </div>
         </div>
+    </form>
     </section>
     <section id="menu">
         <div id="text-menu">
@@ -206,15 +194,15 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         <div class="menu-title">TRINITY</div>
             <div class="submenu">
                 <div class="submenu-item">T-shirt
-                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic T-shirt'">Basic</div>
-                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Oversize T-shirt'">Oversize</div>
+                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic T-shirt#product-header'">Basic</div>
+                    <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Oversize T-shirt#product-header'">Oversize</div>
             </div>
             <div class="submenu-item">Polo shirt
-                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic Polo'">Basic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Logo Polo'">Logo</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Basic Polo#product-header'">Basic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Logo Polo#product-header'">Logo</div>
             </div>
             <div class="submenu-item">Hoodie
-                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Hoodie'">Signature</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=men&name=Hoodie#product-header'">Signature</div>
             </div>
         </div>
     </div>
@@ -222,16 +210,16 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         <div class="menu-title">TRINITY LADIES</div>
         <div class="submenu">
             <div class="submenu-item">T-shirt
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic T-shirt'">Basic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Oversize T-shirt'">Oversize</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic T-shirt#product-header'">Basic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Oversize T-shirt#product-header'">Oversize</div>
             </div>
             <div class="submenu-item">Blouse
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Classic Blouse'">Classic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Wrap Blouse'">Warp</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Classic Blouse#product-header'">Classic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Wrap Blouse#product-header'">Warp</div>
             </div>
             <div class="submenu-item">Crop top
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic CropTop'">Basic</div>
-                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Tank CropTop'">Tank</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Basic CropTop#product-header'">Basic</div>
+                <div class="sub-sub" onclick="window.location.href='products.php?category=women&name=Tank CropTop#product-header'">Tank</div>
             </div>
         </div>
     </div>
@@ -244,7 +232,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <div class="menu-item">
         <div class="menu-title">TRINITY TIER</div>
         <div class="submenu">
-            <div>Check your shopping tier</div>
+            <div onclick="window.location.href='userTier.php'">Check your shopping tier</div>
         </div>
     </div>
     <div class="menu-item">
@@ -252,57 +240,73 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     </div>
 </div>
 </section>
-<section id="footer-2">
-            <div class="footer-info" id="fi-1">
-                <h2>POLICY</h2>
-                <p>Term of delivery</p>
-                <p>Term of return</p>
-                <p>Purchase policy</p>
-            </div>
+<footer class="footer-2">
+  <div class="footer-container">
+    <div class="footer-left">
+      <p class="footer-label">CONTACT US</p>
+      <h2 class="footer-title">
+        Let’s Discuss Your <br> Style. With Us
+      </h2>
 
-            <div class="footer-info" id="fi-2">
-                <h2>ABOUT US</h2>
-                <p>Trinity</p>
-                <p>Leadership Team</p>
-            </div>
+      <button class="footer-btn">
+        Schedule a call now →
+      </button>
 
-            <div class="footer-info" id="fi-3">
-                <h2>GET LATEST DEALS AND MORE</h2>
-                <span>Email: triple3tbusiness@gmail.com</span>
-                <span>Hotline: 0909.xxx.xxx</span>
-                <input placeholder="Contact us...">
-            </div>
+      <p class="footer-email-label">OR EMAIL US AT</p>
 
+      <div class="footer-email">
+        triple3tbusiness@gmail.com
+        <span>📋</span>
+      </div>
+    </div>
 
-            <div class="footer-info" id="fi-4">
-                <h2>SUPPORT</h2>
-                <span>Direct chat</span>
-                <span>Hotline: 0808.xxx.xxx</span>
-                <div style="display: grid; place-items: center;">
-                    <h2>Follow up</h2>
-                    <input placeholder="Enter your email...">
-                </div>
-            </div>
+    <div class="footer-right">
+      <div class="footer-col">
+        <p class="footer-col-title">QUICK LINKS</p>
+        <a href="#">Home</a>
+        <a href="#">Case Studies</a>
+        <a href="#">Gallery</a>
+        <a href="#">Blogs</a>
+        <a href="#">About Us</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-title">INFORMATION</p>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Cookies Settings</a>
+      </div>
+    </div>
+  </div>
 
-            <div class="footer-info" id="fi-5" style="position: absolute; bottom: 5%; width: 100%; height: 10%; border-top: 1px solid gray;">
-                <h1>CONTACT US</h1>
-            </div>
-</section>
+  <div class="footer-bottom">
+    <p>Copyright (c) 2026 trinity-newfed</p>
+    <div class="footer-social">
+      <span>f</span>
+      <span>t</span>
+      <span>ig</span>
+      <span>in</span>
+    </div>
+  </div>
+</footer>
     <script>
-        let email = "abc@gmail.com";
+        const email = <?= isset($_SESSION['username']) ? json_encode($_SESSION['username']) : '""' ?>;
         let username1 = email.replace("@gmail.com", "");
-        document.getElementById("menu-Username").textContent = "Hi, " + username1;
-        const items = document.querySelectorAll(".items");
+        const userWelcome = document.getElementById("menu-Username");
         const finalTotal = document.getElementById("final-total");
+        
+        if(userWelcome){
+            userWelcome.textContent = "Hi, " + username1;
+        }
 
     function calculateFinalTotal(){
+        const items = document.querySelectorAll(".items");
         let total = 0;
         items.forEach(item =>{
             const checkbox = item.querySelector(".item-checkbox");
-            let itemsTotal = item.querySelector(".items-total-container");
+            let itemsTotal = item.querySelector(".items-total-container span");
             let price = item.querySelector(".items-price-container").textContent;
             let quantity = item.querySelector(".item-quantity").textContent;
-            price = parseInt(price.replace("$",""));
+            price = parseFloat(price.replace("$",""));
             quantity = parseInt(quantity);
 
             itemsTotal.textContent = quantity * price + "$";
@@ -313,19 +317,60 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             }
         });
         finalTotal.textContent = total + "$";
-            let freeShippingCalculate = total + 100;
-            if(freeShippingCalculate >= 0){
-                document.getElementById("progress-bar").style.width = `${freeShippingCalculate/10}%`;
-                if(freeShippingCalculate >= 1000){
+        let freeShippingCalculate = total;
+            if(freeShippingCalculate > 0){
+                document.getElementById("progress-bar").style.width = `${freeShippingCalculate/7}%`;
+                if(freeShippingCalculate > 700){
+                    document.getElementById("deli-fee").textContent = "100% off";
                     document.getElementById("shipping-label").textContent = "Free Shipping";
-                }else if(freeShippingCalculate < 1000){
-                    document.getElementById("deli-fee").textContent = `${freeShippingCalculate/10}% off`;
-                    document.getElementById("shipping-label").textContent = "Buy more to enjoy Free Shipping";
+                }else{
+                    document.getElementById("deli-fee").textContent = `${parseFloat((freeShippingCalculate/7).toFixed(0))}% off`;
+                    document.getElementById("shipping-label").textContent = "Buy $" + (700 - freeShippingCalculate) + " more enjoy Free Shipping";
                 }
+            }else{
+                document.getElementById("progress-bar").style.width = "10%";
+                document.getElementById("deli-fee").textContent = "";
+                document.getElementById("shipping-label").textContent = "Buy more enjoy Free Shipping";
             }
     }
+
+    const operationBtn = document.querySelectorAll(".operation-button");
+    operationBtn.forEach(btn =>{
+        btn.addEventListener('click', function(){
+            btn.disabled = true;
+            const id = this.dataset.id;
+            const action = this.dataset.action;
+            const item = btn.closest(".items");
+            const quantities = item.querySelector(".item-quantity");
+
+            let quantity = parseInt(quantities.textContent);
+
+            if(action === "plus"){
+                quantity++;
+            }else if(action === "minus" && quantity > 1){
+                quantity--;
+            }else if(action === "minus" && quantity <= 1){
+                location.reload();
+            }
+
+            quantities.textContent = quantity;
+            fetch('../Database/cart_update.php', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `cart_id=${id}&action=${action}`
+            })
+            .then(() => {btn.disabled = false;
+                        calculateFinalTotal();
+            });
+        });
+    });
+    
+
+
         document.querySelectorAll(".item-checkbox").forEach(checkbox =>{
-            checkbox.addEventListener("change", calculateFinalTotal);
+            checkbox.addEventListener('change', calculateFinalTotal);
         });
         calculateFinalTotal();
 

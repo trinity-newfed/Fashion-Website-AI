@@ -1,9 +1,36 @@
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$dbname = "TF_Database";
+
+$conn = new mysqli($host, $user, $password, $dbname);
+session_start();
+if(!isset($_SESSION['username'])){
+  header("Location: reglog.php");
+  exit();
+}
+$username = $_SESSION['username'];
+$cart_ids = $_SESSION['checkout_cart_ids'];
+
+$sql = "SELECT * FROM userdata
+        WHERE email = ?";
+$stmt = $conn->prepare($sql);
+if(!$stmt){
+    die("Prepare failed: " . $conn->error);
+}
+$stmt->bind_param("s", $username);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+?>
 <!DOCTYPE html>
-<!-- saved from url=(0046)file:///E:/Trinity-Style-AI/Pages/payment.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trinity Style - Payment</title>
+    <link rel="icon" type="image/png" href="../Pictures/Banners/logo.png">
     <style>
         body, html {
             margin: 0;
@@ -11,7 +38,7 @@
             width: 100%;
             height: 100%;
             font-family: Arial, sans-serif;
-            background: url("https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop") no-repeat center center/cover;
+            background: url("../Pictures/Banners/payment-bg.png") no-repeat center center/cover;
         }
 
         .modal-overlay {
@@ -20,7 +47,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
@@ -181,25 +207,26 @@
             </div>
 
             <p>Information</p>
+            <form action="../Database/order.php">
             <div class="info-form">
                 <div class="input-group">
-                    <input type="text" id="name" placeholder=" " required="">
-                    <label for="name">Full Name</label>
+                        <input type="text" id="name" value=<?=$username?> readonly>
+                        <label for="name">Full Name</label>
                 </div>
                 
                 <div class="input-group">
-                    <input type="text" id="phone" placeholder=" " required="">
-                    <label for="phone">Phone Number</label>
+                        <input type="text" id="phone" value="<?=$user['user_hotline']?>" readonly>
+                        <label for="phone">Phone Number</label>
                 </div>
 
                 <div class="input-group">
-                    <input type="text" id="address" placeholder=" " required="">
+                    <input type="text" id="address" required>
                     <label for="address">Shipping Address</label>
                 </div>
 
                 <div id="wallet-field" class="wallet-only" style="display: flex;">
                     <div class="input-group">
-                        <select id="bank" required="">
+                        <select id="bank" required>
                             <option value="" disabled="" selected="" hidden=""></option>
                             <option value="vcb">Vietcombank</option>
                             <option value="tcb">Techcombank</option>
@@ -225,13 +252,13 @@
                         <label for="bank">Select Bank</label>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="wallet-id" placeholder=" ">
+                        <input type="text" id="wallet-id" pattern="[0-9]{8,16}" maxlength="16" inputmode="numberic" required>
                         <label for="wallet-id">Account Number / ID</label>
                     </div>
                 </div>
-
-                <button class="btn-submit">Confirm Order</button>
+                <button class="btn-submit" type="submit">Confirm Order</button>
             </div>
+            </form>
         </div>
     </div>
 
