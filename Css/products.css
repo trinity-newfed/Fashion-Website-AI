@@ -69,7 +69,6 @@
     font-family: "Montserrat", serif;
     color: rgb(0, 0, 0);
     font-size: clamp(.75rem, 1.75vw, 2.5rem);
-    cursor: default;
 }
 #text{
     width: 60%;
