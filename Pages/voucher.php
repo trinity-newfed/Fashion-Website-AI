@@ -80,9 +80,10 @@ $used_voucher->close();
 
 
 
-<div class="voucher-list" id="all">
+<div class="voucher-list" id="all" style="display: none;">
     <?php foreach($voucher as $v): ?>
-        <?php if(in_array($v['id'], $used_ids)) continue; ?>
+        <?php if($users['user_tier'] >= $v['voucher_min_tier']): ?>
+            <?php if(in_array($v['id'], $used_ids)) continue; ?>
             <div class="voucher-card">
                 <div class="voucher-brand">
                     <h4>TRINITY</h4>
@@ -103,11 +104,10 @@ $used_voucher->close();
                     <input type="hidden" name="voucher_id" value="<?=$v['id']?>">
                     <button type="submit">Claim</button>
                     </form>
-                <?php else: ?>
-                    <button disabled>🔒 Unlock at <?=$tierNames[$tier - 1]?></button>
                 <?php endif; ?>
                 </div>
             </div>
+        <?php endif; ?>
     <?php endforeach; ?>
 </div>
 <div class="voucher-list" id="available" style="display: none;">
@@ -306,6 +306,13 @@ $used_voucher->close();
     const buttons = document.querySelectorAll(".active");
 
 
+
+
+    document.getElementById("all").style.display = "";
+    const active = document.querySelector(".voucher-filter");
+    const activate = active.querySelectorAll("button");
+    activate.forEach(act => act.classList.remove("active"));
+    active.querySelector("button").classList.add("active");
     buttons.forEach(button =>{
         const type = button.textContent.toLowerCase();
         button.addEventListener('click', ()=>{
@@ -313,7 +320,7 @@ $used_voucher->close();
             button.classList.add('active');
             cards.forEach(card => {
                 const cardType = card.id ? card.id.toLowerCase() : "all";
-                if(type === "all" || cardType === type){
+                if(cardType === type){
                     card.style.display = "";
                 }else{
                     card.style.display = "none";
