@@ -47,9 +47,9 @@ $conn->query("CREATE TABLE IF NOT EXISTS orders(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100),
     order_name VARCHAR(100),
-    order_original_price VARCHAR(100),
-    discount VARCHAR(100),
-    order_final_price VARCHAR(100),
+    order_original_price DECIMAL(10,2),
+    discount INT,
+    order_final_price DECIMAL(10,2),
     order_state ENUM('success','cancel','delivery','delivered'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
@@ -57,7 +57,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS order_items(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     order_id VARCHAR(100),
     product_name VARCHAR(100),
-    order_original_price VARCHAR(100),
+    order_original_price DECIMAL(10,2),
     product_id INT,
     price DECIMAL(10,2),
     img VARCHAR(100),

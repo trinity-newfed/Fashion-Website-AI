@@ -26,6 +26,22 @@ $stmt->execute();
 $userdata = $stmt->get_result();
 $users = $userdata->fetch_assoc();;
 $stmt->close();
+
+$stmt = $conn->prepare("SELECT 
+                        COUNT(*) AS total_orders, 
+                        SUM(order_final_price) AS total_spent 
+                        FROM orders WHERE username = ?");
+
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+$orderData = $result->fetch_assoc();
+$totalOrdersCount = $orderData['total_orders'] ?? 0;
+$totalSpent = $orderData['total_spent'] ?? 0;
+$nextTierSilver = 500 - $totalSpent;
+$nextTierGold = 2000 - $totalSpent;
+$nextTierDiamond = 5000 - $totalSpent;
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -57,10 +73,14 @@ $stmt->close();
                 </div>
                 <div class="card-body">
                     <h3>New Member</h3>
-                    <div class="progress-bar"><div class="progress" style="width: 10%;"></div></div>
-                    <p class="next-step">Spend $200 more to upgrade your tier to silver</p>
+                    <div>
+                        <span>Orders: <?=$totalOrdersCount?>/10</span>
+                        <span>Total spent: <?=$totalSpent?>$/500</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress" data-tier="bronze" style="width: <?=($totalSpent/500)*100?>%; max-width: 100%;"></div></div>
+                    <p class="next-step">Spend <?=$nextTierSilver?>$ more to upgrade your tier to silver</p>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer" onclick="window.location.href='voucher.php'">
                     <span>Get more deals for loyal customer</span>
                     <i>&rsaquo;</i>
                 </div>
@@ -78,10 +98,14 @@ $stmt->close();
                 </div>
                 <div class="card-body">
                     <h3>Silver</h3>
-                    <div class="progress-bar"><div class="progress" style="width: 15%;"></div></div>
-                    <p class="next-step">Spend $1000 more to upgrade your tier to gold</p>
+                    <div>
+                        <span>Orders: <?=$totalOrdersCount?>/25</span>
+                        <span>Total spent: <?=$totalSpent?>$/2000</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress" data-tier="silver" style="width: <?=($totalSpent/2000)*100?>%; max-width: 100%;"></div></div>
+                    <p class="next-step">Spend <?=$nextTierGold?>$ more to upgrade your tier to gold</p>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer" onclick="window.location.href='voucher.php'">
                     <span>Get more deals for loyal customer</span>
                     <i>&rsaquo;</i>
                 </div>
@@ -99,10 +123,14 @@ $stmt->close();
                 </div>
                 <div class="card-body">
                     <h3>Gold</h3>
-                    <div class="progress-bar"><div class="progress" style="width: 20%;"></div></div>
-                    <p class="next-step">Spend $4000 more to upgrade your tier to diamond</p>
+                    <div>
+                        <span>Orders: <?=$totalOrdersCount?>/40</span>
+                        <span>Total spent: <?=$totalSpent?>$/5000</span>
+                    </div>
+                    <div class="progress-bar"><div class="progress" data-tier="gold" style="width: <?=($totalSpent/5000)*100?>%; max-width: 100%;"></div></div>
+                    <p class="next-step">Spend <?=$nextTierDiamond?>$ more to upgrade your tier to diamond</p>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer" onclick="window.location.href='voucher.php'">
                     <span>Get more deals for loyal customer</span>
                     <i>&rsaquo;</i>
                 </div>
@@ -120,9 +148,13 @@ $stmt->close();
                 </div>
                 <div class="card-body">
                     <h3>Diamond</h3>
-                    <div class="progress-bar"><div class="progress" style="width: 30%;"></div></div>
+                    <div>
+                        <span>Orders: <?=$totalOrdersCount?></span>
+                        <span>Total spent: <?=$totalSpent?>$</span>
+                    </div>
+                    <div class="progress-bar progress-bar-diamond">💎<span>You are at the highest tier</span></div>
                 </div>
-                <div class="card-footer">
+                <div class="card-footer" onclick="window.location.href='voucher.php'">
                     <span>Get more deals for loyal customer</span>
                     <i>&rsaquo;</i>
                 </div>

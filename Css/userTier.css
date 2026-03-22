@@ -87,9 +87,80 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     position: relative;
 }
+.card.silver{
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    background: linear-gradient(
+        135deg,
+        #dfe6e9,
+        #f5f7fa,
+        #cfd8dc
+    );
+    box-shadow: 
+        inset 0 0 8px rgba(255,255,255,0.4),
+        0 0 10px rgba(200,200,200,0.2);
+}
+.card.silver::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,0.25),
+        transparent
+    );
+    transform: skewX(-15deg);
+    animation: silverShine 6s infinite;
+}
+@keyframes silverShine {
+    0% { left: -50%; }
+    100% { left: 120%; }
+}
+.card.gold{
+    background: linear-gradient(
+        135deg,
+        #b8963a,
+        #d4af37,
+        #f0d77a,
+        #caa74a
+    );
+    position: relative;
+    overflow: hidden;
 
-.card.diamond { color: #f1c40f; }
+}
+.card.gold::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 60%;
+    height: 100%;
 
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.25),
+        transparent
+    );
+
+    transform: skewX(-20deg);
+    animation: goldShine 8s infinite;
+}
+@keyframes goldShine {
+    0% { left: -60%; }
+    100% { left: 130%; }
+}
+.card.diamond { 
+    background: linear-gradient(135deg, #1e2a38, #2f4f6f, #1c2b3a);
+    color: #f1c40f; 
+    border: 1px solid rgba(185, 242, 255, 0.2);
+    box-shadow: 0 0 20px rgba(185, 242, 255, 0.1);
+}
 .card-header {
     padding: 15px 20px;
     font-size: 0.9rem;
@@ -123,7 +194,29 @@ body {
     border-radius: 10px;
     margin-bottom: 10px;
 }
-
+.progress-bar-diamond{
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(90deg, #b9f2ff, #e0ffff, #b9f2ff);
+    box-shadow: 0 0 10px rgba(185, 242, 255, 0.6);
+    animation: shine 5s infinite;
+}
+.progress-bar-diamond span{
+    background: linear-gradient(45deg, #00d0ff, #00ccff, #00ffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: Textshine 5s infinite;
+}
+@keyframes shine {
+    0% { background-position: -400px; }
+    100% { background-position: 200px; }
+}
+@keyframes Textshine {
+    0% { background-position: -200px; }
+    100% { background-position: 200px; }
+}
 .progress {
     height: 100%;
     background: #fff;
@@ -519,4 +612,78 @@ body {
   .footer-right {
     gap: 40px;
   }
+}
+
+@media(max-width: 600px){
+    #footer div{
+        grid-template-columns: repeat(2, 1fr);
+    }
+    #feat-product div{
+        height: 90%;
+    }
+    #menu{
+        justify-content: space-around;
+    }
+    #text-menu{
+        width: 30%;
+    }
+    #text{
+        display: none;
+    }
+    #utility-menu{
+        width: 40%;
+        justify-content: space-around;
+    }
+    #category{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        place-items: center;
+        overflow-y: auto;
+    }
+    #head-banner-container img{
+        object-position: 70%;
+    }
+    #hero-text p{
+    margin-top: 15px;
+    font-size: clamp(.7rem,1.7vw,1.8rem);
+    color: #a8a8a8;
+    background: rgba(0, 0, 0, 0.05);
+    text-align: center;
+    display: flex;
+    justify-content: start;
+    }
+    #hero-text-2 p{
+        background: rgba(0, 0, 0, 0.05);
+        color: #ffffff;
+    }
+    #newest-collection button{
+        width: 30%;
+    }
+    #cta-tryon{
+        transform: translate(0, 200%);
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    #cta-tryon.b-show{
+        transition-delay: 4s;
+        transform: translate(0, 50%);
+    }
+    #cta-tryon h3{
+        font-size: 25px;
+    }
+    #cta-tryon button{
+        width: 50%;
+    }
+    #body-content-container::before{
+        display: none;
+    }
+    #bannerVideo{
+        object-fit: contain;
+        height: 60%;
+        position: relative;
+        right: 100%;
+    }
 }

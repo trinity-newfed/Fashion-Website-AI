@@ -140,6 +140,34 @@ try{
     $vDel->execute();
     $vDel->close();
 
+    $stmt = $conn->prepare("SELECT 
+                        COUNT(*) AS total_orders, 
+                        SUM(order_final_price) AS total_spent 
+                        FROM orders WHERE username = ?");
+
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $orderData = $result->fetch_assoc();
+    $totalOrdersCount = $orderData['total_orders'];
+    $totalSpent = $orderData['total_spent'];
+
+    $newTier = '1';
+
+    if($totalOrdersCount >= 40 && $totalSpent >= 2500 || $totalSpent >= 5000 && $totalOrdersCount >= 1){
+        $newTier = '4';
+    }elseif($totalOrdersCount >= 25 && $totalSpent >= 1000 || $totalSpent >= 2000 && $totalOrdersCount >= 1){
+        $newTier = '3';
+    } elseif($totalOrdersCount >= 10 && $totalSpent >= 200 || $totalSpent >= 500 && $totalOrdersCount >= 1){
+        $newTier = '2';
+    }
+
+    if($newTier !== '1'){
+        $tierUpdate = $conn->prepare("UPDATE userdata SET user_tier = ? WHERE email = ?");
+        $tierUpdate->bind_param("ss", $newTier, $username);
+        $tierUpdate->execute();
+        $tierUpdate->close();
+    }
     $conn->commit();
     unset($_SESSION['checkout_cart_ids']);
     header("Location: ../Pages/cart.php");
