@@ -113,7 +113,7 @@ $used_voucher->close();
 <div class="voucher-list" id="available" style="display: none;">
     <?php foreach($voucher as $v): ?>
         <?php if($users['user_tier'] >= $v['voucher_min_tier']): ?>
-            <?php if(in_array($v['id'], $used_ids)) continue; ?>
+            <?php if(!in_array($v['id'], $claimed)) continue; ?>
             <div class="voucher-card">
                 <div class="voucher-brand">
                     <h4>TRINITY</h4>
