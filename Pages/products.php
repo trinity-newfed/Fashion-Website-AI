@@ -182,7 +182,7 @@ $product = $conn
                     <button class="modal-add add-cart-btn-big" type="submit">ADD TO CART</button>
           </form>
       <div style="align-self: end; position: relative;" id="Try-on-form">
-        <button class="modal-try add-cart-btn-big" type="submit">Try with AI✨</button>
+        <button class="modal-try" type="submit">Try with AI✨</button>
         <div id="tooltip-explain">
           <h3>Virtual AI Try On</h3>
           <span>This is an feature for customers to try on our product</span>
@@ -435,26 +435,63 @@ setTimeout(() => {
 
 
       let timer;
+      const forms = document.getElementById("addCartForm");
       addCart.forEach(btn =>{
         btn.addEventListener('click', function(e){
-          if(!isLogin){
-            e.preventDefault();
-            clearTimeout(timer);
-            alert.classList.add("alert");
-            alertName.textContent = "TRINITY";
-            alertContent.textContent = "Please login first to use this feature!";
-            const okClick = alertOkBtn.addEventListener('click', ()=>{
-              window.location.href = "reglog.php";
-            });
-            const cancelClick = alertCancelBtn.addEventListener('click', ()=>{
-              alert.classList.remove("alert");
-            });
-            timer = setTimeout(function(){
-              alert.classList.remove("alert");
-            }, 5000);
+        e.preventDefault();
+        clearTimeout(timer);
+        if(!isLogin){
+          alert.classList.add("alert");
+          closeAlert.style.opacity = "1";
+          closeAlert.style.visibility = "visible";
+          closeAlert.onclick = () =>{
+            alert.classList.remove("alert");
           }
+          alertName.textContent = "TRINITY";
+          alertContent.textContent = "Please login first to use this feature!";
+          alertOkBtn.onclick = () =>{
+            window.location.href = "reglog.php";
+          };
+          alertCancelBtn.onclick = () =>{
+            alert.classList.remove("alert");
+          };
+          timer = setTimeout(function(){
+              alert.classList.remove("alert");
+          }, 5000);
+          return;
+        }else{
+          fetch("../Database/add_item_to_cart.php", {
+          method: "POST",
+          body: new FormData(forms)
+        })
+        .then(res => res.text())
+        .then(data => {
+          console.log("SERVER:", data);
+          clearTimeout(timer);
+          alert.classList.add("alert");
+          alertName.textContent = "TRINITY";
+          alertContent.textContent = "Add item to cart success, view it?";
+          document.getElementById("fileChoose").style.display = "none";
+          document.getElementById("genBtn").style.display = "none";
+          document.getElementById("progress-container").style.display = "none";
+          if(alert.classList.contains("tryon") || alert.classList.contains("tryon-close")){
+            alert.classList.add("temp");
+            alert.classList.remove("tryon");
+            alert.classList.remove("tryon-close");
+          }
+          alertOkBtn.onclick = () => {
+            window.location.href = "cart.php";
+          };
+          alertCancelBtn.style.display = "none";
+          alertOkBtn.style.display = "";
+          timer = setTimeout(function(){
+              alert.classList.remove("alert");
+          }, 5000);
+        });
+        }
         });
       });
+
       modal.addEventListener('click', function(e){
         if(e.target === modal){
           modal.style.display = "none";
@@ -476,30 +513,51 @@ setTimeout(() => {
         modal.style.display = "none";
       });
 
-      try_on.addEventListener('click', (e)=>{
+      try_on.addEventListener('click', function(e){
+        clearTimeout(timer);
         if(!isLogin){
-          e.preventDefault();
           alert.classList.add("alert");
           alertName.textContent = "TRINITY";
           alertContent.textContent = "Please login first to use this feature!";
-          const okClick = alertOkBtn.addEventListener('click', ()=>{
-            window.location.href = "reglog.php";
-          });
-          const cancelClick = alertCancelBtn.addEventListener('click', ()=>{
+          closeAlert.style.opacity = "1";
+          closeAlert.style.visibility = "visible";
+          closeAlert.onclick = () =>{
             alert.classList.remove("alert");
-          });
+          }
+          alertOkBtn.onclick =  ()=>{
+            window.location.href = "reglog.php";
+          };
+          alertCancelBtn.onclick = ()=>{
+            alert.classList.remove("alert");
+          };
           timer = setTimeout(function(){
               alert.classList.remove("alert");
             }, 5000);
         }else if(isLogin){
+          clearTimeout(timer);
+          timer = null;
             if(!alert.classList.contains("tryon-close") && !alert.classList.contains("tryon")){
               alertName.textContent = "TRINITY VIRTUAL AI TRY ON";
+              alertContent.textContent = "";
               alertOkBtn.style.display = "none";
               formTryOn.style.display = "flex";
+              closeAlert.style.opacity = "1";
+              closeAlert.style.visibility = "visible";
+              document.getElementById("fileChoose").style.display = "";
+              document.getElementById("genBtn").style.display = "";
+              if(alert.classList.contains("temp")){
+                document.getElementById("progress-container").style.display = "flex";
+                document.getElementById("fileChoose").style.display = "none";
+                document.getElementById("genBtn").style.display = "none";
+              }
+              alertCancelBtn.style.display = "";
+              closeAlert.onclick = () =>{
+                alert.classList.remove("alert");
+              }
               alert.classList.add("alert");
-              const cancelClick = alertCancelBtn.addEventListener('click', ()=>{
-              alert.classList.remove("alert");
-          });
+              alertCancelBtn.onclick = ()=>{
+                
+              };
             }
         }
       });
@@ -507,8 +565,10 @@ setTimeout(() => {
       const closeAlert = document.getElementById("closeAlertBtn");
 
       closeAlert.addEventListener('click', ()=>{
-        alert.classList.remove("tryon");
-        alert.classList.add("tryon-close");
+        if(alert.classList.contains("tryon")){
+          alert.classList.remove("tryon");
+          alert.classList.add("tryon-close");
+        }
       });
 
       alert.addEventListener('click', function(e){
