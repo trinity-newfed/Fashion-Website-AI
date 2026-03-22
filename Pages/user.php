@@ -146,13 +146,13 @@ foreach ($data as $d) {
     <div class="menu-item">
         <div class="menu-title">GIFT VOUNCHER</div>
         <div class="submenu">
-            <div onclick="window.location.href='voucher.php'">Check voucher</div>
+            <div onclick="window.location.href='voucher.php'" style="cursor: pointer;">Check voucher</div>
         </div>
     </div>
     <div class="menu-item">
         <div class="menu-title">TRINITY TIER</div>
         <div class="submenu">
-            <div onclick="window.location.href='userTier.php'">Check your shopping tier</div>
+            <div onclick="window.location.href='userTier.php'" style="cursor: pointer;">Check your shopping tier</div>
         </div>
     </div>
     <div class="menu-item">

@@ -17,7 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $address  = trim($_POST['user_address'] ?? null);
     $user_sex = isset($_POST["user_sex"]) ? $_POST["user_sex"] : "";
     $hotline  = trim($_POST['user_hotline']);
-    $password = $_POST['user_password'];
 
     if (empty($password)) {
     echo "<script>

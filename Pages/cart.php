@@ -100,20 +100,20 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 <?php else: ?>
                 <?php foreach($data as $d): ?>
                 <div class="items">
-                    <input type="checkbox" class="item-checkbox" name="cart_ids[]" value="<?=$d['cart_id']?>">
+                    <input style="cursor: pointer;" type="checkbox" class="item-checkbox" name="cart_ids[]" value="<?=$d['cart_id']?>">
                     <div id="items-image-container"><img src="../<?=$d['product_img']?>" onclick="window.location.href='detail.php?id=<?=$d['product_id']?>'"></div>
                     <div id="items-info-container">
                         <span style="font-weight: bolder;"><?=$d['product_name']?></span>
                         <span style="color: rgba(0, 0, 0, 0.5); font-weight: 400;"><?=$d['product_color']?> / <?=$d['cart_size']?></span>
-                            <label for="remove-input" id="label-for-remove-input" onclick="window.location.href='../Database/delete_item_cart.php?id=<?=$d['cart_id']?>'">Remove</label>
+                            <label style="cursor: pointer;" for="remove-input" id="label-for-remove-input" onclick="window.location.href='../Database/delete_item_cart.php?id=<?=$d['cart_id']?>'">Remove</label>
                     </div>
                     <div class="items-price-container" style="font-size: clamp(0.35rem, 0.9vw, 1rem); width: 20%;">
                         <?=$d['product_price']?> $
                     </div>
                     <div id="items-quantity-container">
-                            <button type="button" id="minus-input" class="operation-button" data-id="<?=$d['cart_id']?>" data-action="minus">-</button>
+                            <button style="cursor: pointer;" type="button" id="minus-input" class="operation-button" data-id="<?=$d['cart_id']?>" data-action="minus">-</button>
                         <span class="item-quantity"><?=$d['quantity']?></span>
-                            <button type="button" id="plus-input" class="operation-button" data-id="<?=$d['cart_id']?>" data-action="plus">+</button>
+                            <button style="cursor: pointer;" type="button" id="plus-input" class="operation-button" data-id="<?=$d['cart_id']?>" data-action="plus">+</button>
                     </div>
                     <div class="items-total-container">
                         <span style="font-size: clamp(0.35rem, 0.9vw, 1rem); position: relative;">0</span>
@@ -141,7 +141,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                         <?php if(empty($voucher)): ?>
                         <span>No Available Voucher</span>
                         <?php else: ?>
-                        <select id="voucher-select" name="id">
+                        <select id="voucher-select" name="id" style="cursor: pointer;">
                             <option value="0" id="main-voucher" class="voucher" data-condition="0" data-max="0">No selected</option>
                             <?php foreach($voucher as $v): ?>
                                 <option class="voucher" value="<?=$v['id']?>"
@@ -246,13 +246,13 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     <div class="menu-item">
         <div class="menu-title">GIFT VOUNCHER</div>
         <div class="submenu">
-            <div onclick="window.location.href='voucher.php'">Check voucher</div>
+            <div onclick="window.location.href='voucher.php'" style="cursor: pointer;">Check voucher</div>
         </div>
     </div>
     <div class="menu-item">
         <div class="menu-title">TRINITY TIER</div>
         <div class="submenu">
-            <div onclick="window.location.href='userTier.php'">Check your shopping tier</div>
+            <div onclick="window.location.href='userTier.php'" style="cursor: pointer;">Check your shopping tier</div>
         </div>
     </div>
     <div class="menu-item">

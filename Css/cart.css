@@ -51,6 +51,7 @@ html, body{
     left: 0;
 }
 #logo{
+    cursor: pointer;
     position: relative;
     left: 2%;
     width: 10%;
@@ -62,7 +63,6 @@ html, body{
     font-family: "Montserrat", serif;
     color: rgb(0, 0, 0);
     font-size: clamp(.75rem, 1.75vw, 2.5rem);
-    cursor: default;
 }
 #text{
     width: 60%;
@@ -93,6 +93,7 @@ html, body{
     font-family: Arial, Helvetica, sans-serif;
 }
 .icon{
+    cursor: pointer;
     width: clamp(.75rem, 1.25vw, 1.9rem);
     height: clamp(.75rem, 1.25vw, 1.9rem);
 }
@@ -209,6 +210,9 @@ html, body{
 }
 .sub-sub:hover{
     text-decoration: underline;
+}
+.submenu-item:hover{
+    cursor: pointer;
 }
 .submenu-item.active .sub-sub{
     max-height: 100px;
@@ -443,7 +447,11 @@ html, body{
     color: white;
     background: black;
 }
+#voucher-select option{
+    cursor: pointer;
+}
 #order-btn{
+    cursor: pointer;
     width: 70%;
     height: 10%;
     display: flex;
