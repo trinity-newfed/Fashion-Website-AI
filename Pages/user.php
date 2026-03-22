@@ -38,6 +38,7 @@ $sql = "SELECT
         orders.id,
         orders.order_state,
         orders.order_name,
+        orders.order_original_price,
         orders.order_final_price,
         order_items.product_name,
         order_items.img,    
@@ -226,7 +227,7 @@ foreach ($data as $d) {
           <?php endif; ?>
         </div>
         <div class="user-cart">
-          <div style="display: flex; justify-content: space-between; align-items: center; padding-right: 5%;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 78%;">
             <p>Your Orders</p>
             <select id="order-state-option">
                 <option value="Success">Success</option>
@@ -257,8 +258,8 @@ foreach ($data as $d) {
                             <img src="../<?= $items[0]['img'] ?>" alt="">
                             <div class="order-img-info">
                                 <h3><?=$items[0]['product_name']?></h3>
-                                <span>Order totals: $<?=$items[0]['order_final_price']?></span>
-                                <span style="color: gray;"><?= count($items) ?> items</span>
+                                <span style="text-align: end; color: gray; text-decoration-line: line-through; font-size: clamp(.7rem, .8vw, 1.1rem);"><?=$items[0]['order_original_price']?>$</span>
+                                <span style="font-size: clamp(.9rem, 1vw, 1.2rem);">Order totals (<?= count($items) ?> items): <?=$items[0]['order_final_price']?>$</span>
                             </div>
                         </div>
                         <div class="order-info">

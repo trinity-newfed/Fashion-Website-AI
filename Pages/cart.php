@@ -8,25 +8,37 @@ $conn = new mysqli($host, $user, $password, $dbname);
 
 session_start();
 //VOUNCHER FETCH
-if(isset($_SESSION['username'])) {
-    $voucher_id = $_GET['voucher_id'] ?? null;
-    $stmt = $conn->prepare("SELECT * FROM user_voucher WHERE username = ?");
+if(isset($_SESSION['username'])){
+
+    $username = $_SESSION['username'];
+
+    $stmt = $conn->prepare("SELECT
+    vouchers.id AS id,
+    vouchers.voucher_condition,
+    vouchers.voucher_discount,
+    vouchers.voucher_max,
+    user_voucher.voucher_id
+FROM vouchers
+JOIN user_voucher
+    ON vouchers.id = user_voucher.voucher_id
+WHERE username = ?
+");
+
     $stmt->bind_param("s", $username);
     $stmt->execute();
-    $vouncher = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-} else {
-    $vouncher = [];
+    $voucher = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+}else{
+    $voucher = [];
 }
 
 
 
 //CART FETCH
-if(isset($_SESSION['username'])) {
+if(isset($_SESSION['username'])){
 
-$username = $_SESSION['username'];
+    $username = $_SESSION['username'];
 
-$stmt = $conn->prepare("
-SELECT 
+    $stmt = $conn->prepare("SELECT 
     cart.id AS cart_id,
     cart.product_id,
     products.product_name,
@@ -125,12 +137,20 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 </div>
                 <div id="info-total-order">
                     <div class="info-total-order-span-container">
-                        <span>Vouncher</span>
-                        <?php if(empty($vouncher)): ?>
-                        <span>N/A</span>
+                        <span>Voucher</span>
+                        <?php if(empty($voucher)): ?>
+                        <span>No Available Voucher</span>
                         <?php else: ?>
-                        <select>
-                            <option value="abc"></option>
+                        <select id="voucher-select" name="id">
+                            <option value="0" id="main-voucher" class="voucher" data-condition="0" data-max="0">No selected</option>
+                            <?php foreach($voucher as $v): ?>
+                                <option class="voucher" value="<?=$v['id']?>"
+                                                        data-condition="<?=$v['voucher_condition']?>"
+                                                        data-max="<?=$v['voucher_max']?>"
+                                                        data-id="<?=$v['id']?>"
+                                                        data-discount="<?=$v['voucher_discount']?>"><?=$v['voucher_discount']?>%
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                         <?php endif; ?>
                     </div>
@@ -141,9 +161,9 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     <div class="info-total-order-span-container">
                         <span>Totals</span>
                         <?php if(empty($data)): ?>
-                        <span id="final-total">0$</span>
+                        <span id="final-total" style="justify-content: center;">0$</span>
                         <?php else: ?>
-                        <span id="final-total">0$</span>
+                        <span id="final-total" style="justify-content: center;">0$</span>
                         <?php endif; ?>
                     </div>       
                     <button type="submit" id="order-btn">Checkout</button>
@@ -299,7 +319,20 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         }
 
     function calculateFinalTotal(){
+        const selectedVoucher = document.querySelector("#voucher-select option:checked");
+        if(selectedVoucher){
+        const mainVoucher = document.getElementById("main-voucher");
+        const voucherSelect = document.getElementById("voucher-select");
+        let discount = 0;
+        if(selectedVoucher){
+            discount = selectedVoucher.value;
+        }
+        if(voucherSelect){
+            voucherSelect.addEventListener('change',calculateFinalTotal)
+        }
+        console.log(discount);
         const items = document.querySelectorAll(".items");
+        const vouchers = document.querySelectorAll(".voucher");
         let total = 0;
         items.forEach(item =>{
             const checkbox = item.querySelector(".item-checkbox");
@@ -316,7 +349,35 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 total += itemTotal;
             }
         });
-        finalTotal.textContent = total + "$";
+        vouchers.forEach(voucher =>{
+            const condition = parseFloat(voucher.dataset.condition);
+            const max = parseFloat(voucher.dataset.max);
+            if(total < condition){
+                voucher.disabled = true;
+                if(voucher.selected){
+                    document.getElementById("main-voucher").selected = true;
+                }
+            }else{
+                voucher.disabled = false;
+            }
+        });
+        if(total > 0){
+            let max = 0;
+            if(selectedVoucher && !selectedVoucher.disabled && selectedVoucher.value != "0"){
+                discount = parseFloat(selectedVoucher.dataset.discount);
+                max = parseFloat(selectedVoucher.dataset.max) || Infinity;
+            }else {
+                document.getElementById("voucher-select").value = "0";
+                discount = 0;
+                max = 0;
+            }
+            let percentDiscount = total * (discount / 100);
+            let actualDiscount = Math.min(percentDiscount, max);
+            finalTotal.textContent = total - actualDiscount + "$";
+        }else{
+            document.getElementById("main-voucher").selected = true;
+            finalTotal.textContent = "0$";
+        }
         let freeShippingCalculate = total;
             if(freeShippingCalculate > 0){
                 document.getElementById("progress-bar").style.width = `${freeShippingCalculate/7}%`;
@@ -332,6 +393,46 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 document.getElementById("deli-fee").textContent = "";
                 document.getElementById("shipping-label").textContent = "Buy more enjoy Free Shipping";
             }
+        }else{
+            const items = document.querySelectorAll(".items");
+            const vouchers = document.querySelectorAll(".voucher");
+            let total = 0;
+            items.forEach(item =>{
+                const checkbox = item.querySelector(".item-checkbox");
+                let itemsTotal = item.querySelector(".items-total-container span");
+                let price = item.querySelector(".items-price-container").textContent;
+                let quantity = item.querySelector(".item-quantity").textContent;
+                price = parseFloat(price.replace("$",""));
+                quantity = parseInt(quantity);
+
+                itemsTotal.textContent = quantity * price + "$";
+                let itemTotal = price * quantity;
+
+                if(checkbox.checked){
+                    total += itemTotal;
+                }
+            });
+            if(total > 0){
+                let max = 0;
+                discount = 0;
+                finalTotal.textContent = total + "$";
+            }
+            let freeShippingCalculate = total;
+                if(freeShippingCalculate > 0){
+                    document.getElementById("progress-bar").style.width = `${freeShippingCalculate/7}%`;
+                    if(freeShippingCalculate > 700){
+                        document.getElementById("deli-fee").textContent = "100% off";
+                        document.getElementById("shipping-label").textContent = "Free Shipping";
+                    }else{
+                        document.getElementById("deli-fee").textContent = `${parseFloat((freeShippingCalculate/7).toFixed(0))}% off`;
+                        document.getElementById("shipping-label").textContent = "Buy $" + (700 - freeShippingCalculate) + " more enjoy Free Shipping";
+                    }
+                }else{
+                    document.getElementById("progress-bar").style.width = "10%";
+                    document.getElementById("deli-fee").textContent = "";
+                    document.getElementById("shipping-label").textContent = "Buy more enjoy Free Shipping";
+                }
+        }
     }
 
     const operationBtn = document.querySelectorAll(".operation-button");
@@ -388,6 +489,10 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     item.classList.toggle("active");
             });
         });
+
+
+
+
     </script>
 </body>
 </html>

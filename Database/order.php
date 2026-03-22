@@ -61,8 +61,23 @@ foreach ($data as $item){
     $total += $item['product_price'] * $item['quantity'];
 }
 
-$discount = 0;
-$final_total = max(0, $total - $discount);
+$voucher = $_SESSION['voucher_id'] ?? 0;
+if($voucher > 0){
+    $vsql = $conn->prepare("SELECT voucher_discount, voucher_max FROM vouchers WHERE id = ?");
+    $vsql->bind_param("i", $voucher);
+    $vsql->execute();
+    $d = $vsql->get_result();
+    $dis = $d->fetch_assoc();
+    $discount = $dis['voucher_discount'] ?? 0;
+    $voucher_max = $dis['voucher_max'] ?? 0;
+    $discount_amount = min($total * ($discount / 100), $voucher_max ?? PHP_INT_MAX);
+    $vsql->close();
+}else{
+    $discount_amount = 0;
+}
+
+
+$final_total = max(0, $total - $discount_amount);
 
 $conn->begin_transaction();
 
@@ -72,7 +87,7 @@ try{
         VALUES (?, ?, ?, ?, ?, ?)
     ");
 
-    $stmt->bind_param("ssddds", $username, $orderCode, $total, $discount, $final_total, $orderstate);
+    $stmt->bind_param("ssddds", $username, $orderCode, $total, $discount_amount, $final_total, $orderstate);
     $stmt->execute();
 
     $order_id = $stmt->insert_id;
@@ -109,10 +124,21 @@ try{
 
     $stmt->close();
 
+    $usql = $conn->prepare("INSERT INTO used_voucher(username, voucher_id) 
+                            VALUES(?, ?)");
+    $usql->bind_param("si", $username, $voucher);
+    $usql->execute();
+    $usql->close();
+
     $del = $conn->prepare("DELETE FROM cart WHERE id IN ($placeholders)");
     $del->bind_param(str_repeat('i', count($cart_ids)), ...$cart_ids);
     $del->execute();
     $del->close();
+
+    $vDel = $conn->prepare("DELETE FROM user_voucher WHERE voucher_id = ? AND username = ?");
+    $vDel->bind_param("is", $voucher, $username);
+    $vDel->execute();
+    $vDel->close();
 
     $conn->commit();
     unset($_SESSION['checkout_cart_ids']);

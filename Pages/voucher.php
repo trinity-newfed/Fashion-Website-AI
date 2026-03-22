@@ -40,6 +40,17 @@ while($row = $user_all->fetch_assoc()){
     $claimed[] = $row['voucher_id'];
 }
 $stmt->close();
+
+$used_voucher = $conn->prepare("SELECT * FROM used_voucher WHERE username = ?");
+$used_voucher->bind_param("s", $username);
+$used_voucher->execute();
+$useds = $used_voucher->get_result();
+$used = $useds->fetch_all(MYSQLI_ASSOC);
+$used_ids = [];
+foreach($used as $u){
+    $used_ids[] = $u['voucher_id'];
+}
+$used_voucher->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,54 +73,95 @@ $stmt->close();
 <h1>TRINITY Vouchers</h1>
 <div class="voucher-filter">
 <button class="active">All</button>
-<button>Available</button>
-<button>Expiring</button>
-<button>Used</button>
+<button class="active">Available</button>
+<button class="active">Expiring</button>
+<button class="active">Used</button>
 </div>
 
 
 
-<form action="../Database/user_voucher.php" method="POST">
- <div class="voucher-list">
-  <?php foreach($voucher as $v): ?>
-<div class="voucher-card">
-    <div class="voucher-brand">
-        <h4>TRINITY</h4>
-        <?php
-        $tierNames = ["All", "🥈 Silver", "🪙 Gold", "💎 Diamond"];
-        $tier = (int)$v['voucher_min_tier'];
-        ?>
-        <span class="tier tier-<?=$tier?>">
-            <?=$tierNames[$tier - 1] ?? "Unknown"?>
-        </span>
-    </div>
-    <div class="voucher-discount">
-        $<?=$v['voucher_discount']?> OFF
-    </div>
-    <div class="voucher-condition">
-        On orders over $<?=$v['voucher_condition']?>
-    </div>
-    <div class="voucher-condition">
-        Max discount $<?=$v['voucher_max']?>
-    </div>
-    <div class="voucher-footer">
-        <?php if(in_array($v['id'], $claimed)): ?>
-            <button disabled>✔ Claimed</button>
-        <?php elseif((int)$users['user_tier'] >= (int)$v['voucher_min_tier']): ?>
-            <form action="../Database/user_voucher.php" method="POST">
-                <input type="hidden" name="voucher_id" value="<?=$v['id']?>">
-                <button type="submit">Claim</button>
-            </form>
-        <?php else: ?>
-            <button disabled>
-                🔒 Unlock at <?=$tierNames[$tier - 1]?>
-            </button>
+<div class="voucher-list" id="all">
+    <?php foreach($voucher as $v): ?>
+        <?php if(in_array($v['id'], $used_ids)) continue; ?>
+            <div class="voucher-card">
+                <div class="voucher-brand">
+                    <h4>TRINITY</h4>
+                    <?php
+                        $tierNames = ["All", "🥈 Silver", "🪙 Gold", "💎 Diamond"];
+                        $tier = (int)$v['voucher_min_tier'];
+                    ?>
+                        <span class="tier tier-<?=$tier?>"><?=$tierNames[$tier - 1] ?? "Unknown"?></span>
+                </div>
+                <div class="voucher-discount">$<?=$v['voucher_discount']?> OFF</div>
+                <div class="voucher-condition">On orders over $<?=$v['voucher_condition']?></div>
+                <div class="voucher-condition">Max discount $<?=$v['voucher_max']?></div>
+                <div class="voucher-footer">
+                <?php if(in_array($v['id'], $claimed)): ?>
+                    <button disabled>✔ Claimed</button>
+                <?php elseif((int)$users['user_tier'] >= (int)$v['voucher_min_tier']): ?>
+                    <form action="../Database/user_voucher.php" method="POST">
+                    <input type="hidden" name="voucher_id" value="<?=$v['id']?>">
+                    <button type="submit">Claim</button>
+                    </form>
+                <?php else: ?>
+                    <button disabled>🔒 Unlock at <?=$tierNames[$tier - 1]?></button>
+                <?php endif; ?>
+                </div>
+            </div>
+    <?php endforeach; ?>
+</div>
+<div class="voucher-list" id="available" style="display: none;">
+    <?php foreach($voucher as $v): ?>
+        <?php if($users['user_tier'] >= $v['voucher_min_tier']): ?>
+            <?php if(in_array($v['id'], $used_ids)) continue; ?>
+            <div class="voucher-card">
+                <div class="voucher-brand">
+                    <h4>TRINITY</h4>
+                    <?php
+                        $tierNames = ["All", "🥈 Silver", "🪙 Gold", "💎 Diamond"];
+                        $tier = (int)$v['voucher_min_tier'];
+                    ?>
+                        <span class="tier tier-<?=$tier?>"><?=$tierNames[$tier - 1] ?? "Unknown"?></span>
+                </div>
+                <div class="voucher-discount">$<?=$v['voucher_discount']?> OFF</div>
+                <div class="voucher-condition">On orders over $<?=$v['voucher_condition']?></div>
+                <div class="voucher-condition">Max discount $<?=$v['voucher_max']?></div>
+                <div class="voucher-footer">
+                <?php if(in_array($v['id'], $claimed)): ?>
+                    <button disabled>✔ Claimed</button>
+                <?php elseif((int)$users['user_tier'] >= (int)$v['voucher_min_tier']): ?>
+                    <form action="../Database/user_voucher.php" method="POST">
+                    <input type="hidden" name="voucher_id" value="<?=$v['id']?>">
+                    <button type="submit">Claim</button>
+                    </form>
+                <?php endif; ?>
+                </div>
+            </div>
         <?php endif; ?>
-    </div>
+    <?php endforeach; ?>
 </div>
-<?php endforeach; ?>
- </div>
-</form>
+<div class="voucher-list" id="expired" style="display: none;"></div>
+<div class="voucher-list" id="used" style="display: none;">
+    <?php foreach($voucher as $v): ?>
+        <?php if(in_array($v['id'], $used_ids)): ?>
+            <div class="voucher-card">
+                <div class="voucher-brand">
+                    <h4>TRINITY</h4>
+                    <?php
+                        $tierNames = ["All", "🥈 Silver", "🪙 Gold", "💎 Diamond"];
+                        $tier = (int)$v['voucher_min_tier'];
+                    ?>
+                        <span class="tier tier-<?=$tier?>"><?=$tierNames[$tier - 1] ?? "Unknown"?></span>
+                </div>
+                <div class="voucher-discount">$<?=$v['voucher_discount']?> OFF</div>
+                <div class="voucher-condition">On orders over $<?=$v['voucher_condition']?></div>
+                <div class="voucher-condition">Max discount $<?=$v['voucher_max']?></div>
+                <div class="voucher-footer">
+                </div>
+            </div>
+        <?php endif; ?>
+    <?php endforeach; ?>
+</div>
 </section>
 <footer class="footer-2">
   <div class="footer-container">
@@ -250,6 +302,26 @@ $stmt->close();
     let username1 = email.replace("@gmail.com", "");
     const userWelcome = document.getElementById("menu-Username");
     const menuTitles = document.querySelectorAll(".menu-title");
+    const cards = document.querySelectorAll(".voucher-list");
+    const buttons = document.querySelectorAll(".active");
+
+
+    buttons.forEach(button =>{
+        const type = button.textContent.toLowerCase();
+        button.addEventListener('click', ()=>{
+            buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            cards.forEach(card => {
+                const cardType = card.id ? card.id.toLowerCase() : "all";
+                if(type === "all" || cardType === type){
+                    card.style.display = "";
+                }else{
+                    card.style.display = "none";
+                }
+            });
+        });
+    });
+
     if(userWelcome){
             userWelcome.textContent = "Hi, " + username1;
         }

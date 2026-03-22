@@ -13,6 +13,8 @@ if ($conn->connect_error) {
 }
 $cart_ids = $_POST['cart_ids'];
 $_SESSION['checkout_cart_ids'] = $cart_ids;
+$voucher = $_POST['id'];
+$_SESSION['voucher_id'] = $voucher;
 
 if(empty($_SESSION['checkout_cart_ids'])){
     echo "<script>alert('No items selected!');
