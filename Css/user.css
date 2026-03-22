@@ -4,6 +4,7 @@ html,body {
       left: 0;
       background-color: whitesmoke;
       scroll-behavior: smooth;
+      overflow-x: hidden;
     }
     /*section head - menu*/
     #head {
@@ -516,7 +517,7 @@ html,body {
       max-height: 600px;
       padding: 10px;
       width: 100%;
-      max-width: 1300px;
+      max-width: 1200px;
     }
     .line3{
       width: 330px;
