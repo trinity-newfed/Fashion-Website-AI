@@ -168,21 +168,21 @@ foreach ($data as $d) {
             <?php if(empty($user['img'])): ?>
                 <img src="../Pictures/Banners/BA.webp" alt="">
             <?php else: ?>
-              <img style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" src="../upload/<?=htmlspecialchars($_SESSION['img'])?>" alt="">
+              <img style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" src="../<?=htmlspecialchars($user['img'])?>" alt="">
             <?php endif; ?>
           </div>
           <div class="user-name"><?=$_SESSION['username']?></div>
           <?php if(empty($user)): ?>
-            <div class="user-tier"></div>
+            <div class="user-tier" onclick="window.location.href='userTier.php'"></div>
           <?php else: ?>
             <?php if($user['user_tier'] == "1"): ?>
-                <div class="user-tier" style="color: white;">New Member</div>
+                <div class="user-tier" style="color: white;" onclick="window.location.href='userTier.php'">New Member</div>
             <?php elseif($user['user_tier'] == "2"): ?>
-                <div class="user-tier" style="color: silver; background: #2d3036;">Silver</div>
+                <div class="user-tier" style="color: silver; background: #2d3036;" onclick="window.location.href='userTier.php'">Silver</div>
             <?php elseif($user['user_tier'] == "3"): ?>
-                <div class="user-tier" style="color: gold; background: #504420;">Gold</div>
+                <div class="user-tier" style="color: gold; background: #504420;" onclick="window.location.href='userTier.php'">Gold</div>
             <?php elseif($user['user_tier'] == "4"): ?>
-                <div class="user-tier" style="color: lightblue; background: #202e50;">Diamond</div>
+                <div class="user-tier" style="color: lightblue; background: #202e50;" onclick="window.location.href='userTier.php'">Diamond</div>
             <?php endif; ?>
           <?php endif; ?>
           <div class="line1">_________________________</div>
@@ -220,7 +220,6 @@ foreach ($data as $d) {
               <?php endif; ?>
             </div>
           </div>
-          <div class="user-setting">Edit informations</div>
           <div class="user-setting" onclick="window.location.href='logout.php'">
             Log out
           </div>
@@ -279,12 +278,20 @@ foreach ($data as $d) {
             <?php if(!empty($tryonData)): ?>
             <?php foreach($tryonData as $to): ?>
               <div class="line3">
+                <span style="display: flex; align-items: center; justify-content: center; width: 55%;">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M149.1 64.8L138.7 96 64 96C28.7 96 0 124.7 0 160L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64l-74.7 0-10.4-31.2C356.4 45.2 338.1 32 317.4 32L194.6 32c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></svg>
+                    Virtual Try On AI
+                </span>
                 <img src="../AI/static/outputs/user_<?=$_SESSION['username']?>/<?=$to['result_img']?>" alt="">
-                <?=$to['created_at']?>
-                <form action="../Database/detele_user_tryon.php" method="POST">
-                  <input type="text" name="id" value="<?=$to['id']?>" hidden>
-                  <button type="submit">Delete</button>
-                </form>
+                <div style="text-align: center; display: flex; width: 90%; height: 20%; justify-content: space-around; align-items: center; gap: 5%;">
+                    <?=$to['created_at']?>
+                    <form action="../Database/detele_user_tryon.php" method="POST">
+                        <input type="text" name="id" value="<?=$to['id']?>" hidden>
+                        <button type="submit" style="text-align: center; display: flex; justify-content: space-around; align-items: center;">
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 448 512"><path d="M136.7 5.9C141.1-7.2 153.3-16 167.1-16l113.9 0c13.8 0 26 8.8 30.4 21.9L320 32 416 32c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 8.7-26.1zM32 144l384 0 0 304c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-304zm88 64c-13.3 0-24 10.7-24 24l0 192c0 13.3 10.7 24 24 24s24-10.7 24-24l0-192c0-13.3-10.7-24-24-24zm104 0c-13.3 0-24 10.7-24 24l0 192c0 13.3 10.7 24 24 24s24-10.7 24-24l0-192c0-13.3-10.7-24-24-24zm104 0c-13.3 0-24 10.7-24 24l0 192c0 13.3 10.7 24 24 24s24-10.7 24-24l0-192c0-13.3-10.7-24-24-24z"/></svg>    
+                        Delete</button>
+                    </form>
+                </div>
               </div>
             <?php endforeach; ?>
             <?php else: ?>
@@ -303,10 +310,13 @@ foreach ($data as $d) {
       <h2 class="footer-title">
         Let’s Discuss Your <br> Style. With Us
       </h2>
-      <button class="footer-btn">
+
+      <button class="footer-btn" onclick="window.location.href='contact.php'">
         Schedule a call now →
       </button>
+
       <p class="footer-email-label">OR EMAIL US AT</p>
+
       <div class="footer-email">
         triple3tbusiness@gmail.com
         <span>📋</span>
@@ -316,24 +326,23 @@ foreach ($data as $d) {
     <div class="footer-right">
       <div class="footer-col">
         <p class="footer-col-title">QUICK LINKS</p>
-        <a href="#">Home</a>
-        <a href="#">Case Studies</a>
-        <a href="#">Gallery</a>
-        <a href="#">Blogs</a>
+        <a href="../Pages/">Home</a>
+        <a href="products.php">Products</a>
+        <a href="cart.php">Cart</a>
+        <a href="voucher.php">Vouchers</a>
+        <a href="userTier.php">User Tier</a>
         <a href="#">About Us</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
         <a href="#">Terms of Service</a>
         <a href="#">Privacy Policy</a>
-        <a href="#">Cookies Settings</a>
       </div>
     </div>
   </div>
 
   <div class="footer-bottom">
     <p>Copyright (c) 2026 trinity-newfed</p>
-
     <div class="footer-social">
       <span>f</span>
       <span>t</span>
@@ -342,12 +351,68 @@ foreach ($data as $d) {
     </div>
   </div>
 </footer>
+<div id="product-modal">
+  <div class="modal-container">
+    <button id="closeModal">&times;</button>
+    <img src="" alt="">
+    <div id="modal-access">
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+    </div>
+  </div>  
+</div>
 
+
+<div id="edit-info">
+    <div class="info-container">
+        <button id="closeEdit">&times;</button>
+        <form action="../Database/user_info_update.php" method="POST" enctype="multipart/form-data">
+            <label for="">Edit Information</label>
+            <div class="edit-avatar">
+                <label for="edit-avatar">
+                    <?php if(empty($user['img'])): ?>
+                        <img src="../Pictures/Banners/BA.webp" alt="" id="temp-avatar">
+                    <?php else: ?>
+                        <img src="../<?=$user['img']?>" alt="" id="temp-avatar">
+                    <?php endif; ?>
+                </label>
+                <input type="file" id="edit-avatar" name="img" accept="image/*" hidden>
+            </div>
+            <div style="display: flex; width: 90%; justify-content: space-between;">
+                <label for="user_sex">Sex:</label>
+                <select name="user_sex" id="user_sex">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="info-input-container">
+                <label for="hotline">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M451.5-531.5Q440-543 440-560t11.5-28.5Q463-600 480-600t28.5 11.5Q520-577 520-560t-11.5 28.5Q497-520 480-520t-28.5-11.5ZM640-520q-17 0-28.5-11.5T600-560q0-17 11.5-28.5T640-600q17 0 28.5 11.5T680-560q0 17-11.5 28.5T640-520Zm160 0q-17 0-28.5-11.5T760-560q0-17 11.5-28.5T800-600q17 0 28.5 11.5T840-560q0 17-11.5 28.5T800-520Zm-2 400q-125 0-247-54.5T329-329Q229-429 174.5-551T120-798q0-18 12-30t30-12h162q14 0 25 9.5t13 22.5l26 140q2 16-1 27t-11 19l-97 98q20 37 47.5 71.5T387-386q31 31 65 57.5t72 48.5l94-94q9-9 23.5-13.5T670-390l138 28q14 4 23 14.5t9 23.5v162q0 18-12 30t-30 12ZM241-600l66-66-17-94h-89q5 41 14 81t26 79Zm358 358q39 17 79.5 27t81.5 13v-88l-94-19-67 67ZM241-600Zm358 358Z"/></svg>
+                    Hotline:
+                </label>
+                <input type="text" name="user_hotline" inputmode="numeric" name="user_hotline" pattern="0[0-9]{9}" maxlength="10" id="hotline">
+            </div>
+            <div class="info-input-container">
+                <label for="hotline">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
+                    Address:
+                </label>
+                <input type="text" id="address" name="user_address">
+            </div>
+            <button type="submit" class="re-order">Update Information</button>
+        </form>
+    </div>
+</div>
     <script>
       const email = <?= isset($_SESSION['username']) ? json_encode($_SESSION['username']) : '""' ?>;
       let username1 = email.replace("@gmail.com", "");
       const userWelcome = document.getElementById("menu-Username");
       const menuTitles = document.querySelectorAll(".menu-title");
+      const imgPopup = document.querySelector(".line3 img");
+      const modal = document.getElementById("product-modal");
+      const conModal = document.querySelector(".modal-container");
+      const closeModal = document.getElementById("closeModal");
+      const imgEdit = document.querySelector(".user-avatar");
 
       const select = document.getElementById("order-state-option");
       select.addEventListener("change", function (){
@@ -371,8 +436,47 @@ foreach ($data as $d) {
             }else{
                 blocks.style.display = "none";
             }
-        })
+        });
 
+        imgPopup.addEventListener('click', ()=>{
+            modal.style.display = "flex";
+            const modalImg = conModal.querySelector("img");
+            modalImg.src = imgPopup.src;
+        });
+
+        closeModal.addEventListener('click', ()=>{
+            modal.style.display = "none";
+        });
+
+        modal.addEventListener('click', function(e){
+        if(e.target === modal) modal.style.display = "none";
+        });
+
+        imgEdit.addEventListener('click', ()=>{
+            document.getElementById("edit-info").style.display = "flex";
+        });
+
+        document.getElementById("closeEdit").addEventListener('click', ()=>{
+            document.getElementById("edit-info").style.display = "none";
+        });
+
+        const modalEdit = document.getElementById("edit-info");
+        modalEdit.addEventListener('click', function(e){
+            if(e.target === modalEdit) document.getElementById("edit-info").style.display = "none";
+        });
+
+        const fileInput = document.getElementById("edit-avatar");
+        const preview = document.getElementById("temp-avatar");
+        fileInput.addEventListener('change', function(){
+            const file = this.files[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
       if(userWelcome){
             userWelcome.textContent = "Hi, " + username1;

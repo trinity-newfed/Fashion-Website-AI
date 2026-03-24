@@ -817,6 +817,7 @@
   font-size: clamp(1rem, 1.5vw, 2rem);
   opacity: 0;
   visibility: hidden;
+  cursor: pointer;
 }
 #closeAlertBtn:hover{
   scale: 1.1;
