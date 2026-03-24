@@ -170,10 +170,13 @@ $used_voucher->close();
       <h2 class="footer-title">
         Let’s Discuss Your <br> Style. With Us
       </h2>
-      <button class="footer-btn">
+
+      <button class="footer-btn" onclick="window.location.href='contact.php'">
         Schedule a call now →
       </button>
+
       <p class="footer-email-label">OR EMAIL US AT</p>
+
       <div class="footer-email">
         triple3tbusiness@gmail.com
         <span>📋</span>
@@ -183,17 +186,17 @@ $used_voucher->close();
     <div class="footer-right">
       <div class="footer-col">
         <p class="footer-col-title">QUICK LINKS</p>
-        <a href="#">Home</a>
-        <a href="#">Case Studies</a>
-        <a href="#">Gallery</a>
-        <a href="#">Blogs</a>
+        <a href="../Pages/">Home</a>
+        <a href="products.php">Products</a>
+        <a href="cart.php">Cart</a>
+        <a href="voucher.php">Vouchers</a>
+        <a href="userTier.php">User Tier</a>
         <a href="#">About Us</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
         <a href="#">Terms of Service</a>
         <a href="#">Privacy Policy</a>
-        <a href="#">Cookies Settings</a>
       </div>
     </div>
   </div>

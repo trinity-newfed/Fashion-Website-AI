@@ -18,6 +18,7 @@
         height: 100%;
         font-family: "Montserrat", sans-serif;
         overflow: hidden;
+        user-select: none;
       }
 
       .banner {
@@ -100,6 +101,27 @@
         top: -18px;
         font-size: 12px;
         font-weight: 600;
+      }
+
+      .input-group input:-webkit-autofill ~ label,
+      .input-group input:focus ~ label{
+        top: -18px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #000;
+      }
+
+      input:-webkit-autofill,
+      input:-webkit-autofill:hover, 
+      input:-webkit-autofill:focus, 
+      input:-webkit-autofill:active{
+        -webkit-box-shadow: 0 0 0 30px transparent !important;
+        -webkit-text-fill-color: #000 !important;
+        transition: background-color 5000s ease-in-out 0s;
+      }
+
+      .input-group input::placeholder {
+        color: transparent;
       }
 
       .gender-label {
@@ -251,6 +273,7 @@
         font-size: clamp(1rem, 1vw, 1.5rem);
         color: rgba(255, 255, 255, 0.481);
         cursor: default;
+        transition: .5s all;
       }
       #leftContainer span:hover{
         color: white;
@@ -302,7 +325,7 @@
           </div>
           <div class="input-group">
             <input type="text" name="email" required />
-            <label>Username</label>
+            <label>Email</label>
           </div>
           <div class="input-group">
             <input type="password" name="user_password" required />
@@ -329,12 +352,12 @@
             </div>
           </div>
           <div class="input-group">
-            <input type="text" inputmode="numeric" name="user_hotline" pattern="0[0-9]{9}" maxlength="10" required/>
+            <input type="text" name="user_hotline" required />
             <label>Hotline</label>
           </div>
           <button type="submit" class="btn-action">Create Account</button>
           <div class="login-link">
-            Already have an account? <a href="#" id="login-btn">Login</a>
+            Already have an account? <a href="#" id="login-btn" class="btn">Login</a>
           </div>
         </div>
       </form>
@@ -347,7 +370,7 @@
           </div>
           <div class="input-group">
             <input type="text" name="username" required />
-            <label>Username / Email</label>
+            <label>Email</label>
           </div>
           <div class="input-group">
             <input type="password" name="user_password" required />
@@ -357,7 +380,7 @@
           <div class="extra-link">
             <a href="#">Forget password?</a>
             <div class="login-link">
-            Don't have an account yet? <a href="#" id="signUp-btn">Sign Up</a>
+            Don't have an account yet? <a href="#" id="signUp-btn" class="btn">Sign Up</a>
           </div>
           </div>
         </div>
@@ -373,13 +396,12 @@
           radio.checked = true;
         });
       });
-      document.getElementById("signUp-btn").addEventListener('click', ()=>{
-        document.getElementById("loginForm").classList.add("move");
-        document.getElementById("regForm").classList.add("move");
-      });
-      document.getElementById("login-btn").addEventListener('click', ()=>{
-        document.getElementById("loginForm").classList.remove("move");
-        document.getElementById("regForm").classList.remove("move");
+
+      document.querySelectorAll(".btn").forEach(button =>{
+        button.addEventListener('click', ()=>{
+          document.getElementById("loginForm").classList.toggle("move");
+          document.getElementById("regForm").classList.toggle("move");
+        });
       });
 
       document.querySelector('input[name="user_hotline"]').addEventListener("input", function(){
