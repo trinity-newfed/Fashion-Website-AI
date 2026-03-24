@@ -5,6 +5,9 @@ session_start();
 $product = $conn
   ->query("SELECT * FROM products")
   ->fetch_all(MYSQLI_ASSOC);
+
+
+$username = $_SESSION['username'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -373,6 +376,33 @@ $product = $conn
                     item.classList.toggle("active");
             });
         });
+
+
+const username = <?php echo json_encode($username); ?>;
+console.log("USERNAME:", username);
+
+if(username){
+  const interval = setInterval(async () =>{
+    try{
+      const res = await fetch(`http://localhost:5000/api/progress/${username}`);
+      const data = await res.json();
+      console.log("DATA:", data);
+      if(data.status === "done"){
+        console.log("DONE TRIGGERED");
+        clearInterval(interval);
+        const goUser = confirm("Redirect to user page for result?");
+        if(goUser){
+          window.location.href = data.redirect;
+        }
+      }
+
+    }catch(err){
+      console.error(err);
+    }
+  }, 3000);
+}
+
+
     </script>
 </body>
 </html>

@@ -270,6 +270,7 @@ html,body{
     font-family: Arial, Helvetica, sans-serif;
     border-radius: 4px;
     transition: .3s all;
+    cursor: pointer;
 }
 #category div label{
     width: 100%;
@@ -299,6 +300,9 @@ html,body{
     filter: brightness(80%);
     scale: 1.1;
     transition: .4s all;
+    cursor: pointer;
+}
+#category div label:hover{
     cursor: pointer;
 }
 #newest-collection{
@@ -345,12 +349,12 @@ html,body{
     height: 10%;
     border: none;
     background: #000000;
-    color: rgb(252, 237, 194);
+    color: rgb(255, 255, 255);
     font-weight: bold;
     letter-spacing: 1px;
     cursor: pointer;
     transition: 0.3s;
-    border: 1px solid rgb(252, 237, 194);
+    border: 1px solid rgb(0, 0, 0);
 }
 #cta-tryon button:hover{
     background-color: #ffffff;
@@ -456,12 +460,10 @@ html,body{
     border-bottom-right-radius: 0;
 }
 #feat-product div span{
-    margin-top: 10%;
     font-size: clamp(.7rem, 1.3vw, 1.3rem);
     text-align: center;
 }
 #feat-product div p{
-    margin-top: 10%;
     font-size: clamp(.65rem, 1.3vw, 1.3rem);
     text-align: center;
 }

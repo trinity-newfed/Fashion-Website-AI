@@ -11,6 +11,7 @@ if($conn->connect_error){
 }
 
 session_start();
+$username = $_SESSION['username'];
 
 $id = $_GET['id'] ?? 0;
 $id = intval($id);
@@ -175,33 +176,6 @@ body{
 
 
 
-/* QUANTITY */
-.quantity{
-    display:flex;
-    align-items:center;
-    margin-top:30px;
-}
-.quantity button{
-    border: none;
-    background: white;
-}
-.quantity input{
-    width:60px;
-    height:20px;
-    text-align:center;
-    border:1px solid #ddd;
-}
-.qty-btn{
-    width:40px;
-    height:40px;
-    border:1px solid #ddd;
-    background:white;
-    cursor:pointer;
-}
-
-
-
-
 /* CART */
 .add-cart{
     margin-top:30px;
@@ -311,11 +285,6 @@ body{
                 <label for="XL-size-<?=$row['id']?>">XL</label>
         </div>
 
-        <div class="quantity">
-            <button>-</button>
-            <input value="1">
-            <button>+</button>
-        </div>
         <form action="../Database/add_item_to_cart.php" method="POST" style="width: 100%; display: grid; place-items: center;">     
                     <input type="hidden" name="product_id" value="<?=$row['id']?>" id="modal-product-id">
                     <input type="hidden" name="product_name" value="<?=$row['product_name']?>" id="modal-product-name">
@@ -534,5 +503,32 @@ body{
                     item.classList.toggle("active");
             });
         });
+
+
+
+const username = <?php echo json_encode($username); ?>;
+console.log("USERNAME:", username);
+
+if(username){
+  const interval = setInterval(async () =>{
+    try {
+      const res = await fetch(`http://localhost:5000/api/progress/${username}`);
+      const data = await res.json();
+
+      console.log("DATA:", data);
+
+      if(data.status === "done"){
+        console.log("DONE TRIGGERED");
+        clearInterval(interval);
+        const goUser = confirm("Redirect to user page for result?");
+        if(goUser){
+          window.location.href = data.redirect;
+        }
+      }
+    }catch (err){
+      console.error(err);
+    }
+  }, 3000);
+}
 </script>
 </html>

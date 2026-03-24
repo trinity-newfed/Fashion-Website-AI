@@ -39,7 +39,7 @@ $product = $conn
   </div>
   <form style="display: none;" id="tryon-form" action="http://127.0.0.1:5000/api/generate" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
-    <input type="file" id="try-on-input" name="person" hidden>
+    <input type="file" id="try-on-input" name="person" hidden required>
     <input type="hidden" name="cloth" id="cloth">
     <label id="fileChoose" for="try-on-input">Choose your file</label>
     <button id="genBtn" type="submit">Generate</button>
@@ -196,7 +196,7 @@ $product = $conn
         </div>
             </div>
           </div>
-      <div id="modal-detail">Details</div>
+      <div id="modal-detail" onclick="window.location.href='Trinity-Style-AI/Pages/detail.php?id=<?=$p['id']?>'">Details</div>
     </div>
   </div>
   </div>  
@@ -551,6 +551,7 @@ setTimeout(() => {
               formTryOn.style.display = "flex";
               closeAlert.style.opacity = "1";
               closeAlert.style.visibility = "visible";
+              alertCancelBtn.textContent = "Stop";
               document.getElementById("fileChoose").style.display = "";
               document.getElementById("genBtn").style.display = "";
               if(alert.classList.contains("temp")){
@@ -608,6 +609,7 @@ setTimeout(() => {
 
 
       const form = document.querySelector("#tryon-form");
+      
         form.addEventListener("submit", async function(e){
           e.preventDefault();
           document.getElementById("progress-container").style.display = "flex";

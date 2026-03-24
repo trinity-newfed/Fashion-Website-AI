@@ -316,12 +316,13 @@
         letter-spacing: 1px;
         transition: 0.3s;
         scroll-behavior: smooth;
-        border: 2px solid #ffdeac;
+        border: 2px solid #ffffff;
       }
 
       .btn-shop:hover {
         background-color: transparent;
-        color: #ffe79d;
+        color: #000000;
+        border: 2px solid black;
       }
       .product-section {
         padding: 80px 0;
@@ -857,7 +858,7 @@
 #CANCEL-btn{
   width: clamp(3rem, 6.3vw, 6rem);
   height: clamp(1rem, 3.5vh, 3rem);
-  font-size: clamp(.5rem, .7vw, 2rem);
+  font-size: clamp(.7rem, .8vw, 2rem);
   background: white;
   color: black;
 }
@@ -926,7 +927,7 @@
   position: absolute;
   border-radius: 5px;
   cursor: pointer;
-  font-size: clamp(.5rem, 1vw, 1rem);
+  font-size: clamp(.7rem, 1.2vw, 1rem);
   color: #555;
   transition: .25s;
   text-align: center;
