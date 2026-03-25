@@ -227,7 +227,7 @@ foreach ($data as $d) {
           <?php endif; ?>
         </div>
         <div class="user-cart">
-          <div style="display: flex; justify-content: space-between; align-items: center; width: 78%; padding-top: 3%;">
+          <div class="title" style="display: flex; justify-content: space-between; align-items: center; width: 78%; padding-top: 3%;">
             <p>Your Orders</p>
             <select id="order-state-option">
                 <option value="Success">Success</option>
@@ -475,7 +475,7 @@ foreach ($data as $d) {
         edit.addEventListener('click', ()=>{
             document.getElementById("edit-info").style.display = "flex";
         });
-        
+
         document.getElementById("closeEdit").addEventListener('click', ()=>{
             document.getElementById("edit-info").style.display = "none";
         });

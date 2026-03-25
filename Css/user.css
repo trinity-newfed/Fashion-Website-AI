@@ -995,9 +995,29 @@ html,body{
         background: rgba(0, 0, 0, 0.05);
         color: #ffffff;
     }
-}
-@media (min-width: 2560px) {
-  .user-information{
-    height: calc(100svh - 200px);
-  }
+    .user-box{
+      flex-direction: column;
+    }
+    .user-information{
+      position: relative;
+      padding-bottom: 10%;
+    }
+    .user-cart{
+      padding-top: 20%;
+    }
+    #order-history{
+      width: 100%;
+    }
+    .order-block{
+      width: 100%;
+    }
+    .title{
+      width: 100% !important;
+    }
+    .title p{
+      font-size: 20px;
+    }
+    .line3{
+      width: 290px;
+    }
 }
