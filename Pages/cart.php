@@ -89,25 +89,25 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                 <div id="item-info">
                     <span>Product</span>
                     <span></span>
-                    <span></span>
-                    <span>Price</span>
+                    <span class="fill2"></span>
+                    <span class="price">Price</span>
                     <span>Quantity</span>
                     <span>Total</span>
                 </div>
                 <?php if(empty($data)): ?>
-                    <span style="position: relative; top: 20%; left: 40%; max-width: 20%; font-size: clamp(0.35rem, 1vw, 1rem); color: rgba(0, 0, 0, 0.3);">Your cart is empty</span>
-                    <span onclick="window.location.href='products.php'" style="top: 20%; left: 39%; max-width: 20%; position: relative; top: 20%; font-size: clamp(0.35rem, 1vw, 1rem); color: rgba(0, 72, 255, 0.3); cursor: pointer;">[Continue shopping]</span>
+                    <span style="position: relative; top: 20%; left: 40%; max-width: 20%; font-size: clamp(0.7rem, 1vw, 1rem); color: rgba(0, 0, 0, 0.3);">Your cart is empty</span>
+                    <span onclick="window.location.href='products.php'" style="top: 20%; left: 39%; max-width: 20%; position: relative; top: 20%; font-size: clamp(0.7rem, 1vw, 1rem); color: rgba(0, 72, 255, 0.3); cursor: pointer;">[Continue shopping]</span>
                 <?php else: ?>
                 <?php foreach($data as $d): ?>
                 <div class="items">
                     <input style="cursor: pointer;" type="checkbox" class="item-checkbox" name="cart_ids[]" value="<?=$d['cart_id']?>">
                     <div id="items-image-container"><img src="../<?=$d['product_img']?>" onclick="window.location.href='detail.php?id=<?=$d['product_id']?>'"></div>
                     <div id="items-info-container">
-                        <span style="font-weight: bolder;"><?=$d['product_name']?></span>
+                        <span style="font-weight: bolder; min-width: 300px;"><?=$d['product_name']?></span>
                         <span style="color: rgba(0, 0, 0, 0.5); font-weight: 400;"><?=$d['product_color']?> / <?=$d['cart_size']?></span>
                             <label style="cursor: pointer;" for="remove-input" id="label-for-remove-input" onclick="window.location.href='../Database/delete_item_cart.php?id=<?=$d['cart_id']?>'">Remove</label>
                     </div>
-                    <div class="items-price-container" style="font-size: clamp(0.35rem, 0.9vw, 1rem); width: 20%;">
+                    <div class="items-price-container" style="font-size: clamp(0.7rem, 0.9vw, 1rem); width: 30%;">
                         <?=$d['product_price']?> $
                     </div>
                     <div id="items-quantity-container">
@@ -116,7 +116,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                             <button style="cursor: pointer;" type="button" id="plus-input" class="operation-button" data-id="<?=$d['cart_id']?>" data-action="plus">+</button>
                     </div>
                     <div class="items-total-container">
-                        <span style="font-size: clamp(0.35rem, 0.9vw, 1rem); position: relative;">0</span>
+                        <span style="font-size: clamp(0.7rem, 0.9vw, 1rem); position: relative;">0</span>
                     </div>
                 </div>
                 <?php endforeach; ?>
@@ -136,7 +136,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     <label id="shipping-label">Buy more to enjoy Free Shipping</label>
                 </div>
                 <div id="info-total-order">
-                    <div class="info-total-order-span-container">
+                    <div class="info-total-order-span-container voucher">
                         <span>Voucher</span>
                         <?php if(empty($voucher)): ?>
                         <span>No Available Voucher</span>
@@ -154,11 +154,11 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                         </select>
                         <?php endif; ?>
                     </div>
-                    <div class="info-total-order-span-container">
+                    <div class="info-total-order-span-container delivery">
                         <span>Delivery fee</span>
                         <span id="deli-fee"></span>
                     </div>
-                    <div class="info-total-order-span-container">
+                    <div class="info-total-order-span-container total">
                         <span>Totals</span>
                         <?php if(empty($data)): ?>
                         <span id="final-total" style="justify-content: center;">0$</span>

@@ -14,7 +14,7 @@
 <div class="left">
 
     <div onclick="window.location.href='home.php'" class="logo">
-        trinity
+        Trinity
     </div>
 
     <h1>
@@ -36,7 +36,6 @@
 <div class="right">
 <nav>
     <a>About</a>
-    <a>Services</a>
     <button>Contact us</button>
 </nav>
 <h2>Contact us</h2>

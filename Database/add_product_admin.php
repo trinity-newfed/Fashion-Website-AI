@@ -12,6 +12,7 @@ if ($conn->connect_error) {
 print_r($_POST);
 
 $name = $_POST['product_name'];
+$group = $_POST['product_group'];
 $price = $_POST['product_price'];
 $category = $_POST['product_category'];
 $type = $_POST['product_type'];
@@ -39,7 +40,7 @@ $image3 = uploadImage($_FILES['product_img3'], $uploadDir);
 
 $type = isset($_POST['product_category']) ? $_POST['product_category'] : "";
 
-$data = "INSERT INTO products(`product_name`,`product_price`,`product_category`,`product_type`,`product_color`,`product_describe`,`product_size`,`product_img`,`product_img1`,`product_img2`,`product_img3`) VALUES ('$name','$price','$type','$color','$describe','$size','$image','$image1','$image2','$image3')";
+$data = "INSERT INTO products(`product_name`,`product_group`,`product_price`,`product_category`,`product_type`,`product_color`,`product_describe`,`product_size`,`product_img`,`product_img1`,`product_img2`,`product_img3`) VALUES ('$name','$group','$price','$type','$color','$describe','$size','$image','$image1','$image2','$image3')";
 
 if ($conn->query($data)) {
     echo "<script>alert('Thêm dữ liệu thành công');</script>";

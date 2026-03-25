@@ -1,11 +1,12 @@
 html{
-    width: 100vw;
-    height: 100dvh;
-    max-width: 1500px;
+    top: 0;
+    left: 0;
     position: relative;
     margin: auto;
+    background-color: rgb(255, 255, 255);
     overflow-x: hidden;
     user-select: none;
+    scroll-behavior: smooth;
 }
 
 :root {
@@ -685,5 +686,8 @@ body {
         height: 60%;
         position: relative;
         right: 100%;
+    }
+    .card{
+        width: 90%;
     }
 }

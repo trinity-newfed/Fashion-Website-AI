@@ -22,6 +22,7 @@ $conn->select_db($dbname);
 $conn->query("CREATE TABLE IF NOT EXISTS products(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     product_name VARCHAR(100),
+    product_group INT,
     product_price DECIMAL(10,2),
     product_category ENUM('collections','men','women','accesories'),
     product_type VARCHAR(255),

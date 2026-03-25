@@ -82,7 +82,6 @@ $product = $conn
                                       data-id="<?=$p['id']?>"
                                       data-category="<?=$p['product_category']?>"
                                       data-color="<?=$p['product_color']?>">
-              <button class="wishlist-btn">❤</button>
 
               <div class="image-box">
                 <img
@@ -406,7 +405,7 @@ setTimeout(() => {
               modalProductType.value = "default";
               currentProductId = product.dataset.id;
               try_on_input.value = product.dataset.img;
-              modal.style.display = "flex";
+              modal.style.setProperty("display", "flex", "important");
             });
       });
 

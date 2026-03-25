@@ -34,10 +34,12 @@ $product = "SELECT * FROM products";
 $ptmt = $conn->query($product);
 
 if($ptmt->num_rows>0){
-    echo"";
-}else{
-    echo"No products are recommended";
 }
+
+$variation = "SELECT product_group FROM products WHERE id = $id";
+$result = $conn->query($sql);
+$group = $result->fetch_assoc();
+$result->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,195 +58,6 @@ if($ptmt->num_rows>0){
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
 </head>
-<style>
-body{
-    font-family: Arial, Helvetica, sans-serif;
-    background:#f8f8f8;
-    margin:0;
-}
-
-
-
-
-/* CONTAINER */
-.product-container{
-    max-width:1200px;
-    position: relative;
-    margin: auto;
-    display:flex;
-    gap:60px;
-    padding:60px 20px;
-    background:white;
-}
-
-
-
-
-/* LEFT */
-.product-left{
-    width:50%;
-}
-.product-left img{
-    width:80%;
-    height: 80%;   
-    border-radius:10px;
-    object-fit:cover;
-}
-.thumb-list{
-    display:flex;
-    gap:10px;
-    margin-top:15px;
-}
-.thumb-list img{
-    width:80px;
-    border-radius:6px;
-    cursor:pointer;
-    transition:0.3s;
-}
-.thumb-list img:hover{
-    transform:scale(1.08);
-}
-
-
-
-
-/* RIGHT */
-.product-right{
-    width:50%;
-}
-.product-title{
-    font-size:28px;
-    margin-bottom:10px;
-}
-.price{
-    font-size:30px;
-    color:#e60023;
-    font-weight:bold;
-    margin:15px 0;
-}
-.short-desc{
-    color:#666;
-    line-height:1.6;
-}
-
-
-
-
-/* SIZE */
-.size{
-    margin-top:30px;
-}
-.size .label{
-    font-weight:600;
-    margin-bottom:10px;
-}
-.size-list{
-    display:flex;
-    gap:10px;
-}
-.size {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 40px;
-}
-
-.size label {
-  width: 40px;
-  height: 40px;
-  border: 1px solid black;
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.size label:hover,
-.size label.active {
-  background: black;
-  color: white;
-}
-
-
-
-
-/* SELECT */
-.size-list button.active{
-    background:black;
-    color:white;
-}
-
-
-
-
-/* CART */
-.add-cart{
-    margin-top:30px;
-    width:100%;
-    padding:16px;
-    border:none;
-    background:black;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-    border-radius:6px;
-    transition:0.3s;
-}
-.add-cart:hover{
-    background:#333;
-}
-
-
-
-
-#body{
-    width: 100vw;
-    height: 100svh;
-    max-width: 1500px;
-    max-height: 900px;
-}
-#simillar-product-container{
-    width: 100%;
-    height: 100%;
-    display: grid;
-    place-items: center;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
-}
-.items{
-    width: 320px;
-    height: 200px;
-    border: 1px solid black;
-    display: flex;
-    transition: .1s all;
-}
-.items:hover{
-    scale: 1.04;
-    transition: .4s all;
-}
-.items:hover #items-left img{
-    filter: brightness(50%);
-}
-#items-left{
-    background-color: whitesmoke;
-}
-#items-left img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-#items-right{
-    display: flex;
-    flex-direction: column;
-    margin-left: 30px;
-}
-#items-right span{
-    font-size: 13px;
-}
-#items-right p{
-    color: rgba(0, 0, 0, 0.7);
-    font-size: 13px;
-}
-</style>
 <body>
     <div class="product-container">
 
@@ -253,14 +66,14 @@ body{
             <span id="mainType" data-type="<?=$row['product_type']?>"></span>
             <span id="mainColor" data-color="<?=$row['product_color']?>"></span>
             <?php if(!empty($row['product_img'])): ?>
-                <img src="../<?=$row['product_img']?>">
+                <img id="bigImg" src="../<?=$row['product_img']?>">
             <?php endif; ?>
     <div class="thumb-list">
             <?php if(!empty($row['product_img1'])): ?>
-                <img src="../<?=$row['product_img1']?>">
+                <img class="smallImg" src="../<?=$row['product_img1']?>">
             <?php endif; ?>
             <?php if(!empty($row['product_img2'])): ?>
-                <img src="../<?=$row['product_img2']?>">
+                <img class="smallImg" src="../<?=$row['product_img2']?>">
             <?php endif; ?>
     </div>
         <?php endforeach; ?>
@@ -272,7 +85,7 @@ body{
             <span id="mainType" style="display: none;" data-type="<?=$row['product_type']?>"></span>
             <span id="mainColor" style="display: none;" data-color="<?=$row['product_color']?>"></span>
         <h1>Trinity <?=$row['product_name']?></h1>
-        <div class="price"><?=$row['product_price']?>$</div>
+        <div class="price">$<?=$row['product_price']?></div>
 
         <p class="short-desc">
             <?=$row['product_describe']?>
@@ -301,22 +114,48 @@ body{
 
 </div>
 <section id="body">
-    <h1>Simillar product</h1>
-    <div id="simillar-product-container">
+    <h1 style="margin-left: 10%;">Color Variations</h1>
+    <div class="simillar-product-container">
         <?php foreach($ptmt as $p): ?>
-            <div onclick="window.location.href='detail.php?id=<?=$p['id']?>'" class="items" data-type="<?=$p['product_type']?>" data-color="<?=$p['product_color']?>" data-id="<?=$p['id']?>">
+            <?php if($p['product_group'] == $group['product_group']): ?>
+            <div onclick="window.location.href='detail.php?id=<?=$p['id']?>'" class="items"
+                                                                data-type="<?=$p['product_type']?>" 
+                                                                data-color="<?=$p['product_color']?>" 
+                                                                data-id="<?=$p['id']?>">
                 <div id="items-left">
                     <img src="../<?=$p['product_img']?>" alt="">
                 </div>
                 <div id="items-right">
+                    <span style="display: none;" class="brand">TRINITY</span>
                     <h5><?=$p['product_name']?></h5>
-                    <span><?=$p['product_price']?>$</span>
-                    <p><?=$p['product_color']?></p>
+                    <span>$<?=$p['product_price']?></span>
                 </div>
             </div>
+            <?php endif; ?>
         <?php endforeach; ?>
     </div>
-    <div id=""></div>
+    <h1 style="margin-left: 10%;">You may also like</h1>
+    <div class="simillar-product-container" style="overflow-y: auto; padding-top: 1%; min-height: 300px;">
+        <?php $count = 0; foreach($ptmt as $p): ?>
+            <?php if($p['product_group'] != $group['product_group'] && $count < 10): 
+                $count++;
+            ?>
+            <div onclick="window.location.href='detail.php?id=<?=$p['id']?>'" class="product" 
+                                                                data-type="<?=$p['product_type']?>" 
+                                                                data-color="<?=$p['product_color']?>" 
+                                                                data-id="<?=$p['id']?>">
+                <div id="items-left">
+                    <img src="../<?=$p['product_img']?>" alt="">
+                </div>
+                <div id="items-right">
+                    <span style="display: none;" class="brand">TRINITY</span>
+                    <h5><?=$p['product_name']?></h5>
+                    <span><?=$p['product_price']?>$</span>
+                </div>
+            </div>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
 </section>
 <section id="menu">
         <div id="text-menu">
@@ -465,6 +304,8 @@ body{
     const mainType = document.getElementById("mainType").dataset.type;
     const mainColor = document.getElementById("mainColor").dataset.color;
     const sizeAdd = document.querySelectorAll(".size label");
+    const bigImg = document.getElementById("bigImg");
+    const smallImg = document.querySelectorAll(".smallImg");
 
     if(userWelcome){
             userWelcome.textContent = "Hi, " + username1;
@@ -472,10 +313,9 @@ body{
 
     items.forEach(item =>{
         const type = item.dataset.type;
-        const color = item.dataset.color;
         const id = item.dataset.id;
         if(type == mainType && id != mainId){
-            item.style.display = "flex";
+            item.style.display = "";
         }else{
             item.style.display = "none";
         }
@@ -506,7 +346,13 @@ body{
             });
         });
 
-
+        smallImg.forEach(img =>{
+            img.addEventListener('click', ()=>{
+                let temp = bigImg.src;
+                bigImg.src = img.src;
+                img.src = temp;
+            });
+        });
 
 const username = <?php echo json_encode($username); ?>;
 console.log("USERNAME:", username);

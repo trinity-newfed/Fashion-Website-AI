@@ -163,6 +163,7 @@ foreach ($data as $d) {
     <section class="body">
       <div class="user-box">
         <div class="user-information">
+            <svg class="icon" id="edit" style="position: absolute; right: 15%; top: 2%;" fill="white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M256.1 248a120 120 0 1 0 0-240 120 120 0 1 0 0 240zm-29.7 56c-98.5 0-178.3 79.8-178.3 178.3 0 16.4 13.3 29.7 29.7 29.7l196.5 0 10.9-54.5c4.3-21.7 15-41.6 30.6-57.2l67.3-67.3c-28-18.3-61.4-28.9-97.4-28.9l-59.4 0zM332.3 466.9l-11.9 59.6c-.2 .9-.3 1.9-.3 2.9 0 8 6.5 14.6 14.6 14.6 1 0 1.9-.1 2.9-.3l59.6-11.9c12.4-2.5 23.8-8.6 32.7-17.5l118.9-118.9-80-80-118.9 118.9c-8.9 8.9-15 20.3-17.5 32.7zm267.8-123c22.1-22.1 22.1-57.9 0-80s-57.9-22.1-80 0l-28.8 28.8 80 80 28.8-28.8z"/></svg>
           <?php if(isset($_SESSION['username'])): ?>
           <div class="user-avatar">
             <?php if(empty($user['img'])): ?>
@@ -379,18 +380,32 @@ foreach ($data as $d) {
             </div>
             <div style="display: flex; width: 90%; justify-content: space-between;">
                 <label for="user_sex">Sex:</label>
-                <select name="user_sex" id="user_sex">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                <?php if($user['user_sex'] == "Male"): ?>
+                    <select name="user_sex" id="user_sex">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
                 </select>
+                <?php elseif($user['user_sex'] == "Female"): ?>
+                    <select name="user_sex" id="user_sex">
+                        <option value="Female">Female</option>
+                        <option value="Male">Male</option>
+                        <option value="Other">Other</option>
+                </select>
+                <?php elseif($user['user_sex'] == "Other"): ?>
+                    <select name="user_sex" id="user_sex">
+                        <option value="Other">Other</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                </select>
+                <?php endif; ?>
             </div>
             <div class="info-input-container">
                 <label for="hotline">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M451.5-531.5Q440-543 440-560t11.5-28.5Q463-600 480-600t28.5 11.5Q520-577 520-560t-11.5 28.5Q497-520 480-520t-28.5-11.5ZM640-520q-17 0-28.5-11.5T600-560q0-17 11.5-28.5T640-600q17 0 28.5 11.5T680-560q0 17-11.5 28.5T640-520Zm160 0q-17 0-28.5-11.5T760-560q0-17 11.5-28.5T800-600q17 0 28.5 11.5T840-560q0 17-11.5 28.5T800-520Zm-2 400q-125 0-247-54.5T329-329Q229-429 174.5-551T120-798q0-18 12-30t30-12h162q14 0 25 9.5t13 22.5l26 140q2 16-1 27t-11 19l-97 98q20 37 47.5 71.5T387-386q31 31 65 57.5t72 48.5l94-94q9-9 23.5-13.5T670-390l138 28q14 4 23 14.5t9 23.5v162q0 18-12 30t-30 12ZM241-600l66-66-17-94h-89q5 41 14 81t26 79Zm358 358q39 17 79.5 27t81.5 13v-88l-94-19-67 67ZM241-600Zm358 358Z"/></svg>
                     Hotline:
                 </label>
-                <input type="text" name="user_hotline" inputmode="numeric" name="user_hotline" pattern="0[0-9]{9}" maxlength="10" id="hotline">
+                <input type="text" inputmode="numeric" name="user_hotline" pattern="0[0-9]{9}" maxlength="10" id="hotline">
             </div>
             <div class="info-input-container">
                 <label for="hotline">
@@ -413,6 +428,7 @@ foreach ($data as $d) {
       const conModal = document.querySelector(".modal-container");
       const closeModal = document.getElementById("closeModal");
       const imgEdit = document.querySelector(".user-avatar");
+      const edit = document.getElementById("edit");
 
       const select = document.getElementById("order-state-option");
       select.addEventListener("change", function (){
@@ -456,6 +472,10 @@ foreach ($data as $d) {
             document.getElementById("edit-info").style.display = "flex";
         });
 
+        edit.addEventListener('click', ()=>{
+            document.getElementById("edit-info").style.display = "flex";
+        });
+        
         document.getElementById("closeEdit").addEventListener('click', ()=>{
             document.getElementById("edit-info").style.display = "none";
         });

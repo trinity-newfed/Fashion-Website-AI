@@ -1,15 +1,13 @@
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        box-sizing: border-box;
-        width: 100vw;
-        height: 100vh;
-        overflow-x: hidden;
-        scroll-behavior: smooth;
-        user-select: none;
-      }
+html,body{
+    top: 0;
+    left: 0;
+    position: relative;
+    margin: auto;
+    background-color: rgb(255, 255, 255);
+    overflow-x: hidden;
+    user-select: none;
+    scroll-behavior: smooth;
+}
 
 /*START MENU*/
 #menu{
@@ -559,7 +557,7 @@
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.8);
-  display: none;
+  display: none !important;
   justify-content: center;
   align-items: center;
   z-index: 101;
@@ -621,6 +619,10 @@
 }
 #modal-detail{
   padding-top: 10px;
+  cursor: pointer;
+}
+#modal-detail:hover{
+  opacity: .7;
 }
 #form-container{
   width: 100%;
@@ -1166,6 +1168,17 @@
         background: rgba(0, 0, 0, 0.05);
         color: #ffffff;
     }
+    .details-btn {
+        padding: 5px 17.5px;
+        background: #000;
+        color: #fff;
+        border: none;
+        text-transform: uppercase;
+        font-size: 10px;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: 0.4s;
+      }
     #product-modal{
       align-items: center;
       display: flex;

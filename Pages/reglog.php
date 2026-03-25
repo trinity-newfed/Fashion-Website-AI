@@ -305,6 +305,34 @@
         margin: 0;
       }
 
+      @media(max-width: 600px){
+        #leftContainer{
+          width: 80%;
+          height: fit-content;
+          align-items: center;
+          justify-content: space-around;
+          top: 0;
+          flex-direction: row;
+          position: fixed;
+          z-index: 100;
+          left: 2%;
+        }
+        #leftContainer h2{
+          font-size: clamp(.9rem, 1.2vw, 1.2rem);
+        }
+        #leftContainer span{
+          font-size: clamp(.8rem, 1vw, 1.2rem);
+        }
+        .Accesories{
+          display: none;
+        }
+        #loginForm, #regForm{
+          width: 100%;
+        }
+        .info-box{
+          padding: 0;
+        }
+      }
     </style>
   </head>
   <body>
@@ -315,7 +343,7 @@
         <span onclick="window.location.href='../Pages/products.php#product-section'">Collection</span>
         <span onclick="window.location.href='products.php?category=men'">Men</span>
         <span onclick="window.location.href='products.php?category=women'">Women</span>
-        <span onclick="window.location.href='products.php?category=accesories'">Accesories</span>
+        <span class="Accesories" onclick="window.location.href='products.php?category=accesories'">Accesories</span>
       </div>
       <form action="register.php" method="POST" id="regForm">
         <div class="info-box">

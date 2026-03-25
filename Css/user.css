@@ -1,11 +1,13 @@
-html,body {
-      user-select: none;
-      top: 0;
-      left: 0;
-      background-color: whitesmoke;
-      scroll-behavior: smooth;
-      overflow-x: hidden;
-    }
+html,body{
+    top: 0;
+    left: 0;
+    position: relative;
+    margin: auto;
+    background-color: rgb(255, 255, 255);
+    overflow-x: hidden;
+    user-select: none;
+    scroll-behavior: smooth;
+}
     /*section head - menu*/
     #head {
       position: relative;
@@ -289,7 +291,6 @@ html,body {
     }
     .user-avatar:hover {
       transition: 0.4s;
-      scale: 1.1;
       cursor: pointer;
     }
     .user-name {
