@@ -49,6 +49,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS orders(
     username VARCHAR(100),
     order_name VARCHAR(100),
     order_original_price DECIMAL(10,2),
+    order_delivery_fee DECIMAL(10,2),
     discount INT,
     order_final_price DECIMAL(10,2),
     order_state ENUM('success','cancel','delivery','delivered'),
@@ -58,7 +59,6 @@ $conn->query("CREATE TABLE IF NOT EXISTS order_items(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
     order_id VARCHAR(100),
     product_name VARCHAR(100),
-    order_original_price DECIMAL(10,2),
     product_id INT,
     price DECIMAL(10,2),
     img VARCHAR(100),
@@ -75,7 +75,13 @@ $conn->query("CREATE TABLE IF NOT EXISTS userdata(
     user_hotline VARCHAR(20),
     user_sex ENUM('Male','Female','Other'),
     user_tier ENUM('1','2','3','4') DEFAULT '1',
+    user_limit_tryon INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+$conn->query("CREATE TABLE IF NOT EXISTS user_policy_agreement(
+    username VARCHAR(255),
+    policy_id ENUM('terms','privacy','ai_usage','delivery'),
+    agree_at TIMESTAMP
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS vouchers(
     id INT AUTO_INCREMENT PRIMARY KEY,

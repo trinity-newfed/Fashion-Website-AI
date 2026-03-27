@@ -12,6 +12,15 @@ $username = $_SESSION['username'] ?? null;
 $product = $conn
   ->query("SELECT * FROM products")
   ->fetch_all(MYSQLI_ASSOC);
+
+
+$sql = $conn->prepare("SELECT * FROM user_policy_agreement
+                       WHERE username = ?");
+$sql->bind_param("s", $username);
+$sql->execute();
+$agreement = $sql->get_result();
+$agree = $agreement->fetch_assoc();
+$sql->close();
 ?>
 <!doctype html>
 <html lang="en">
@@ -44,10 +53,21 @@ $product = $conn
     <label id="fileChoose" for="try-on-input">Choose your file</label>
     <button id="genBtn" type="submit">Generate</button>
     <div id="progress-container">
-    <span style="position: absolute;"></span>
-    <div id="progress"></div>
-  </div>
+      <span style="position: absolute;"></span>
+      <div id="progress"></div>
+    </div>
   </form>
+  <?php if(!empty($agree) && $agree['policy_id'] == "ai_usage"): ?>
+  <form action="../Database/user_policy_agree.php" id="agreementForm" method="POST">
+    <input type="checkbox" name="policy_id" value="ai_usage" id="agreeAI" style="position: absolute; bottom: 3%; left: 1%;" required checked>
+    <span for="agreeAI" style="position: absolute; bottom: 5%; left: 7.5%; font-size: clamp(.7rem, .8vw, 2rem);">I accept <a href="../legal/ai-usage-policy.php">Trinity AI service</a> policy</span>
+  </form>
+  <?php else: ?>
+  <form action="../Database/user_policy_agree.php" id="agreementForm" method="POST">
+    <input type="checkbox" name="policy_id" value="ai_usage" id="agreeAI" style="position: absolute; bottom: 3%; left: 1%;" required>
+    <span for="agreeAI" style="position: absolute; bottom: 5%; left: 7.5%; font-size: clamp(.7rem, .8vw, 2rem);">I accept <a href="../legal/ai-usage-policy.php">Trinity AI service</a> policy</span>
+  </form>
+  <?php endif; ?>
 </div>
     <div class="head">
       <div class="banner">
@@ -128,8 +148,6 @@ $product = $conn
                                       data-category="<?=$p['product_category']?>"
                                       data-category="<?=$p['product_category']?>"
                                       data-color="<?=$p['product_color']?>">
-              <button class="wishlist-btn">❤</button>
-
               <div class="image-box">
                 <img
                   src="../<?=$p['product_img']?>"
@@ -320,8 +338,10 @@ $product = $conn
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
-        <a href="#">Terms of Service</a>
-        <a href="#">Privacy Policy</a>
+        <a href="../legal/term-of-service.php">Terms of Service</a>
+        <a href="../legal/privacy-policy.php">Privacy Policy</a>
+        <a href="../legal/delivery-policy.php">Delivery Policy</a>
+        <a href="../legal/ai-usage-policy.php">AI Usage Policy</a>
       </div>
     </div>
   </div>
@@ -373,6 +393,46 @@ setTimeout(() => {
       const category = params.get("category");
       const name = params.get("name");
       const sortSelect = document.getElementById("sort");
+      const agreeForm = document.getElementById("agreementForm");
+      const checked = document.getElementById("agreeAI");
+      
+      if(checked){
+        if(checked.checked != true){
+        genBtn.disabled = true;
+        genBtn.style.background = "gray";
+      }else{
+        genBtn.disabled = false;
+      }
+
+      checked.addEventListener('change', function(){
+        if(checked.checked == true){
+          genBtn.disabled = false;
+          genBtn.style.background = "";
+        }else{
+          genBtn.disabled = true;
+          genBtn.style.background = "gray";
+        }
+      });
+
+      agreeForm.addEventListener("submit", async function(e){
+        e.preventDefault();
+        const formData = new FormData(agreeForm);
+        try{
+          const res = await fetch("../Database/user_policy_agree.php",{
+            method: "POST",
+            body: formData
+          });
+        const text = await res.text();
+        }catch(err){
+        console.error(err);
+        }
+      });
+
+      genBtn.addEventListener('click', function(){
+        agreeForm.requestSubmit();
+      });
+      }
+
       
       if(userWelcome){
             userWelcome.textContent = "Hi, " + username1;
@@ -479,6 +539,7 @@ setTimeout(() => {
           alertContent.textContent = "Add item to cart success, view it?";
           document.getElementById("fileChoose").style.display = "none";
           document.getElementById("genBtn").style.display = "none";
+          agreeForm.style.display = "none";
           document.getElementById("progress-container").style.display = "none";
           if(alert.classList.contains("tryon") || alert.classList.contains("tryon-close")){
             alert.classList.add("temp");
@@ -552,10 +613,12 @@ setTimeout(() => {
               alertCancelBtn.textContent = "Stop";
               document.getElementById("fileChoose").style.display = "";
               document.getElementById("genBtn").style.display = "";
+              agreeForm.style.display = "";
               if(alert.classList.contains("temp")){
                 document.getElementById("progress-container").style.display = "flex";
                 document.getElementById("fileChoose").style.display = "none";
                 document.getElementById("genBtn").style.display = "none";
+                agreeForm.style.display = "none";
               }
               alertCancelBtn.style.display = "";
               closeAlert.onclick = () =>{
@@ -607,12 +670,13 @@ setTimeout(() => {
 
 
       const form = document.querySelector("#tryon-form");
-      
+
         form.addEventListener("submit", async function(e){
           e.preventDefault();
           document.getElementById("progress-container").style.display = "flex";
           document.getElementById("fileChoose").style.display = "none";
           document.getElementById("genBtn").style.display = "none";
+          agreeForm.style.display = "none";
           document.getElementById("alertNotice").classList.remove("alert");
           document.getElementById("alertNotice").classList.add("tryon");
           const formData = new FormData(this);
@@ -628,7 +692,7 @@ setTimeout(() => {
       }
       }
       });
-
+      
       const username = <?php echo json_encode($username); ?>;
       let abc = 0;
       let animationInterval = null;

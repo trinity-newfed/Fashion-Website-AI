@@ -36,6 +36,7 @@ $stmt->close();
 
 $sql = "SELECT 
         orders.id,
+        order_items.order_id,
         orders.order_state,
         orders.order_name,
         orders.order_original_price,
@@ -58,6 +59,8 @@ $groupedOrders = [];
 
 foreach ($data as $d) {
     $groupedOrders[$d['id']][] = $d;
+    $totalItems = 0;
+    $totalItems += $d['quantity'];
 }
 ?>
 <!doctype html>
@@ -259,7 +262,7 @@ foreach ($data as $d) {
                             <div class="order-img-info">
                                 <h3><?=$items[0]['product_name']?></h3>
                                 <span style="text-align: end; color: gray; text-decoration-line: line-through; font-size: clamp(.7rem, .8vw, 1.1rem);"><?=$items[0]['order_original_price']?>$</span>
-                                <span style="font-size: clamp(.9rem, 1vw, 1.2rem);">Order totals (<?= count($items) ?> items): <?=$items[0]['order_final_price']?>$</span>
+                                <span style="font-size: clamp(.9rem, 1vw, 1.2rem);">Order totals (<?=$totalItems ?> items): <?=$items[0]['order_final_price']?>$</span>
                             </div>
                         </div>
                         <div class="order-info">
@@ -336,8 +339,10 @@ foreach ($data as $d) {
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
-        <a href="#">Terms of Service</a>
-        <a href="#">Privacy Policy</a>
+        <a href="../legal/term-of-service.php">Terms of Service</a>
+        <a href="../legal/privacy-policy.php">Privacy Policy</a>
+        <a href="../legal/delivery-policy.php">Delivery Policy</a>
+        <a href="../legal/ai-usage-policy.php">AI Usage Policy</a>
       </div>
     </div>
   </div>
@@ -367,7 +372,7 @@ foreach ($data as $d) {
     <div class="info-container">
         <button id="closeEdit">&times;</button>
         <form action="../Database/user_info_update.php" method="POST" enctype="multipart/form-data">
-            <label for="">Edit Information</label>
+            <h2>Edit Information</h2>
             <div class="edit-avatar">
                 <label for="edit-avatar">
                     <?php if(empty($user['img'])): ?>
@@ -405,14 +410,17 @@ foreach ($data as $d) {
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M451.5-531.5Q440-543 440-560t11.5-28.5Q463-600 480-600t28.5 11.5Q520-577 520-560t-11.5 28.5Q497-520 480-520t-28.5-11.5ZM640-520q-17 0-28.5-11.5T600-560q0-17 11.5-28.5T640-600q17 0 28.5 11.5T680-560q0 17-11.5 28.5T640-520Zm160 0q-17 0-28.5-11.5T760-560q0-17 11.5-28.5T800-600q17 0 28.5 11.5T840-560q0 17-11.5 28.5T800-520Zm-2 400q-125 0-247-54.5T329-329Q229-429 174.5-551T120-798q0-18 12-30t30-12h162q14 0 25 9.5t13 22.5l26 140q2 16-1 27t-11 19l-97 98q20 37 47.5 71.5T387-386q31 31 65 57.5t72 48.5l94-94q9-9 23.5-13.5T670-390l138 28q14 4 23 14.5t9 23.5v162q0 18-12 30t-30 12ZM241-600l66-66-17-94h-89q5 41 14 81t26 79Zm358 358q39 17 79.5 27t81.5 13v-88l-94-19-67 67ZM241-600Zm358 358Z"/></svg>
                     Hotline:
                 </label>
-                <input type="text" inputmode="numeric" name="user_hotline" pattern="0[0-9]{9}" maxlength="10" id="hotline">
+                <input type="text" inputmode="numeric" placeholder="<?=$user['user_hotline']?>" name="user_hotline" pattern="0[0-9]{9}" maxlength="10" id="hotline">
             </div>
             <div class="info-input-container">
                 <label for="hotline">
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/></svg>
                     Address:
                 </label>
-                <input type="text" id="address" name="user_address">
+                    <div class="address-container">
+                        <input type="text" placeholder="<?=$user['user_address']?>" id="address" name="user_address" oninput="search(this, 'toList')">
+                        <div id="toList" class="suggest"></div>
+                    </div>
             </div>
             <button type="submit" class="re-order">Update Information</button>
         </form>
@@ -497,6 +505,56 @@ foreach ($data as $d) {
                 reader.readAsDataURL(file);
             }
         });
+
+const addressInput = document.getElementById("address");
+const suggestBox = document.getElementById("toList");
+
+addressInput.addEventListener("focus", () => {
+  suggestBox.style.display = "block";
+});
+
+document.addEventListener("click", function(e){
+  if (!e.target.closest(".address-container")) {
+    suggestBox.style.display = "none";
+  }
+});
+
+let coords = {
+  from: [106.5775, 10.8908],
+  to: null
+};
+
+async function search(input, listId){
+  const q = input.value;
+  if (q.length < 3) return;
+
+  const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=5`);
+  const data = await res.json();
+
+  const list = document.getElementById(listId);
+  list.innerHTML = "";
+
+  data.features.forEach(place => {
+    const name = place.properties.name || place.properties.city || place.properties.country;
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerText = name;
+
+    div.onclick = () => {
+      input.value = name;
+      list.innerHTML = "";
+
+      if (listId === "fromList") {
+        coords.from = place.geometry.coordinates;
+      } else {
+        coords.to = place.geometry.coordinates;
+      }
+    };
+
+    list.appendChild(div);
+  });
+}
+
 
       if(userWelcome){
             userWelcome.textContent = "Hi, " + username1;

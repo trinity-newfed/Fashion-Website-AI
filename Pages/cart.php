@@ -64,6 +64,17 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $data = [];
 }
 
+$distance = $conn->prepare("SELECT user_address FROM userdata
+                            WHERE email = ?");
+$distance->bind_param("s", $username);
+$distance->execute();
+$userAddress = $distance->get_result();
+
+if($userAddress->num_rows > 0){
+    $row = $userAddress->fetch_assoc();
+    $address = $row['user_address'];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -95,8 +106,8 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     <span>Total</span>
                 </div>
                 <?php if(empty($data)): ?>
-                    <span style="position: relative; top: 20%; left: 40%; max-width: 20%; font-size: clamp(0.7rem, 1vw, 1rem); color: rgba(0, 0, 0, 0.3);">Your cart is empty</span>
-                    <span onclick="window.location.href='products.php'" style="top: 20%; left: 39%; max-width: 20%; position: relative; top: 20%; font-size: clamp(0.7rem, 1vw, 1rem); color: rgba(0, 72, 255, 0.3); cursor: pointer;">[Continue shopping]</span>
+                    <span style="position: relative; top: 20%; left: 40%; min-width: fit-content; max-width: 20%; font-size: clamp(0.7rem, 1vw, 1rem); color: rgba(0, 0, 0, 0.3);">Your cart is empty</span>
+                    <span onclick="window.location.href='products.php'" style="min-width: fit-content; top: 20%; left: 39%; max-width: 20%; position: relative; top: 20%; font-size: clamp(0.7rem, 1vw, 1rem); color: rgba(0, 72, 255, 0.3); cursor: pointer;">[Continue shopping]</span>
                 <?php else: ?>
                 <?php foreach($data as $d): ?>
                 <div class="items">
@@ -139,7 +150,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     <div class="info-total-order-span-container voucher">
                         <span>Voucher</span>
                         <?php if(empty($voucher)): ?>
-                        <span>No Available Voucher</span>
+                        <span>No Voucher</span>
                         <?php else: ?>
                         <select id="voucher-select" name="id" style="cursor: pointer;">
                             <option value="0" id="main-voucher" class="voucher" data-condition="0" data-max="0">No selected</option>
@@ -156,14 +167,14 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     </div>
                     <div class="info-total-order-span-container delivery">
                         <span>Delivery fee</span>
-                        <span id="deli-fee"></span>
+                        <span id="deli-fee" style="text-align: center;"></span>
                     </div>
                     <div class="info-total-order-span-container total">
                         <span>Totals</span>
                         <?php if(empty($data)): ?>
-                        <span id="final-total" style="justify-content: center;">0$</span>
+                        <span id="final-total">0$</span>
                         <?php else: ?>
-                        <span id="final-total" style="justify-content: center;">0$</span>
+                        <span id="final-total">0$</span>
                         <?php endif; ?>
                     </div>       
                     <button type="submit" id="order-btn">Checkout</button>
@@ -292,8 +303,10 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
-        <a href="#">Terms of Service</a>
-        <a href="#">Privacy Policy</a>
+        <a href="../legal/term-of-service.php">Terms of Service</a>
+        <a href="../legal/privacy-policy.php">Privacy Policy</a>
+        <a href="../legal/delivery-policy.php">Delivery Policy</a>
+        <a href="../legal/ai-usage-policy.php">AI Usage Policy</a>
       </div>
     </div>
   </div>
@@ -308,7 +321,46 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     </div>
   </div>
 </footer>
+<input type="hidden" value="<?=$address?>" id="to" disabled>
     <script>
+
+
+        //MAP API
+        let coords = {
+            from: [106.5775, 10.8908],
+            to: null
+        };
+
+        async function calc(){
+            const url = `https://router.project-osrm.org/route/v1/driving/${coords.from[0]},${coords.from[1]};${coords.to[0]},${coords.to[1]}?overview=false`;
+            const res = await fetch(url);
+            const data = await res.json();
+            const km = (data.routes[0].distance / 1000);
+            return km;
+        }
+
+        async function getCoordsFromName(name){
+            const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(name)}&limit=1`);
+            const data = await res.json();
+            if(data.features.length > 0){
+                return data.features[0].geometry.coordinates;
+            }
+            return null;
+        }
+
+        window.onload = async function() {
+            const toName = "<?=$address?>";
+            const coordsTo = await getCoordsFromName(toName);
+            coords.to = coordsTo;
+            document.getElementById("to").value = toName;
+            if(coordsTo){
+                coords.to = coordsTo;
+                calc();
+            }
+        };
+
+
+        //USERNAME
         const email = <?= isset($_SESSION['username']) ? json_encode($_SESSION['username']) : '""' ?>;
         let username1 = email.replace("@gmail.com", "");
         const userWelcome = document.getElementById("menu-Username");
@@ -318,6 +370,33 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             userWelcome.textContent = "Hi, " + username1;
         }
 
+    //DELIVERY CALCULATE
+    function calculateShippingFee(km){
+        if(km < 20){
+            return 2;
+        }else if(km < 100){
+            return 5;
+        }else if(km < 1000){
+            return 15;
+        }else{
+            return 25;
+        }
+    }
+
+    window.onload = async function(){
+        const toName = "<?=$address?>";
+        const coordsTo = await getCoordsFromName(toName);
+        if(coordsTo){
+            coords.to = coordsTo;
+            const km = await calc();
+            console.log("Distance:", km);
+            const fee = calculateShippingFee(km);
+            document.getElementById("deli-fee").textContent = fee.toLocaleString() + "$";
+        }
+    };
+
+
+    //CALCULATE TOTAL
     function calculateFinalTotal(){
         const selectedVoucher = document.querySelector("#voucher-select option:checked");
         if(selectedVoucher){
@@ -373,7 +452,16 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             }
             let percentDiscount = total * (discount / 100);
             let actualDiscount = Math.min(percentDiscount, max);
-            finalTotal.textContent = total - actualDiscount + "$";
+            let fee = calculateShippingFee();
+            if(total > 700){
+                fee = 0;
+                finalTotal.textContent = total - actualDiscount + fee + "$";
+                document.getElementById("deli-fee").textContent = 0 + "$";
+            } 
+            else{
+                finalTotal.textContent = total - actualDiscount + fee + "$";
+                document.getElementById("deli-fee").textContent = fee.toLocaleString() + "$";
+            }
         }else{
             document.getElementById("main-voucher").selected = true;
             finalTotal.textContent = "0$";
@@ -382,15 +470,12 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             if(freeShippingCalculate > 0){
                 document.getElementById("progress-bar").style.width = `${freeShippingCalculate/7}%`;
                 if(freeShippingCalculate > 700){
-                    document.getElementById("deli-fee").textContent = "100% off";
                     document.getElementById("shipping-label").textContent = "Free Shipping";
                 }else{
-                    document.getElementById("deli-fee").textContent = `${parseFloat((freeShippingCalculate/7).toFixed(0))}% off`;
                     document.getElementById("shipping-label").textContent = "Buy $" + (700 - freeShippingCalculate) + " more enjoy Free Shipping";
                 }
             }else{
                 document.getElementById("progress-bar").style.width = "10%";
-                document.getElementById("deli-fee").textContent = "";
                 document.getElementById("shipping-label").textContent = "Buy more enjoy Free Shipping";
             }
         }else{
@@ -412,29 +497,27 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                     total += itemTotal;
                 }
             });
-            if(total > 0){
+            if(total > 0 && total < 700){
                 let max = 0;
                 discount = 0;
                 finalTotal.textContent = total + "$";
+                document.getElementById("progress-bar").style.width = `${total/7}%`;
+                document.getElementById("shipping-label").textContent = "Buy $" + (700 - total) + " more to enjoy free ship";
+            }else if(total >= 700){
+                document.getElementById("progress-bar").style.width = "100%";
+                document.getElementById("shipping-label").textContent = "Free Shipping";
+                finalTotal.textContent = total + "$";
             }
-            let freeShippingCalculate = total;
-                if(freeShippingCalculate > 0){
-                    document.getElementById("progress-bar").style.width = `${freeShippingCalculate/7}%`;
-                    if(freeShippingCalculate > 700){
-                        document.getElementById("deli-fee").textContent = "100% off";
-                        document.getElementById("shipping-label").textContent = "Free Shipping";
-                    }else{
-                        document.getElementById("deli-fee").textContent = `${parseFloat((freeShippingCalculate/7).toFixed(0))}% off`;
-                        document.getElementById("shipping-label").textContent = "Buy $" + (700 - freeShippingCalculate) + " more enjoy Free Shipping";
-                    }
-                }else{
-                    document.getElementById("progress-bar").style.width = "10%";
-                    document.getElementById("deli-fee").textContent = "";
-                    document.getElementById("shipping-label").textContent = "Buy more enjoy Free Shipping";
-                }
+            else{
+                document.getElementById("progress-bar").style.width = "10%";
+                document.getElementById("shipping-label").textContent = "Buy more to enjoy free ship";
+                finalTotal.textContent = total + "$";
+            }
         }
     }
 
+
+    //QUANTITY BTN
     const operationBtn = document.querySelectorAll(".operation-button");
     operationBtn.forEach(btn =>{
         btn.addEventListener('click', function(){
@@ -470,6 +553,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     
 
 
+        //CHECKBOX EACH ITEMS
         document.querySelectorAll(".item-checkbox").forEach(checkbox =>{
             checkbox.addEventListener('change', calculateFinalTotal);
         });
@@ -491,7 +575,7 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
         });
 
 
-
+//USERNAME AND API FETCH
 const username = <?php echo json_encode($username); ?>;
 console.log("USERNAME:", username);
 

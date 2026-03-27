@@ -25,6 +25,14 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
+
+$sql = $conn->prepare("SELECT * FROM user_policy_agreement
+                       WHERE username = ? AND policy_id = 'delivery'");
+$sql->bind_param("s", $username);
+$sql->execute();
+$agreement = $sql->get_result();
+$agree = $agreement->fetch_assoc();
+$sql->close();
 ?>
 <!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -224,7 +232,6 @@ $stmt->close();
                     <input type="text" id="address" value="<?=$user['user_address']?>" required>
                     <label for="address">Shipping Address</label>
                 </div>
-
                 <div id="wallet-field" class="wallet-only" style="display: flex;">
                     <div class="input-group">
                         <select id="bank" required>
@@ -256,7 +263,19 @@ $stmt->close();
                         <input type="text" id="wallet-id" pattern="[0-9]{8,16}" maxlength="16" inputmode="numberic" required>
                         <label for="wallet-id">Account Number / ID</label>
                     </div>
+                    
                 </div>
+                <?php if(!empty($agree)): ?>
+                    <div style="display: flex;">
+                        <input type="checkbox" name="policy_id" value="delivery" id="delivery-policy" required checked>
+                        <label for="delivery-policy">I agree with <a href="../legal/delivery-policy.php">Trinity Delivery Policy</a></label>
+                    </div>
+                    <?php else: ?>
+                    <div style="display: flex;">
+                        <input type="checkbox" name="policy_id" value="delivery" id="delivery-policy" required>
+                        <label for="delivery-policy">I agree with <a href="../legal/delivery-policy.php">Trinity Delivery Policy</a></label>
+                    </div>
+                    <?php endif; ?>
                 <button class="btn-submit" type="submit">Confirm Order</button>
             </div>
         </form>

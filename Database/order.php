@@ -17,11 +17,50 @@ if(!isset($_SESSION['checkout_cart_ids'])){
                   window.location.href='../Pages/cart.php';
           </script>";
 }
-
+$agree = $_POST['policy_id'];
 $username = $_SESSION['username'];
+
+$policy = $conn->prepare("SELECT * FROM user_policy_agreement
+                          WHERE username = ? AND policy_id = ?");
+$policy->bind_param("ss", $username, $agree);
+$policy->execute();
+$userAgree = $policy->get_result();
+if($userAgree->num_rows == 0){
+    $sql = $conn->prepare("INSERT INTO user_policy_agreement (username, policy_id)
+                           VALUES (?, ?)");
+    $sql->bind_param("ss", $username, $agree);
+    $sql->execute();
+    $sql->close();
+}
+$policy->close();
+
 $usernameShort = strtoupper(substr($username, 0, 3));
 $orderCode = $usernameShort . date('YmdHis');
 $cart_ids = $_SESSION['checkout_cart_ids'] ?? [];
+$from = [106.5775, 10.8908];
+$address = $conn->prepare("SELECT user_address FROM userdata
+                           WHERE email = ?");
+$address->bind_param("s", $username);
+$address->execute();
+$userAddress = $address->get_result();
+if($userAddress->num_rows > 0){
+    $row = $userAddress->fetch_assoc();
+    $add = $row['user_address'];
+
+    function getCoords($add){
+    $url = "https://photon.komoot.io/api/?q=" . urlencode($add) . "&limit=1";
+    $response = file_get_contents($url);
+    $data = json_decode($response, true);
+
+    if(!empty($data['features'])){
+        return $data['features'][0]['geometry']['coordinates'];
+    }
+
+    return null;
+    }
+}
+
+$toCoords = getCoords($add);
 $orderstate = "success";
 
 if (empty($cart_ids)) {
@@ -29,6 +68,39 @@ if (empty($cart_ids)) {
                   window.location.href='../Pages/cart.php';
           </script>";
 }
+
+function getDistance($from, $toCoords){
+    $url = "https://router.project-osrm.org/route/v1/driving/" 
+            . $from[0] . "," . $from[1] . ";" 
+            . $toCoords[0] . "," . $toCoords[1] 
+            . "?overview=false";
+
+    $response = file_get_contents($url);
+    $data = json_decode($response, true);
+
+    if(isset($data['routes'][0]['distance'])){
+        $distance = $data['routes'][0]['distance'] / 1000;
+        return $distance;
+    }
+    return null;
+}
+function getShippingFee($km){
+    if($km < 20){
+        return 2;
+    }else if($km < 100){
+        return 5;
+    }else if($km < 1000){
+        return 15;
+    }else{
+        return 25;
+    }
+}
+
+if($toCoords){
+    $km = getDistance($from, $toCoords);
+    $shipFee = getShippingFee($km);
+}
+
 
 $placeholders = implode(',', array_fill(0, count($cart_ids), '?'));
 
@@ -76,18 +148,23 @@ if($voucher > 0){
     $discount_amount = 0;
 }
 
+if($total > 700){
+    $shipFee = 0;
+    $final_total = max(0, $total - $discount_amount + $shipFee);
+}else{
+    $final_total = max(0, $total - $discount_amount + $shipFee);
+}
 
-$final_total = max(0, $total - $discount_amount);
 
 $conn->begin_transaction();
 
 try{
     $stmt = $conn->prepare("
-        INSERT INTO orders(username, order_name, order_original_price, discount, order_final_price, order_state)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO orders(username, order_name, order_original_price, order_delivery_fee, discount, order_final_price, order_state)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
 
-    $stmt->bind_param("ssddds", $username, $orderCode, $total, $discount_amount, $final_total, $orderstate);
+    $stmt->bind_param("ssdddds", $username, $orderCode, $total, $shipFee, $discount_amount, $final_total, $orderstate);
     $stmt->execute();
 
     $order_id = $stmt->insert_id;

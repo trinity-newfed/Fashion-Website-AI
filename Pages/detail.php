@@ -277,8 +277,10 @@ $result->close();
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
-        <a href="#">Terms of Service</a>
-        <a href="#">Privacy Policy</a>
+        <a href="../legal/term-of-service.php">Terms of Service</a>
+        <a href="../legal/privacy-policy.php">Privacy Policy</a>
+        <a href="../legal/delivery-policy.php">Delivery Policy</a>
+        <a href="../legal/ai-usage-policy.php">AI Usage Policy</a>
       </div>
     </div>
   </div>

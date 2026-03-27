@@ -773,7 +773,7 @@ html,body{
 }
 #alertNotice{
   width: 80vw;
-  max-width: 400px;
+  max-width: 450px;
   height: clamp(5rem, 22vh, 12rem);
   background: white;
   box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
@@ -860,7 +860,7 @@ html,body{
 }
 #CANCEL-btn{
   width: clamp(3rem, 6.3vw, 6rem);
-  height: clamp(1rem, 3.5vh, 3rem);
+  height: clamp(1rem, 3.5vh, 2.5rem);
   font-size: clamp(.7rem, .8vw, 2rem);
   background: white;
   color: black;

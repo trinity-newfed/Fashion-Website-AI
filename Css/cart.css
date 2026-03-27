@@ -444,6 +444,7 @@ html,body{
     justify-content: start;
     padding-left: 15px;
     width: 30%;
+    min-width: fit-content;
     font-size: clamp(.8rem, 1vw, 2rem);
 }
 #voucher-select{
@@ -712,7 +713,7 @@ html,body{
         font-size: clamp(.8, 1vw, 1.2rem);
     }
     .info-total-order-span-container.delivery{
-        width: 80%;
+        width: 100%;
         left: 0;
         align-self: center;
         height: 100%;
@@ -722,7 +723,7 @@ html,body{
         min-width: fit-content;
     }
     .info-total-order-span-container.total{
-        width: 50%;
+        width: 70%;
         bottom: 3%;
         left: 0;
         height: 100%;
