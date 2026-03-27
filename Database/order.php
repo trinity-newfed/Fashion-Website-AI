@@ -63,7 +63,7 @@ if($userAddress->num_rows > 0){
 $toCoords = getCoords($add);
 $orderstate = "success";
 
-if (empty($cart_ids)) {
+if (empty($cart_ids)){
     echo "<script>alert('No items selected!');
                   window.location.href='../Pages/cart.php';
           </script>";
@@ -134,27 +134,36 @@ foreach ($data as $item){
 }
 
 $voucher = $_SESSION['voucher_id'] ?? 0;
+$discount_amount = 0;
+$ship_discount = 0;
+
 if($voucher > 0){
-    $vsql = $conn->prepare("SELECT voucher_discount, voucher_max FROM vouchers WHERE id = ?");
+    $vsql = $conn->prepare("SELECT voucher_discount, voucher_type, voucher_max, voucher_type FROM vouchers WHERE id = ?");
     $vsql->bind_param("i", $voucher);
     $vsql->execute();
-    $d = $vsql->get_result();
-    $dis = $d->fetch_assoc();
-    $discount = $dis['voucher_discount'] ?? 0;
-    $voucher_max = $dis['voucher_max'] ?? 0;
-    $discount_amount = min($total * ($discount / 100), $voucher_max ?? PHP_INT_MAX);
+    $result = $vsql->get_result();
+    if($dis = $result->fetch_assoc()){
+        $val = $dis['voucher_discount'] ?? 0;
+        $is_ship_voucher = ($dis['voucher_type'] == "shipping");
+        $voucher_max = $dis['voucher_max'] ?? PHP_INT_MAX;
+        if($is_ship_voucher){
+            $ship_discount = $val;
+            $discount_amount = 0;
+        }else{
+            $discount_amount = min($total * ($val / 100), $voucher_max);
+            $ship_discount = 0;
+        }
+    }
     $vsql->close();
-}else{
-    $discount_amount = 0;
 }
 
-if($total > 700){
+$FREE_SHIP_THRESHOLD = 700;
+if($total >= $FREE_SHIP_THRESHOLD){
     $shipFee = 0;
-    $final_total = max(0, $total - $discount_amount + $shipFee);
-}else{
-    $final_total = max(0, $total - $discount_amount + $shipFee);
+    $ship_discount = 0;
 }
-
+$final_ship_fee = max(0, $shipFee - $ship_discount);
+$final_total = max(0, $total - $discount_amount + $final_ship_fee);
 
 $conn->begin_transaction();
 
@@ -164,7 +173,7 @@ try{
         VALUES (?, ?, ?, ?, ?, ?, ?)
     ");
 
-    $stmt->bind_param("ssdddds", $username, $orderCode, $total, $shipFee, $discount_amount, $final_total, $orderstate);
+    $stmt->bind_param("ssdddds", $username, $orderCode, $total, $final_ship_fee, $discount_amount, $final_total, $orderstate);
     $stmt->execute();
 
     $order_id = $stmt->insert_id;
@@ -183,6 +192,8 @@ try{
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ");
+
+    
 
     foreach ($data as $item){
         $stmt->bind_param(

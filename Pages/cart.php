@@ -16,6 +16,7 @@ if(isset($_SESSION['username'])){
     vouchers.id AS id,
     vouchers.voucher_condition,
     vouchers.voucher_discount,
+    vouchers.voucher_type,  
     vouchers.voucher_max,
     user_voucher.voucher_id
 FROM vouchers
@@ -155,12 +156,23 @@ if($userAddress->num_rows > 0){
                         <select id="voucher-select" name="id" style="cursor: pointer;">
                             <option value="0" id="main-voucher" class="voucher" data-condition="0" data-max="0">No selected</option>
                             <?php foreach($voucher as $v): ?>
+                                <?php if($v['voucher_type'] == "order"): ?>
                                 <option class="voucher" value="<?=$v['id']?>"
                                                         data-condition="<?=$v['voucher_condition']?>"
                                                         data-max="<?=$v['voucher_max']?>"
                                                         data-id="<?=$v['id']?>"
-                                                        data-discount="<?=$v['voucher_discount']?>"><?=$v['voucher_discount']?>%
+                                                        data-discount="<?=$v['voucher_discount']?>"
+                                                        data-ship="0"><?=$v['voucher_discount']?>%
                                 </option>
+                                <?php elseif($v['voucher_type'] == "shipping"): ?>
+                                <option class="voucher" value="<?=$v['id']?>"
+                                                        data-condition="<?=$v['voucher_condition']?>"
+                                                        data-max="<?=$v['voucher_max']?>"
+                                                        data-id="<?=$v['id']?>"
+                                                        data-discount="<?=$v['voucher_discount']?>"
+                                                        data-ship="1">$<?=$v['voucher_discount']?> OFF
+                                </option>
+                                <?php endif; ?>
                             <?php endforeach; ?>
                         </select>
                         <?php endif; ?>
@@ -396,125 +408,101 @@ if($userAddress->num_rows > 0){
     };
 
 
-    //CALCULATE TOTAL
-    function calculateFinalTotal(){
-        const selectedVoucher = document.querySelector("#voucher-select option:checked");
-        if(selectedVoucher){
-        const mainVoucher = document.getElementById("main-voucher");
-        const voucherSelect = document.getElementById("voucher-select");
-        let discount = 0;
-        if(selectedVoucher){
-            discount = selectedVoucher.value;
-        }
-        if(voucherSelect){
-            voucherSelect.addEventListener('change',calculateFinalTotal)
-        }
-        console.log(discount);
-        const items = document.querySelectorAll(".items");
-        const vouchers = document.querySelectorAll(".voucher");
-        let total = 0;
-        items.forEach(item =>{
-            const checkbox = item.querySelector(".item-checkbox");
-            let itemsTotal = item.querySelector(".items-total-container span");
-            let price = item.querySelector(".items-price-container").textContent;
-            let quantity = item.querySelector(".item-quantity").textContent;
-            price = parseFloat(price.replace("$",""));
-            quantity = parseInt(quantity);
+//CALCULATE TOTAL
+function calculateFinalTotal(){
+    const selectedVoucher = document.querySelector("#voucher-select option:checked");
+    const finalTotalDisplay = document.getElementById("final-total");
+    const deliFeeDisplay = document.getElementById("deli-fee");
+    const progressBar = document.getElementById("progress-bar");
+    const shippingLabel = document.getElementById("shipping-label");
+    const mainVoucher = document.getElementById("main-voucher");
 
-            itemsTotal.textContent = quantity * price + "$";
-            let itemTotal = price * quantity;
+    let total = 0;
+    const items = document.querySelectorAll(".items");
+    
 
-            if(checkbox.checked){
-                total += itemTotal;
+    //FOREACH ITEM
+    items.forEach(item => {
+        const checkbox = item.querySelector(".item-checkbox");
+        const itemsTotalSpan = item.querySelector(".items-total-container span");
+        const price = parseFloat(item.querySelector(".items-price-container").textContent.replace("$", ""));
+        const quantity = parseInt(item.querySelector(".item-quantity").textContent);
+        
+        const itemTotal = price * quantity;
+        if (itemsTotalSpan) itemsTotalSpan.textContent = itemTotal + "$";
+
+        if (checkbox && checkbox.checked) {
+            total += itemTotal;
+        }
+    });
+
+    //FREESHIP THRESHOLD
+    const FREE_SHIP_THRESHOLD = 700;
+    const isAutoFreeShip = total >= FREE_SHIP_THRESHOLD;
+    let totalDiscount = 0;
+    let shipDiscount = 0;
+    let currentShippingFee = (typeof calculateShippingFee === 'function') ? calculateShippingFee() : 0;
+
+    //VOUCHER SELECT
+    const vouchers = document.querySelectorAll(".voucher");
+    vouchers.forEach(voucher => {
+        const condition = parseFloat(voucher.dataset.condition) || 0;
+        const isShipVoucher = parseInt(voucher.dataset.ship) === 1;
+        if (total < condition || (isShipVoucher && isAutoFreeShip)) {
+            voucher.disabled = true;
+            if (voucher.selected && mainVoucher) {
+                mainVoucher.selected = true;
             }
-        });
-        vouchers.forEach(voucher =>{
-            const condition = parseFloat(voucher.dataset.condition);
-            const max = parseFloat(voucher.dataset.max);
-            if(total < condition){
-                voucher.disabled = true;
-                if(voucher.selected){
-                    document.getElementById("main-voucher").selected = true;
-                }
-            }else{
-                voucher.disabled = false;
-            }
-        });
-        if(total > 0){
-            let max = 0;
-            if(selectedVoucher && !selectedVoucher.disabled && selectedVoucher.value != "0"){
-                discount = parseFloat(selectedVoucher.dataset.discount);
-                max = parseFloat(selectedVoucher.dataset.max) || Infinity;
-            }else {
-                document.getElementById("voucher-select").value = "0";
-                discount = 0;
-                max = 0;
-            }
-            let percentDiscount = total * (discount / 100);
-            let actualDiscount = Math.min(percentDiscount, max);
-            let fee = calculateShippingFee();
-            if(total > 700){
-                fee = 0;
-                finalTotal.textContent = total - actualDiscount + fee + "$";
-                document.getElementById("deli-fee").textContent = 0 + "$";
-            } 
-            else{
-                finalTotal.textContent = total - actualDiscount + fee + "$";
-                document.getElementById("deli-fee").textContent = fee.toLocaleString() + "$";
-            }
+        } else {
+            voucher.disabled = false;
+        }
+    });
+
+    const activeVoucher = document.querySelector("#voucher-select option:checked");
+
+    //CHECK VOUCHER
+    if(activeVoucher && !activeVoucher.disabled && activeVoucher.value !== "0"){
+        const val = parseFloat(activeVoucher.dataset.discount) || 0;
+        const isShipVoucher = parseInt(activeVoucher.dataset.ship) === 1;
+        if(isShipVoucher){
+            shipDiscount = val; 
+            totalDiscount = 0; 
         }else{
-            document.getElementById("main-voucher").selected = true;
-            finalTotal.textContent = "0$";
-        }
-        let freeShippingCalculate = total;
-            if(freeShippingCalculate > 0){
-                document.getElementById("progress-bar").style.width = `${freeShippingCalculate/7}%`;
-                if(freeShippingCalculate > 700){
-                    document.getElementById("shipping-label").textContent = "Free Shipping";
-                }else{
-                    document.getElementById("shipping-label").textContent = "Buy $" + (700 - freeShippingCalculate) + " more enjoy Free Shipping";
-                }
-            }else{
-                document.getElementById("progress-bar").style.width = "10%";
-                document.getElementById("shipping-label").textContent = "Buy more enjoy Free Shipping";
-            }
-        }else{
-            const items = document.querySelectorAll(".items");
-            const vouchers = document.querySelectorAll(".voucher");
-            let total = 0;
-            items.forEach(item =>{
-                const checkbox = item.querySelector(".item-checkbox");
-                let itemsTotal = item.querySelector(".items-total-container span");
-                let price = item.querySelector(".items-price-container").textContent;
-                let quantity = item.querySelector(".item-quantity").textContent;
-                price = parseFloat(price.replace("$",""));
-                quantity = parseInt(quantity);
-
-                itemsTotal.textContent = quantity * price + "$";
-                let itemTotal = price * quantity;
-
-                if(checkbox.checked){
-                    total += itemTotal;
-                }
-            });
-            if(total > 0 && total < 700){
-                let max = 0;
-                discount = 0;
-                finalTotal.textContent = total + "$";
-                document.getElementById("progress-bar").style.width = `${total/7}%`;
-                document.getElementById("shipping-label").textContent = "Buy $" + (700 - total) + " more to enjoy free ship";
-            }else if(total >= 700){
-                document.getElementById("progress-bar").style.width = "100%";
-                document.getElementById("shipping-label").textContent = "Free Shipping";
-                finalTotal.textContent = total + "$";
-            }
-            else{
-                document.getElementById("progress-bar").style.width = "10%";
-                document.getElementById("shipping-label").textContent = "Buy more to enjoy free ship";
-                finalTotal.textContent = total + "$";
-            }
+            const maxLimit = parseFloat(activeVoucher.dataset.max) || Infinity;
+            totalDiscount = Math.min(total * (val / 100), maxLimit);
+            shipDiscount = 0;
         }
     }
+
+    const finalShippingFee = Math.max(0, currentShippingFee - shipDiscount);
+    const finalTotal = Math.max(0, total - totalDiscount + finalShippingFee);
+    
+    //DISPLAY FEE
+    if(finalTotalDisplay){
+        finalTotalDisplay.textContent = finalTotal + "$";
+    }
+    if(deliFeeDisplay){
+        deliFeeDisplay.textContent = finalShippingFee === 0 ? "0$" : finalShippingFee.toLocaleString() + "$";
+    }
+
+    //SHIPPING PROGRESS
+    if(progressBar){
+        const progressPercent = Math.min((total / FREE_SHIP_THRESHOLD) * 100, 100);
+        progressBar.style.width = total > 0 ? `${Math.max(progressPercent, 10)}%` : "10%";
+    }
+    //SHIPPING LABEL 
+    if(shippingLabel){
+        if (total >= FREE_SHIP_THRESHOLD) {
+            shippingLabel.textContent = "Free Shipping Applied";
+        } else if (total > 0) {
+            shippingLabel.textContent = `Buy $${(FREE_SHIP_THRESHOLD - total).toFixed(0)} more to enjoy Free Shipping`;
+        } else {
+            shippingLabel.textContent = "Buy more to enjoy Free Shipping";
+        }
+    }
+}
+
+document.getElementById("voucher-select")?.addEventListener('change', calculateFinalTotal);
 
 
     //QUANTITY BTN

@@ -210,13 +210,8 @@
 
       @media (max-width: 850px) {
         .banner {
-          flex-direction: column;
           overflow-y: auto;
-          justify-content: flex-start;
-        }
-        .info-box {
-          width: 100%;
-          padding: 50px 20px;
+          justify-content: center;
         }
       }
       .login-link {
@@ -307,20 +302,24 @@
 
       @media(max-width: 600px){
         #leftContainer{
-          width: 80%;
+          width: 100%;
           height: fit-content;
           align-items: center;
-          justify-content: space-around;
           top: 0;
           flex-direction: row;
           position: fixed;
+          left: 50%;
+          transform: translateX(-50%);
           z-index: 100;
-          left: 2%;
+          gap: 5%;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(15px);
         }
         #leftContainer h2{
           font-size: clamp(.9rem, 1.2vw, 1.2rem);
         }
         #leftContainer span{
+          width: fit-content;
           font-size: clamp(.8rem, 1vw, 1.2rem);
         }
         .Accesories{
@@ -328,10 +327,43 @@
         }
         #loginForm, #regForm{
           width: 100%;
+          height: 100%;
+          overflow: hidden;
+          display: flex;
+          justify-content: center;
+        }
+        #regForm{
+          padding-top: 20px;
         }
         .info-box{
-          padding: 0;
+          width: 80%;
+          padding: 0 40px;
         }
+        .info-box.login-box{
+          justify-content: center;
+          align-items: center;
+        }
+      }
+      .suggest{
+        max-height: 100px;
+        overflow-y: auto;
+        position: relative;
+        background: transparent;
+        width: 100%;
+        top: 10%;
+        z-index: 1000;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+      }
+      .item{
+        padding: 5px;
+        ursor: pointer;  
+        }
+      .item:hover{
+        background: rgba(0, 0, 0, 0.05);
+      }
+      .suggest::-webkit-scrollbar {
+        width: 0;
+        height: 0;
       }
     </style>
   </head>
@@ -380,8 +412,14 @@
             </div>
           </div>
           <div class="input-group">
-            <input type="text" name="user_hotline" required />
+            <input type="text" name="user_hotline" pattern="\d{10}" id="hotline" required/>
             <label>Hotline</label>
+          </div>
+          <div class="input-group">
+            <div class="address-container">
+              <input type="text" id="address" name="user_address" oninput="search(this, 'toList')" required>
+              <div id="toList" class="suggest"></div>
+            </div>
           </div>
           <button type="submit" class="btn-action">Create Account</button>
           <div class="login-link">
@@ -401,7 +439,7 @@
             <label>Email</label>
           </div>
           <div class="input-group">
-            <input type="password" name="user_password" required />
+            <input type="password" name="user_password" required/>
             <label>Password</label>
           </div>
           <button type="submit" class="btn-action">Sign In</button>
@@ -415,6 +453,32 @@
       </form>
     </div>
     <script>
+      const hotlineInput = document.querySelector('input[name="user_hotline"]');
+      hotlineInput.addEventListener('input', function(e){
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if(this.value.length > 10){
+          this.value = this.value.slice(0, 10);
+        }
+        if(this.value.length === 10 && this.value.startsWith('0')){
+          this.style.borderColor = "#2d6a4f";
+        }else if(this.value.length > 0){
+          this.style.borderColor = "#ff4d4d";
+        }else{
+          this.style.borderColor = "";
+        }
+      });
+
+      hotlineInput.addEventListener('input', function(e){
+        let value = this.value.replace(/\D/g, '');
+        if(value.length > 0 && value[0] !== '0'){
+          value = '0' + value;
+        }
+        if(value.length > 10){
+        value = value.slice(0, 10);
+        }
+        this.value = value;
+      });
+
       const select = document.querySelectorAll(".gender-box");
       select.forEach(sec =>{
         sec.addEventListener('click', ()=>{
@@ -435,6 +499,55 @@
       document.querySelector('input[name="user_hotline"]').addEventListener("input", function(){
         this.value = this.value.replace(/\D/g, "").slice(0,10);
       });
+
+const addressInput = document.getElementById("address");
+const suggestBox = document.getElementById("toList");
+
+addressInput.addEventListener("focus", () => {
+  suggestBox.style.display = "block";
+});
+
+document.addEventListener("click", function(e){
+  if (!e.target.closest(".address-container")) {
+    suggestBox.style.display = "none";
+  }
+});
+
+let coords = {
+  from: [106.5775, 10.8908],
+  to: null
+};
+
+async function search(input, listId){
+  const q = input.value;
+  if (q.length < 3) return;
+
+  const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=5`);
+  const data = await res.json();
+
+  const list = document.getElementById(listId);
+  list.innerHTML = "";
+
+  data.features.forEach(place => {
+    const name = place.properties.name || place.properties.city || place.properties.country;
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerText = name;
+
+    div.onclick = () => {
+      input.value = name;
+      list.innerHTML = "";
+
+      if (listId === "fromList") {
+        coords.from = place.geometry.coordinates;
+      } else {
+        coords.to = place.geometry.coordinates;
+      }
+    };
+
+    list.appendChild(div);
+  });
+}
     </script>
   </body>
 </html>
