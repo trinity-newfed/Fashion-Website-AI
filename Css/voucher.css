@@ -255,38 +255,38 @@ margin-bottom:40px;
 }
 
 .voucher-filter button{
-border:none;
-background:none;
-font-size:14px;
+border: none;
+background: none;
+font-size: 14px;
 cursor:pointer;
-opacity:0.5;
+opacity: 0.5;
 }
 
 .voucher-filter .active{
-opacity:1;
-border-bottom:1px solid black;
+opacity: 1;
+border-bottom: 1px solid black;
 }
 
 .voucher-list{
-display:flex;
-flex-direction:column;
-gap:20px;
+display: flex;
+flex-direction: column;
+gap: 20px;
 }
 
 .voucher-card{
-border:1px solid #e5e5e5;
-padding:30px;
-transition:0.3s;
+border: 1px solid #e5e5e5;
+padding: 30px;
+transition: 0.3s;
 }
 
 .voucher-card:hover{
-border-color:black;
+border-color: black;
 }
 
 .voucher-brand{
-font-size:12px;
-letter-spacing:3px;
-margin-bottom:10px;
+font-size: 12px;
+letter-spacing: 3px;
+margin-bottom: 10px;
 display: flex;
 width: 100%;
 justify-content: space-between;
@@ -297,27 +297,34 @@ text-align: center;
 }
 
 .voucher-discount{
-font-size:32px;
-margin-bottom:10px;
+font-size: 32px;
+margin-bottom: 10px;
 }
 
 .voucher-condition{
-color:#777;
-font-size:14px;
-margin-bottom:20px;
+color: #777;
+font-size: 14px;
+margin-bottom: 20px;
 }
 
 .voucher-footer{
-display:flex;
-justify-content:space-between;
-align-items:center;
+display: flex;
+justify-content: space-between;
+align-items: center;
 }
 
 .voucher-footer button{
-border:1px solid black;
-background:none;
-padding:6px 16px;
-cursor:pointer;
+border: 1px solid black;
+background: none;
+padding: 6px 16px;
+cursor: pointer;
+}
+.voucher-footer button:hover{
+border: 1px solid white;
+background: black;
+color: white;
+padding: 6px 16px;
+cursor: pointer;
 }
 .tier {
     padding: 4px 10px;
@@ -325,6 +332,10 @@ cursor:pointer;
     font-size: 12px;
     font-weight: bold;
     display: inline-block;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
 }
 
 .tier-1 {
@@ -347,7 +358,16 @@ cursor:pointer;
     background: linear-gradient(135deg, #38bdf8, #0ea5e9);
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
 }
-
+.tier.shipping{
+  background: linear-gradient(90deg, #43cea2, #185a9d);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
 
 
