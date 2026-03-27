@@ -88,6 +88,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS vouchers(
     voucher_discount INT,
     voucher_condition INT,
     voucher_max INT,
+    voucher_type ENUM('order','shipping'),
     voucher_min_tier ENUM('1','2','3','4'),
     vouchcer_state ENUM('active','inactive') DEFAULT 'active',
     starts_date VARCHAR(255),

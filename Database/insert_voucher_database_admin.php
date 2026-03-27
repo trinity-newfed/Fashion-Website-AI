@@ -18,12 +18,13 @@ while (($data = fgetcsv($file, 1000, ",")) !== FALSE) {
     $discount = $data[0];
     $conditon = $data[1];
     $max = $data[2];
-    $tier = $data[3];
+    $type = $data[3];
+    $tier = $data[4];
 
     $sql = "INSERT INTO vouchers 
-            (voucher_discount, voucher_condition, voucher_max, voucher_min_tier)
+            (voucher_discount, voucher_condition, voucher_max, voucher_type, voucher_min_tier)
             VALUES 
-            ('$discount','$conditon','$max','$tier')";
+            ('$discount','$conditon','$max','$type','$tier')";
 
     $conn->query($sql);
 }

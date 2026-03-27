@@ -197,6 +197,7 @@ $sql->close();
         .btn-submit:hover {
             background-color: #333;
         }
+        
     </style>
 </head>
 <body>
@@ -229,8 +230,11 @@ $sql->close();
                 </div>
 
                 <div class="input-group">
-                    <input type="text" id="address" value="<?=$user['user_address']?>" required>
-                    <label for="address">Shipping Address</label>
+                    <div class="address-container">
+                        <input type="text" value="<?=$user['user_address']?>" readonly>
+                        <label for="address">Shipping Address</label>
+                        <div id="toList" class="suggest"></div>
+                    </div>
                 </div>
                 <div id="wallet-field" class="wallet-only" style="display: flex;">
                     <div class="input-group">

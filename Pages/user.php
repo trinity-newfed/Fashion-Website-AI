@@ -462,11 +462,13 @@ foreach ($data as $d) {
             }
         });
 
-        imgPopup.addEventListener('click', ()=>{
-            modal.style.display = "flex";
-            const modalImg = conModal.querySelector("img");
-            modalImg.src = imgPopup.src;
-        });
+        if(imgPopup){
+            imgPopup.addEventListener('click', ()=>{
+                modal.style.display = "flex";
+                const modalImg = conModal.querySelector("img");
+                modalImg.src = imgPopup.src;
+            });
+        }
 
         closeModal.addEventListener('click', ()=>{
             modal.style.display = "none";

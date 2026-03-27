@@ -254,6 +254,7 @@ html,body{
       margin: auto;
       z-index: 10;
       height: 100%;
+      padding-top: 4.5%;
     }
     .user-box {
       width: 100%;
@@ -298,7 +299,7 @@ html,body{
       text-align: center;
       font-family: "Yanone Kaffeesatz", sans-serif;
       font-style: normal;
-      font-size: 23px;
+      font-size: 16px;
       color: white;
       display: flex;
       margin-top: 40px;
@@ -345,7 +346,9 @@ html,body{
     .info-row span:last-child {
       color: white;
       font-weight: 500;
-    }
+      width: 70%;
+      text-align: end;
+      }
     .user-setting {
       width: 80%;
       height: 30px;
@@ -372,7 +375,6 @@ html,body{
       max-width: 1240px;
       flex: 1;
       background: white;
-      padding-top: 2%;
     }
 
     .user-cart p {
@@ -966,7 +968,7 @@ html,body{
 }
 .item:hover{
       background: rgba(0, 0, 0, 0.05);
-  }
+}
 @media (max-width: 768px) {
   .footer-2 {
     padding: 40px 20px;
@@ -1031,6 +1033,7 @@ html,body{
     }
     .user-information{
       position: relative;
+      top: 30px;
       padding-bottom: 10%;
     }
     .user-cart{
