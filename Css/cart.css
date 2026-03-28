@@ -779,7 +779,7 @@ html,body{
         align-self: flex-start;
     }
     .info-total-order-span-container.voucher span{
-        padding-top: 10px;
+        padding-top: 12px;
     }
     .info-total-order-span-container.delivery{
         width: 100%;
