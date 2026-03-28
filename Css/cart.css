@@ -816,6 +816,7 @@ html,body{
         margin-top: 5%;
         margin-right: 4%;
         padding-right: 0;
+        width: 30%;
     }
     .voucher-list{
         height: 80px;
