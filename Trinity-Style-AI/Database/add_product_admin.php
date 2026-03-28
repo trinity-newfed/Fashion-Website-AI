@@ -1,0 +1,50 @@
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$dbname = "TF_Database";
+
+$conn = new mysqli($host, $user, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("error " . $conn->connect_error);
+}
+print_r($_POST);
+
+$name = $_POST['product_name'];
+$group = $_POST['product_group'];
+$price = $_POST['product_price'];
+$category = $_POST['product_category'];
+$type = $_POST['product_type'];
+$color = $_POST['product_color'];
+$state = $_POST['product_state'];
+$describe = $_POST['product_describe'];
+$size = $_POST['product_size'];
+
+$uploadDir = __DIR__ . "/../picture-uploads/";
+
+function uploadImage($file, $uploadDir) {
+    if ($file['error'] === 0) {
+        $fileName = time() . "_" . str_replace(" ", "-", $file['name']);
+        $targetPath = $uploadDir . $fileName;
+        move_uploaded_file($file['tmp_name'], $targetPath);
+        return $fileName;
+    }
+    return null;
+}
+
+$image  = uploadImage($_FILES['product_img'], $uploadDir);
+$image1 = uploadImage($_FILES['product_img1'], $uploadDir);
+$image2 = uploadImage($_FILES['product_img2'], $uploadDir);
+$image3 = uploadImage($_FILES['product_img3'], $uploadDir);
+
+$type = isset($_POST['product_category']) ? $_POST['product_category'] : "";
+
+$data = "INSERT INTO products(`product_name`,`product_group`,`product_price`,`product_category`,`product_type`,`product_color`,`product_describe`,`product_size`,`product_img`,`product_img1`,`product_img2`,`product_img3`) VALUES ('$name','$group','$price','$type','$color','$describe','$size','$image','$image1','$image2','$image3')";
+
+if ($conn->query($data)) {
+    echo "<script>alert('Thêm dữ liệu thành công');</script>";
+}
+header("Location: admin.php");
+exit();
+?>

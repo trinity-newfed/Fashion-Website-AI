@@ -1,0 +1,77 @@
+<?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$dbname = "TF_Database";
+
+$conn = new mysqli($host, $user, $password, $dbname);
+if ($conn->connect_error) {
+    die("Lỗi kết nối: " . $conn->connect_error);
+}
+
+session_start();     
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email    = trim($_POST['email']);
+    $password = $_POST['user_password'];
+    $address  = trim($_POST['user_address'] ?? null);
+    $user_sex = isset($_POST["user_sex"]) ? $_POST["user_sex"] : "";
+    $hotline  = trim($_POST['user_hotline']);
+
+    if (empty($password)) {
+    echo "<script>
+            alert('Password can not be plank!');
+            window.history.back();
+          </script>";
+    exit;
+    }
+
+    if (strlen($password) < 6) {
+    echo "<script>
+            alert('The password must hold at least 6 letters!');
+            window.history.back();
+          </script>";
+    exit;
+    }
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    $stmt = $conn->prepare(
+        "SELECT id FROM userdata WHERE email = ?"
+    );
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        echo "<script>
+                alert('Account or email already exists!');
+                window.history.back();
+              </script>";
+        exit;
+    }
+
+    $stmt = $conn->prepare("
+        INSERT INTO userdata 
+        (email, user_password, user_address, user_sex, user_hotline)
+        VALUES (?, ?, ?, ?, ?)
+    ");
+    $stmt->bind_param(
+        "sssss",
+        $email,
+        $hashedPassword,
+        $address,
+        $user_sex,
+        $hotline
+    );
+
+    if ($stmt->execute()) {
+        echo "<script>
+                alert('Register success!');
+                window.location.href = 'reglog.php';
+              </script>";
+        exit;
+    } else {
+        echo "<script>alert('Register failed!');</script>";
+    }
+}
+?>
