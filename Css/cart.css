@@ -823,6 +823,7 @@ html,body{
         font-size: clamp(.8rem, 1vw, 2rem);
     }
     #main-voucher{
+        padding-top: 0;
         font-size: clamp(.8rem, 1vw, 2rem);
     }
 }
