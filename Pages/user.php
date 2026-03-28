@@ -475,7 +475,7 @@ foreach ($data as $d) {
         });
 
         modal.addEventListener('click', function(e){
-        if(e.target === modal) modal.style.display = "none";
+            if(e.target === modal) modal.style.display = "none";
         });
 
         imgEdit.addEventListener('click', ()=>{

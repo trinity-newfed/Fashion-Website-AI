@@ -51,6 +51,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS orders(
     order_original_price DECIMAL(10,2),
     order_delivery_fee DECIMAL(10,2),
     discount INT,
+    ship_discount INT,
     order_final_price DECIMAL(10,2),
     order_state ENUM('success','cancel','delivery','delivered'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

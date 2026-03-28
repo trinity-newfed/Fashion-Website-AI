@@ -169,11 +169,11 @@ $conn->begin_transaction();
 
 try{
     $stmt = $conn->prepare("
-        INSERT INTO orders(username, order_name, order_original_price, order_delivery_fee, discount, order_final_price, order_state)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO orders(username, order_name, order_original_price, order_delivery_fee, discount, ship_discount, order_final_price, order_state)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
-    $stmt->bind_param("ssdddds", $username, $orderCode, $total, $final_ship_fee, $discount_amount, $final_total, $orderstate);
+    $stmt->bind_param("ssddddds", $username, $orderCode, $total, $final_ship_fee, $discount_amount, $ship_discount, $final_total, $orderstate);
     $stmt->execute();
 
     $order_id = $stmt->insert_id;

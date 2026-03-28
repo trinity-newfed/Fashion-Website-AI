@@ -153,38 +153,44 @@ if($userAddress->num_rows > 0){
                         <?php if(empty($voucher)): ?>
                         <span>No Voucher</span>
                         <?php else: ?>
-                        <select id="voucher-select" name="id" style="cursor: pointer;">
-                            <option value="0" id="main-voucher" class="voucher" data-condition="0" data-max="0">No selected</option>
-                            <?php foreach($voucher as $v): ?>
+                        <input type="hidden" id="id" name="id" value="">
+                        <div id="voucher-select" style="cursor: pointer;">
+                            <div value="0" id="main-voucher" data-condition="0" data-max="0">No Selected</div>
+                            <div class="voucher-list">
+                                <?php foreach($voucher as $v): ?>
                                 <?php if($v['voucher_type'] == "order"): ?>
-                                <option class="voucher" value="<?=$v['id']?>"
+                                    <div class="voucher order" value="<?=$v['id']?>"
                                                         data-condition="<?=$v['voucher_condition']?>"
                                                         data-max="<?=$v['voucher_max']?>"
                                                         data-id="<?=$v['id']?>"
                                                         data-discount="<?=$v['voucher_discount']?>"
                                                         data-ship="0">SALE <?=$v['voucher_discount']?>% (MAX <?=$v['voucher_max']?>$)
-                                </option>
+                                    </div>
                                 <?php elseif($v['voucher_type'] == "shipping"): ?>
                                     <?php if($v['voucher_discount'] == 25): ?>
-                                        <option class="voucher" value="<?=$v['id']?>"
+                                        <div class="voucher free" value="<?=$v['id']?>"
                                                         data-condition="<?=$v['voucher_condition']?>"
                                                         data-max="<?=$v['voucher_max']?>"
                                                         data-id="<?=$v['id']?>"
                                                         data-discount="<?=$v['voucher_discount']?>"
-                                                        data-ship="1">Free Ship
-                                        </option>
+                                                        data-ship="1"><svg class="shipping-icon" viewBox="0 0 640 512" aria-hidden="true">
+                                                                        <path d="M64 96c0-35.3 28.7-64 64-64h288c35.3 0 64 28.7 64 64v32h50.7c17 0 33.3 6.7 45.3 18.7L621.3 192c12 12 18.7 28.3 18.7 45.3V384c0 35.3-28.7 64-64 64h-3.3c-10.4 36.9-44.4 64-84.7 64s-74.2-27.1-84.7-64H300.7c-10.4 36.9-44.4 64-84.7 64s-74.2-27.1-84.7-64H128c-35.3 0-64-28.7-64-64v-48H24c-13.3 0-24-10.7-24-24s10.7-24 24-24h112c13.3 0 24-10.7 24-24s-10.7-24-24-24H24c-13.3 0-24-10.7-24-24s10.7-24 24-24h176c13.3 0 24-10.7 24-24s-10.7-24-24-24H24c-13.3 0-24-10.7-24-24S10.7 96 24 96h40zm512 192v-50.7l-45.3-45.3H480v96h96zM256 424a40 40 0 1 0-80 0 40 40 0 1 0 80 0zm232 40a40 40 0 1 0 0-80 40 40 0 1 0 0 80z"/>
+                                                                      </svg>
+                                                                      Free Ship
+                                        </div>
                                     <?php else: ?>
-                                        <option class="voucher" value="<?=$v['id']?>"
+                                        <div class="voucher ship" value="<?=$v['id']?>"
                                                         data-condition="<?=$v['voucher_condition']?>"
                                                         data-max="<?=$v['voucher_max']?>"
                                                         data-id="<?=$v['id']?>"
                                                         data-discount="<?=$v['voucher_discount']?>"
                                                         data-ship="1">$<?=$v['voucher_discount']?> Ship OFF
-                                        </option>
+                                        </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
                             <?php endforeach; ?>
-                        </select>
+                            </div>
+                        </div>
                         <?php endif; ?>
                     </div>
                     <div class="info-total-order-span-container delivery">
@@ -411,12 +417,19 @@ if($userAddress->num_rows > 0){
         if(coordsTo){
             coords.to = coordsTo;
             const km = await calc();
-            console.log("Distance:", km);
             const fee = calculateShippingFee(km);
             document.getElementById("deli-fee").textContent = fee.toLocaleString() + "$";
         }
     };
 
+
+    const dropDown = document.getElementById("main-voucher");
+    dropDown.addEventListener('click', ()=>{
+        document.querySelector(".voucher-list").style.display = "block";
+    });
+    document.addEventListener('click', function(e){
+        if(e.target !== dropDown) document.querySelector(".voucher-list").style.display = "none";
+    });
 
 //CALCULATE TOTAL
 function calculateFinalTotal(){
@@ -454,21 +467,25 @@ function calculateFinalTotal(){
     let currentShippingFee = (typeof calculateShippingFee === 'function') ? calculateShippingFee() : 0;
 
     //VOUCHER SELECT
-    const vouchers = document.querySelectorAll(".voucher");
+    const vouchers = document.querySelectorAll(".voucher-list .voucher");
     vouchers.forEach(voucher => {
         const condition = parseFloat(voucher.dataset.condition) || 0;
         const isShipVoucher = parseInt(voucher.dataset.ship) === 1;
-        if (total < condition || (isShipVoucher && isAutoFreeShip)) {
-            voucher.disabled = true;
-            if (voucher.selected && mainVoucher) {
-                mainVoucher.selected = true;
-            }
-        } else {
-            voucher.disabled = false;
+
+
+        if(total < condition || (isShipVoucher && isAutoFreeShip)){
+            voucher.classList.add("disabled");
+            let disabledVouchers = document.querySelectorAll(".voucher.disabled");
+            disabledVouchers.forEach(disabledVoucher =>{
+                const text = disabledVoucher.textContent;
+                if(mainVoucher.textContent == text) mainVoucher.textContent = "No Selected";
+            })
+        }else{
+            voucher.classList.remove("disabled");
         }
     });
 
-    const activeVoucher = document.querySelector("#voucher-select option:checked");
+    const activeVoucher = document.querySelector(".voucher.active");
 
     //CHECK VOUCHER
     if(activeVoucher && !activeVoucher.disabled && activeVoucher.value !== "0"){
@@ -512,9 +529,26 @@ function calculateFinalTotal(){
     }
 }
 
-document.getElementById("voucher-select")?.addEventListener('change', calculateFinalTotal);
+const vouchers = document.querySelectorAll(".voucher-list .voucher");
 
-
+vouchers.forEach(voucher => {
+    voucher.addEventListener('click', ()=>{
+        if(voucher.classList.contains("disabled")) return;
+        vouchers.forEach(v => v.classList.remove("active"));
+        voucher.classList.add("active");
+        const activeVoucher = document.querySelector(".voucher.active");
+        const input = document.getElementById("id");
+        if(input){
+            input.value = activeVoucher ? activeVoucher.dataset.id : "";
+        }
+        document.querySelector(".voucher-list").style.display = "none";
+        const mainVoucher = document.getElementById("main-voucher");
+        if(mainVoucher){
+            mainVoucher.textContent = voucher.textContent;
+        }
+        calculateFinalTotal();
+    });
+});
     //QUANTITY BTN
     const operationBtn = document.querySelectorAll(".operation-button");
     operationBtn.forEach(btn =>{

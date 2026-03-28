@@ -361,7 +361,7 @@
       .item:hover{
         background: rgba(0, 0, 0, 0.05);
       }
-      .suggest::-webkit-scrollbar {
+      .suggest::-webkit-scrollbar{
         width: 0;
         height: 0;
       }

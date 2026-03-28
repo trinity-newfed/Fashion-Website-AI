@@ -452,10 +452,84 @@ html,body{
     height: 30px;
     border: none;
     color: white;
-    background: black;
-}
-#voucher-select option{
+    background: rgb(0, 0, 0);
     cursor: pointer;
+    text-align: end;
+    align-items: center;
+    z-index: 1000;
+    padding-right: 15%;
+}
+#main-voucher{
+    padding-top: 5px;
+    font-size: clamp(.8rem, 1vw, 2rem);
+}
+.voucher-list{
+    display: none;
+    overflow-y: auto;
+    height: 200px;
+    background: linear-gradient(
+        to right,
+      rgba(0,0,0,0.75),
+      rgba(0,0,0,0.4),
+      rgba(0,0,0,0)
+    );
+    backdrop-filter: blur(2px);
+    filter: brightness(0.85);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
+.voucher-list::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+}
+.voucher-list .voucher{
+    border: 1px solid transparent;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.voucher-list .voucher:hover{
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.voucher.order{
+    background: linear-gradient(135deg, #1a1a1a, #2b2b2b);
+    border: 1px solid #3a3a3a;
+    color: #eaeaea;
+    display: flex;
+    justify-content: center;
+}
+.voucher.order:hover{
+    background: linear-gradient(135deg, #222, #333);
+    border: 1px solid #d4af37;
+    box-shadow: 0 8px 25px rgba(212,175,55,0.15);
+}
+.voucher.ship{
+    background: linear-gradient(135deg, #0f2027, #203a43);
+    color: #d1e8ff;
+    accent-color: #4da3ff;
+}
+.voucher.ship:hover{
+    background: linear-gradient(135deg, #132a33, #254a57);
+    border: 1px solid #4da3ff;
+    box-shadow: 0 8px 25px rgba(77,163,255,0.15);
+}
+.voucher.free{
+    background: linear-gradient(135deg, #1f4037, #2c7744);
+    color: #eafff5;
+    display: flex;
+    justify-content: space-around;
+    accent-color: #6effb2;
+    align-items: center;
+}
+.voucher.free:hover{
+    background: linear-gradient(135deg, #244a3d, #2f8058);
+    border: 1px solid #6effb2;
+    box-shadow: 0 8px 25px rgba(110,255,178,0.15);
+}
+.voucher.active{
+    box-shadow: 0 0 0 1px #d4af37 inset
+}
+.voucher.disabled{
+    background: #111;
+    color: #555;
+    opacity: 0.5;
 }
 #order-btn{
     cursor: pointer;
@@ -704,13 +778,8 @@ html,body{
         justify-content: space-between;
         align-self: flex-start;
     }
-    #voucher-select{
-        width: fit-content;
-        border: none;
-        outline: none;
-        max-height: fit-content;
-        transform: translateX(-20%);
-        font-size: clamp(.8, 1vw, 1.2rem);
+    .info-total-order-span-container.voucher span{
+        padding-top: 10px;
     }
     .info-total-order-span-container.delivery{
         width: 100%;
@@ -719,11 +788,8 @@ html,body{
         height: 100%;
         max-height: 30px;
     }
-    .info-total-order-span-container.delivery span{
-        min-width: fit-content;
-    }
     .info-total-order-span-container.total{
-        width: 70%;
+        width: 80%;
         bottom: 3%;
         left: 0;
         height: 100%;
@@ -739,5 +805,23 @@ html,body{
         height: 100%;
         max-width: 100px;
         max-height: 30px;
+    }
+    #deli-fee{
+        right: 4%;
+        display: flex;
+        justify-content: end;
+        position: absolute;
+    }
+    #voucher-select{
+        margin-top: 5%;
+        margin-right: 4%;
+        padding-right: 0;
+    }
+    .voucher-list{
+        height: 80px;
+        font-size: clamp(.8rem, 1vw, 2rem);
+    }
+    #main-voucher{
+        font-size: clamp(.8rem, 1vw, 2rem);
     }
 }
