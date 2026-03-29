@@ -8,9 +8,9 @@ $conn = new mysqli($host, $user, $password, $dbname);
 
 session_start();
 
-if(isset($_POST['id']) && isset($_SESSION['username'])) {
-    $stmt = $conn->prepare("DELETE FROM tryon WHERE id = ? AND username = ?");
-    $stmt->bind_param("is", $_POST['id'], $_SESSION['username']);
+if(isset($_POST['id']) && isset($_SESSION['user_id'])) {
+    $stmt = $conn->prepare("DELETE FROM tryon WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $_POST['id'], $_SESSION['user_id']);
     $stmt->execute();
 
 if($stmt->execute()){

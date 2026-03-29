@@ -8,6 +8,7 @@ $conn = new mysqli($host, $user, $password, $dbname);
 
 session_start();
 $username = $_SESSION['username'] ?? null;
+$userID = $_SESSION['user_id'] ?? null;
 
 $product = $conn
   ->query("SELECT * FROM products")
@@ -15,11 +16,15 @@ $product = $conn
 
 
 $sql = $conn->prepare("SELECT * FROM user_policy_agreement
-                       WHERE username = ?");
-$sql->bind_param("s", $username);
+                       WHERE user_id = ?");
+$sql->bind_param("i", $userID);
 $sql->execute();
 $agreement = $sql->get_result();
-$agree = $agreement->fetch_assoc();
+if($agreement->num_rows > 0){
+  $agree = 1;
+}else{
+  $agree = 0;
+}
 $sql->close();
 ?>
 <!doctype html>
@@ -38,7 +43,7 @@ $sql->close();
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div id="alertNotice">
+<div id="alertNotice">
       <button id="closeAlertBtn">&times;</button>
       <h4></h4>
       <span></span>
@@ -47,7 +52,7 @@ $sql->close();
     <button class="alertBtn" id="CANCEL-btn">CANCEL</button>
   </div>
   <form style="display: none;" id="tryon-form" action="http://127.0.0.1:5000/api/generate" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="username" value="<?=$_SESSION['username']?>">
+    <input type="hidden" name="user_id" value="<?=$_SESSION['user_id']?>">
     <input type="file" id="try-on-input" name="person" hidden required>
     <input type="hidden" name="cloth" id="cloth">
     <label id="fileChoose" for="try-on-input">Choose your file</label>
@@ -57,7 +62,7 @@ $sql->close();
       <div id="progress"></div>
     </div>
   </form>
-  <?php if(!empty($agree) && $agree['policy_id'] == "ai_usage"): ?>
+  <?php if($agree == 1): ?>
   <form action="../Database/user_policy_agree.php" id="agreementForm" method="POST">
     <input type="checkbox" name="policy_id" value="ai_usage" id="agreeAI" style="position: absolute; bottom: 3%; left: 1%;" required checked>
     <span for="agreeAI" style="position: absolute; bottom: 5%; left: 7.5%; font-size: clamp(.7rem, .8vw, 2rem);">I accept <a href="../legal/ai-usage-policy.php">Trinity AI service</a> policy</span>
@@ -193,7 +198,7 @@ $sql->close();
       </div>
           <div id="form-container">
             <form action="../Database/add_item_to_cart.php" method="POST" style="display: grid;" id="addCartForm"> 
-                    <input type="hidden" name="username" value="<?=htmlspecialchars($username)?>">    
+                    <input type="hidden" name="user_id" value="<?=htmlspecialchars($userID)?>">    
                     <input type="hidden" name="product_id" id="modal-product-id">
                     <input type="hidden" name="product_category" id="modal-product-category">
                     <input type="hidden" name="product_color" id="modal-product-color">
@@ -211,7 +216,7 @@ $sql->close();
           <h3>Virtual AI Try On</h3>
           <span>This is an feature for customers to try on our product</span>
         </div>
-            </div>
+        </div>
           </div>
       <div id="modal-detail" onclick="window.location.href='Trinity-Style-AI/Pages/detail.php?id=<?=$p['id']?>'">Details</div>
     </div>
@@ -224,7 +229,7 @@ $sql->close();
             <div id="text">
                 <span onclick="window.location.href='../Pages/'">Home</span>
                 <span onclick="window.location.href='#product-section'">Shop</span>
-                <span onclick="window.location.href='#product-section'">Collection</span>
+                <span onclick="window.location.href='products.php?#product-section'">Collection</span>
                 <span onclick="window.location.href='contact.php'">Contact</span>
             </div>
         </div>
@@ -302,7 +307,7 @@ $sql->close();
         </div>
     </div>
     <div class="menu-item">
-        <div class="menu-title">ABOUT</div>
+        <div class="menu-title" onclick="window.location.href='about.php'">ABOUT</div>
     </div>
 </div>
 </section>
@@ -334,7 +339,7 @@ $sql->close();
         <a href="cart.php">Cart</a>
         <a href="voucher.php">Vouchers</a>
         <a href="userTier.php">User Tier</a>
-        <a href="#">About Us</a>
+        <a href="about.php">About Us</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
@@ -357,15 +362,12 @@ $sql->close();
   </div>
 </footer>
     <script>
-      console.log("JS START");
-
 setTimeout(() => {
-  console.log("TIMEOUT OK");
 }, 2000);
       const email = <?= isset($_SESSION['username']) ? json_encode($_SESSION['username']) : '""' ?>;
       let username1 = email.replace("@gmail.com", "");
       const userWelcome = document.getElementById("menu-Username");
-      const isLogin = <?=isset($_SESSION['username']) ? 'true' : 'false'?>;
+      const isLogin = <?=isset($_SESSION['user_id']) ? 'true' : 'false'?>;
       const products = document.querySelectorAll(".product-card");
       const conModal = document.querySelector(".modal-container");
       const modal = document.getElementById("product-modal");
@@ -510,6 +512,7 @@ setTimeout(() => {
           alert.classList.add("alert");
           closeAlert.style.opacity = "1";
           closeAlert.style.visibility = "visible";
+          agreeForm.style.display = "none";
           closeAlert.onclick = () =>{
             alert.classList.remove("alert");
           }
@@ -693,14 +696,14 @@ setTimeout(() => {
       }
       });
       
-      const username = <?php echo json_encode($username); ?>;
+      const user_id = <?php echo json_encode($userID); ?>;
       let abc = 0;
       let animationInterval = null;
 
-      if(username){
+      if(user_id){
         setInterval(async () =>{
           try{
-            const res = await fetch(`http://localhost:5000/api/progress/${username}`);
+            const res = await fetch(`http://localhost:5000/api/progress/${user_id}`);
             const data = await res.json();
 
             if(data.progress < 2){
@@ -718,7 +721,7 @@ setTimeout(() => {
           }catch(err){
             console.error(err);
           }
-        }, 10000);
+        }, 3000);
       }
 
 

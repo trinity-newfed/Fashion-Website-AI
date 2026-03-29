@@ -6,28 +6,29 @@ $dbname = "TF_Database";
 
 $conn = new mysqli($host, $user, $password, $dbname);
 session_start();
-if(!isset($_SESSION['username'])){
+if(!isset($_SESSION['user_id'])){
   header("Location: reglog.php");
   exit();
 }
 $username = $_SESSION['username'];
+$userID = $_SESSION['user_id'];
 
 $sql = "SELECT * FROM userdata
-        WHERE email = ?";
+        WHERE id = ?";
 $stmt = $conn->prepare($sql);
 if(!$stmt){
     die("Prepare failed: " . $conn->error);
 }
-$stmt->bind_param("s", $username);
+$stmt->bind_param("i", $userID);
 $stmt->execute();
 
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 $stmt->close();
 
-$img = "SELECT * FROM tryon WHERE username = ?";
+$img = "SELECT * FROM tryon WHERE user_id = ?";
 $stmt = $conn->prepare($img);
-$stmt->bind_param("s", $username);
+$stmt->bind_param("i", $userID);
 $stmt->execute();
 
 $fetchData = $stmt->get_result();
@@ -46,12 +47,12 @@ $sql = "SELECT
         order_items.quantity
         FROM orders
         JOIN order_items ON orders.id = order_items.order_id
-        WHERE orders.username = ?
+        WHERE orders.user_id = ?
         ORDER BY orders.id DESC
 ";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("s", $username);
+$stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
 $data = $result->fetch_all(MYSQLI_ASSOC);
@@ -159,7 +160,7 @@ foreach ($data as $d) {
         </div>
     </div>
     <div class="menu-item">
-        <div class="menu-title">ABOUT</div>
+        <div class="menu-title" onclick="window.location.href='about.php'">ABOUT</div>
     </div>
 </div>
     </section>
@@ -286,7 +287,7 @@ foreach ($data as $d) {
                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M149.1 64.8L138.7 96 64 96C28.7 96 0 124.7 0 160L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64l-74.7 0-10.4-31.2C356.4 45.2 338.1 32 317.4 32L194.6 32c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></svg>
                     Virtual Try On AI
                 </span>
-                <img src="../AI/static/outputs/user_<?=$_SESSION['username']?>/<?=$to['result_img']?>" alt="">
+                <img src="../AI/static/outputs/user_<?=$_SESSION['user_id']?>/<?=$to['result_img']?>" alt="">
                 <div style="text-align: center; display: flex; width: 90%; height: 20%; justify-content: space-around; align-items: center; gap: 5%;">
                     <?=$to['created_at']?>
                     <form action="../Database/detele_user_tryon.php" method="POST">
@@ -335,7 +336,7 @@ foreach ($data as $d) {
         <a href="cart.php">Cart</a>
         <a href="voucher.php">Vouchers</a>
         <a href="userTier.php">User Tier</a>
-        <a href="#">About Us</a>
+        <a href="about.php">About Us</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
@@ -431,7 +432,7 @@ foreach ($data as $d) {
       let username1 = email.replace("@gmail.com", "");
       const userWelcome = document.getElementById("menu-Username");
       const menuTitles = document.querySelectorAll(".menu-title");
-      const imgPopup = document.querySelector(".line3 img");
+      const imgPopup = document.querySelectorAll(".line3 img");
       const modal = document.getElementById("product-modal");
       const conModal = document.querySelector(".modal-container");
       const closeModal = document.getElementById("closeModal");
@@ -463,10 +464,12 @@ foreach ($data as $d) {
         });
 
         if(imgPopup){
-            imgPopup.addEventListener('click', ()=>{
-                modal.style.display = "flex";
-                const modalImg = conModal.querySelector("img");
-                modalImg.src = imgPopup.src;
+            imgPopup.forEach(img =>{
+                img.addEventListener('click', ()=>{
+                    modal.style.display = "flex";
+                    const modalImg = conModal.querySelector("img");
+                    modalImg.src = img.src;
+                });
             });
         }
 
@@ -576,19 +579,15 @@ async function search(input, listId){
         });
 
 
-const username = <?php echo json_encode($username); ?>;
-console.log("USERNAME:", username);
+const user_id = <?php echo json_encode($userID); ?>;
 
-if(username){
+if(user_id){
   const interval = setInterval(async () =>{
     try {
-      const res = await fetch(`http://localhost:5000/api/progress/${username}`);
+      const res = await fetch(`http://localhost:5000/api/progress/${user_id}`);
       const data = await res.json();
 
-      console.log("DATA:", data);
-
       if(data.status === "done"){
-        console.log("DONE TRIGGERED");
         clearInterval(interval);
         const goUser = confirm("Redirect to user page for result?");
         if(goUser){

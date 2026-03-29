@@ -11,19 +11,19 @@ if($conn->connect_error){
 
 session_start();
 
-$username = $_SESSION['username'];
+$userID = $_SESSION['user_id'];
 $agree = $_POST['policy_id'];
 
 $data = $conn->prepare("SELECT 1 FROM user_policy_agreement
-                        WHERE username = ? AND policy_id = ?");
-$data->bind_param("ss", $username, $agree);
+                        WHERE id = ? AND policy_id = ?");
+$data->bind_param("is", $userID, $agree);
 $data->execute();
 $check = $data->get_result();
 
 if($check->num_rows == 0){
-    $sql = $conn->prepare("INSERT INTO user_policy_agreement (username, policy_id) 
+    $sql = $conn->prepare("INSERT INTO user_policy_agreement (user_id, policy_id) 
                        VALUES(?, ?)");
-    $sql->bind_param("ss", $username, $agree);
+    $sql->bind_param("is", $userID, $agree);
     $sql->execute();
     $sql->close();
 }

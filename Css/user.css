@@ -555,6 +555,7 @@ html,body{
       width: 90%;
       height: 70%;
       object-fit: cover;
+      object-position: center 10%;
       cursor: pointer;
       transition: .1s;
     }

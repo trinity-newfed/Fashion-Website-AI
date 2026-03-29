@@ -11,7 +11,8 @@ if($conn->connect_error){
 }
 
 session_start();
-$username = $_SESSION['username'];
+$username = $_SESSION['username'] ?? null;
+$userID = $_SESSION['user_id'] ?? null;
 
 $id = $_GET['id'] ?? 0;
 $id = intval($id);
@@ -40,6 +41,18 @@ $variation = "SELECT product_group FROM products WHERE id = $id";
 $result = $conn->query($sql);
 $group = $result->fetch_assoc();
 $result->close();
+
+$sql = $conn->prepare("SELECT * FROM user_policy_agreement
+                       WHERE user_id = ?");
+$sql->bind_param("i", $userID);
+$sql->execute();
+$agreement = $sql->get_result();
+if($agreement->num_rows > 0){
+  $agree = 1;
+}else{
+  $agree = 0;
+}
+$sql->close();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -59,6 +72,37 @@ $result->close();
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <div id="alertNotice">
+      <button id="closeAlertBtn">&times;</button>
+      <h4></h4>
+      <span></span>
+  <div id="alert-div">
+    <button class="alertBtn" id="OK-btn">OK</button>
+    <button class="alertBtn" id="CANCEL-btn">CANCEL</button>
+  </div>
+  <form style="display: none;" id="tryon-form" action="http://127.0.0.1:5000/api/generate" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="user_id" value="<?=$_SESSION['user_id']?>">
+    <input type="file" id="try-on-input" value="<?=$_SESSION['user_id']?>" name="person" hidden required>
+    <input type="hidden" name="cloth" value="../<?=$group['product_img']?>" id="cloth">
+    <label id="fileChoose" for="try-on-input">Choose your file</label>
+    <button id="genBtn" type="submit">Generate</button>
+    <div id="progress-container">
+      <span style="position: absolute;"></span>
+      <div id="progress"></div>
+    </div>
+  </form>
+  <?php if($agree == 1): ?>
+  <form action="../Database/user_policy_agree.php" id="agreementForm" method="POST">
+    <input type="checkbox" name="policy_id" value="ai_usage" id="agreeAI" style="position: absolute; bottom: 3%; left: 1%;" required checked>
+    <span for="agreeAI" style="position: absolute; bottom: 5%; left: 7.5%; font-size: clamp(.7rem, .8vw, 2rem);">I accept <a href="../legal/ai-usage-policy.php">Trinity AI service</a> policy</span>
+  </form>
+  <?php else: ?>
+  <form action="../Database/user_policy_agree.php" id="agreementForm" method="POST">
+    <input type="checkbox" name="policy_id" value="ai_usage" id="agreeAI" style="position: absolute; bottom: 3%; left: 1%;" required>
+    <span for="agreeAI" style="position: absolute; bottom: 5%; left: 7.5%; font-size: clamp(.7rem, .8vw, 2rem);">I accept <a href="../legal/ai-usage-policy.php">Trinity AI service</a> policy</span>
+  </form>
+  <?php endif; ?>
+</div>
     <div class="product-container">
 
 <div class="product-left">
@@ -109,6 +153,13 @@ $result->close();
                     <input type="radio" name="cart_size" value="XL" id="XL-size-<?=$row['id']?>" hidden> 
         <button class="add-cart">Add to cart</button>
         </form>
+        <div style="align-self: end; position: relative; margin-top: 2%;" id="Try-on-form">
+        <button class="modal-try" type="submit">Try with AI✨</button>
+        <div id="tooltip-explain">
+          <h3>Virtual AI Try On</h3>
+          <span>This is an feature for customers to try on our product</span>
+        </div>
+      </div>
         <?php endforeach; ?>
     </div>
 
@@ -241,7 +292,7 @@ $result->close();
         </div>
     </div>
     <div class="menu-item">
-        <div class="menu-title">ABOUT</div>
+        <div class="menu-title" onclick="window.location.href='about.php'">ABOUT</div>
     </div>
 </div>
 </section>
@@ -273,7 +324,7 @@ $result->close();
         <a href="cart.php">Cart</a>
         <a href="voucher.php">Vouchers</a>
         <a href="userTier.php">User Tier</a>
-        <a href="#">About Us</a>
+        <a href="about.php">About Us</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
@@ -308,6 +359,18 @@ $result->close();
     const sizeAdd = document.querySelectorAll(".size label");
     const bigImg = document.getElementById("bigImg");
     const smallImg = document.querySelectorAll(".smallImg");
+    const try_on = document.getElementById("Try-on-form");
+    const try_on_input = document.getElementById("cloth");
+    const formTryOn = document.getElementById("tryon-form");
+    const addCart = document.querySelectorAll(".add-cart");
+    const alert = document.getElementById("alertNotice");
+    const alertName = document.querySelector("#alertNotice h4");
+    const alertContent = document.querySelector("#alertNotice span");
+    const alertOkBtn = document.getElementById("OK-btn");
+    const alertCancelBtn = document.getElementById("CANCEL-btn");
+    const closeAlert = document.getElementById("closeAlertBtn");
+    const agreeForm = document.getElementById("agreementForm");
+    const isLogin = <?=isset($_SESSION['user_id']) ? 'true' : 'false'?>;
 
     if(userWelcome){
             userWelcome.textContent = "Hi, " + username1;
@@ -355,30 +418,202 @@ $result->close();
                 img.src = temp;
             });
         });
-
-const username = <?php echo json_encode($username); ?>;
-console.log("USERNAME:", username);
-
-if(username){
-  const interval = setInterval(async () =>{
-    try {
-      const res = await fetch(`http://localhost:5000/api/progress/${username}`);
-      const data = await res.json();
-
-      console.log("DATA:", data);
-
-      if(data.status === "done"){
-        console.log("DONE TRIGGERED");
-        clearInterval(interval);
-        const goUser = confirm("Redirect to user page for result?");
-        if(goUser){
-          window.location.href = data.redirect;
+      closeAlert.addEventListener('click', ()=>{
+        if(alert.classList.contains("tryon")){
+          alert.classList.remove("tryon");
+          alert.classList.add("tryon-close");
         }
+      });
+
+      alert.addEventListener('click', function(e){
+        if(alert.classList.contains("tryon-close") && e.target != closeAlert){
+            alert.classList.add("tryon");
+            alert.classList.remove("tryon-close");
+        }
+      });  
+
+      agreeForm.addEventListener("submit", async function(e){
+        e.preventDefault();
+        const formData = new FormData(agreeForm);
+        try{
+          const res = await fetch("../Database/user_policy_agree.php",{
+            method: "POST",
+            body: formData
+          });
+        const text = await res.text();
+        }catch(err){
+        console.error(err);
+        }
+      });  
+
+      genBtn.addEventListener('click', function(){
+        agreeForm.requestSubmit();
+      });
+
+      let timer;
+      const forms = document.getElementById("addCartForm");
+      addCart.forEach(btn =>{
+        btn.addEventListener('click', function(e){
+        e.preventDefault();
+        clearTimeout(timer);
+        if(!isLogin){
+          alert.classList.add("alert");
+          closeAlert.style.opacity = "1";
+          closeAlert.style.visibility = "visible";
+          agreeForm.style.display = "none";
+          closeAlert.onclick = () =>{
+            alert.classList.remove("alert");
+          }
+          alertName.textContent = "TRINITY";
+          alertContent.textContent = "Please login first to use this feature!";
+          alertOkBtn.onclick = () =>{
+            window.location.href = "reglog.php";
+          };
+          alertCancelBtn.onclick = () =>{
+            alert.classList.remove("alert");
+          };
+          timer = setTimeout(function(){
+              alert.classList.remove("alert");
+          }, 5000);
+          return;
+        }else{
+          fetch("../Database/add_item_to_cart.php", {
+          method: "POST",
+          body: new FormData(forms)
+        })
+        .then(res => res.text())
+        .then(data => {
+          console.log("SERVER:", data);
+          clearTimeout(timer);
+          alert.classList.add("alert");
+          alertName.textContent = "TRINITY";
+          alertContent.textContent = "Add item to cart success, view it?";
+          document.getElementById("fileChoose").style.display = "none";
+          document.getElementById("genBtn").style.display = "none";
+          agreeForm.style.display = "none";
+          document.getElementById("progress-container").style.display = "none";
+          if(alert.classList.contains("tryon") || alert.classList.contains("tryon-close")){
+            alert.classList.add("temp");
+            alert.classList.remove("tryon");
+            alert.classList.remove("tryon-close");
+          }
+          alertOkBtn.onclick = () => {
+            window.location.href = "cart.php";
+          };
+          alertCancelBtn.style.display = "none";
+          alertOkBtn.style.display = "";
+          timer = setTimeout(function(){
+              alert.classList.remove("alert");
+          }, 5000);
+        });
+        }
+        });
+      });
+
+        try_on.addEventListener('click', function(e){
+        clearTimeout(timer);
+        if(!isLogin){
+          alert.classList.add("alert");
+          alertName.textContent = "TRINITY";
+          alertContent.textContent = "Please login first to use this feature!";
+          closeAlert.style.opacity = "1";
+          closeAlert.style.visibility = "visible";
+          agreeForm.style.display = "none";
+          closeAlert.onclick = () =>{
+            alert.classList.remove("alert");
+          }
+          alertOkBtn.onclick =  ()=>{
+            window.location.href = "reglog.php";
+          };
+          alertCancelBtn.onclick = ()=>{
+            alert.classList.remove("alert");
+          };
+          timer = setTimeout(function(){
+              alert.classList.remove("alert");
+            }, 5000);
+        }else if(isLogin){
+          clearTimeout(timer);
+          timer = null;
+            if(!alert.classList.contains("tryon-close") && !alert.classList.contains("tryon")){
+              alertName.textContent = "TRINITY VIRTUAL AI TRY ON";
+              alertContent.textContent = "";
+              alertOkBtn.style.display = "none";
+              formTryOn.style.display = "flex";
+              closeAlert.style.opacity = "1";
+              closeAlert.style.visibility = "visible";
+              alertCancelBtn.textContent = "Stop";
+              document.getElementById("fileChoose").style.display = "";
+              document.getElementById("genBtn").style.display = "";
+              agreeForm.style.display = "";
+              if(alert.classList.contains("temp")){
+                document.getElementById("progress-container").style.display = "flex";
+                document.getElementById("fileChoose").style.display = "none";
+                document.getElementById("genBtn").style.display = "none";
+                agreeForm.style.display = "none";
+              }
+              alertCancelBtn.style.display = "";
+              closeAlert.onclick = () =>{
+                alert.classList.remove("alert");
+              }
+              alert.classList.add("alert");
+              alertCancelBtn.onclick = ()=>{
+                
+              };
+            }
+        }
+      });
+
+const form = document.querySelector("#tryon-form");
+
+        form.addEventListener("submit", async function(e){
+          e.preventDefault();
+          document.getElementById("progress-container").style.display = "flex";
+          document.getElementById("fileChoose").style.display = "none";
+          document.getElementById("genBtn").style.display = "none";
+          agreeForm.style.display = "none";
+          document.getElementById("alertNotice").classList.remove("alert");
+          document.getElementById("alertNotice").classList.add("tryon");
+          const formData = new FormData(this);
+          const res = await fetch("http://127.0.0.1:5000/api/generate",{
+          method: "POST",
+          body: formData
+      });
+      const data = await res.json();
+      if(data.status === "success"){
+        const goUser = confirm("Redirect to user page for result?");
+      if(goUser){
+        window.location.href = data.redirect;
       }
-    }catch (err){
-      console.error(err);
-    }
-  }, 3000);
-}
+      }
+      });
+      
+      const user_id = <?php echo json_encode($userID); ?>;
+      let abc = 0;
+      let animationInterval = null;
+
+      if(user_id){
+        setInterval(async () =>{
+          try{
+            const res = await fetch(`http://localhost:5000/api/progress/${user_id}`);
+            const data = await res.json();
+
+            if(data.progress < 2){
+              document.querySelector("#progress-container span").classList.add("animation");
+            } 
+            else if(data.progress > 2){
+              let percent = data.progress + data.progress / 4.75; 
+              document.getElementById("progress").style.width = `${percent}%`;
+              if(alert.classList.contains("tryon-close")){
+                alert.querySelector("h4").style.opacity = "1";
+                alert.querySelector("h4").style.visibility = "visible";
+                alert.querySelector("h4").textContent = `${parseFloat(percent.toFixed(2))}%`;
+              }
+            }
+          }catch(err){
+            console.error(err);
+          }
+        }, 3000);
+      }
+
 </script>
 </html>

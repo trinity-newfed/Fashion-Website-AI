@@ -1,13 +1,18 @@
+#REQUIRE#
+first time download (>5.4G)
+python ver 3.10.11
+composer (https://getcomposer.org/Composer-Setup.exe)
+
+
+#MAILER
+composer require phpmailer/phpmailer
+
 #PINELINE#
 SAM (SEGMENTATION)
 MASK
 CONTROLNET
 IP ADAPTER
 STABLE DIFFUSION 1.5 INPAINTING
-
-#REQUIRE#
-first time download (>5.4G)
-python ver 3.10.x
 
 #INSTALL VIRTUAL ENVIRONMENT#
 cd AI

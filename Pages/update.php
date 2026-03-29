@@ -4,11 +4,10 @@ $conn = new mysqli("localhost", "root", "", "TF_Database");
 if ($conn->connect_error) {
     die("error" . $conn->connect_error);
 }
-if($_SESSION['role'] !== "admin"){
-    echo "<script>
-        alert('Restrict permission!');
-        window.location.href='../Pages/';
-    </script>";
+session_start();
+if(!isset($_SESSION['role']) || $_SESSION['role'] !== "admin"){
+    $_SESSION['error'] = "Restrict permission!";
+    header("Location: ../Pages/");
     exit();
 }
 $id = $_GET['id'];

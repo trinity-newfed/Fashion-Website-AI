@@ -11,21 +11,21 @@ if($conn->connect_error){
 
 session_start();
 
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: log.php");
     exit();
 }
 
-$username = $_SESSION['username'];
+$userID = $_SESSION['user_id'];
 $id = $_POST['cart_id'];
 $action = $_POST['action'];
 
 if($action === "plus"){
     $stmt = $conn->prepare($sql = "UPDATE cart 
                                    SET quantity = quantity + 1
-                                   WHERE username = ? AND id = ?"
+                                   WHERE user_id = ? AND id = ?"
                             );
-    $stmt->bind_param("si", $username, $id);
+    $stmt->bind_param("ii", $userID, $id);
     $stmt->execute();
     $stmt->close();
 }elseif($action === "minus"){
@@ -35,15 +35,15 @@ if($action === "plus"){
                                    AND id = ? 
                                    AND quantity > 1"
                            );
-    $stmt->bind_param("si", $username, $id);
+    $stmt->bind_param("ii", $userID, $id);
     $stmt->execute();
     $affected = $stmt->affected_rows;
     $stmt->close();
 if($affected === 0){
     $stmt = $conn->prepare("DELETE 
                             FROM cart 
-                            WHERE username = ? AND id = ?");
-    $stmt->bind_param("si", $username, $id);
+                            WHERE user_id = ? AND id = ?");
+    $stmt->bind_param("ii", $userID, $id);
     $stmt->execute();
     $stmt->close();
 }

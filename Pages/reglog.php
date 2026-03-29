@@ -1,3 +1,16 @@
+<?php 
+$host = "localhost";
+$user = "root";
+$password = "";
+$dbname = "TF_Database";
+
+$conn = new mysqli($host, $user, $password, $dbname);
+session_start();
+$otp = 0;
+if(isset($_SESSION['otp']) || isset($_SESSION['admin_otp'])){
+  $otp = 1;
+}
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -372,7 +385,7 @@
       <div id="leftContainer">
         <h2 onclick="window.location.href='../Pages/'">TRINITY</h2>
         <span onclick="window.location.href='../Pages/'">Home</span>
-        <span onclick="window.location.href='../Pages/products.php#product-section'">Collection</span>
+        <span onclick="window.location.href='products.php?#product-section'">Collection</span>
         <span onclick="window.location.href='products.php?category=men'">Men</span>
         <span onclick="window.location.href='products.php?category=women'">Women</span>
         <span class="Accesories" onclick="window.location.href='products.php?category=accesories'">Accesories</span>
@@ -442,6 +455,12 @@
             <input type="password" name="user_password" required/>
             <label>Password</label>
           </div>
+          <?php if($otp == 1): ?>
+          <div class="input-group">
+            <input type="text" name="otp" required/>
+            <label>OTP</label>
+          </div>
+          <?php endif; ?>
           <button type="submit" class="btn-action">Sign In</button>
           <div class="extra-link">
             <a href="#">Forget password?</a>

@@ -8,20 +8,18 @@ $conn = new mysqli($host, $user, $password, $dbname);
 
 session_start();
 
-if(!isset($_SESSION['username']) || $_SESSION['role'] != "user"){
-    echo"<script>
-            alert('Please login to use this feature!');
-            window.location.href='reglog.php';
-        </script>";
-        exit;
+if(!isset($_SESSION['user_id']) || $_SESSION['role'] != "user"){
+    header("Location: reglog.php");
+    exit;
 }
 
 $username = $_SESSION['username'];
+$userID = $_SESSION['user_id'];
 
-$usersql = "SELECT * FROM userdata WHERE email = ?";
+$usersql = "SELECT * FROM userdata WHERE id = ?";
 
 $stmt = $conn->prepare($usersql);
-$stmt->bind_param("s", $username);
+$stmt->bind_param("i", $userID);
 $stmt->execute();
 $userdata = $stmt->get_result();
 $users = $userdata->fetch_assoc();;
@@ -30,9 +28,9 @@ $stmt->close();
 $stmt = $conn->prepare("SELECT 
                         COUNT(*) AS total_orders, 
                         SUM(order_final_price) AS total_spent 
-                        FROM orders WHERE username = ?");
+                        FROM orders WHERE user_id = ?");
 
-$stmt->bind_param("s", $username);
+$stmt->bind_param("i", $userID);
 $stmt->execute();
 $result = $stmt->get_result();
 $orderData = $result->fetch_assoc();
@@ -241,7 +239,7 @@ $stmt->close();
         </div>
     </div>
     <div class="menu-item">
-        <div class="menu-title">ABOUT</div>
+        <div class="menu-title" onclick="window.location.href='about.php'">ABOUT</div>
     </div>
 </div>
 </section>
@@ -273,7 +271,7 @@ $stmt->close();
         <a href="cart.php">Cart</a>
         <a href="voucher.php">Vouchers</a>
         <a href="userTier.php">User Tier</a>
-        <a href="#">About Us</a>
+        <a href="about.php">About Us</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
@@ -322,19 +320,15 @@ $stmt->close();
         });
 
 
-const username = <?php echo json_encode($username); ?>;
-console.log("USERNAME:", username);
+const user_id = <?php echo json_encode($userID); ?>;
 
-if(username){
+if(user_id){
   const interval = setInterval(async () =>{
     try {
-      const res = await fetch(`http://localhost:5000/api/progress/${username}`);
+      const res = await fetch(`http://localhost:5000/api/progress/${user_id}`);
       const data = await res.json();
 
-      console.log("DATA:", data);
-
       if(data.status === "done"){
-        console.log("DONE TRIGGERED");
         clearInterval(interval);
         const goUser = confirm("Redirect to user page for result?");
         if(goUser){

@@ -7,10 +7,11 @@ $dbname = "TF_Database";
 $conn = new mysqli($host, $user, $password, $dbname);
 
 session_start();
+$username = $_SESSION['username'] ?? null;
 //VOUNCHER FETCH
-if(isset($_SESSION['username'])){
+if(isset($_SESSION['user_id'])){
 
-    $username = $_SESSION['username'];
+    $userID = $_SESSION['user_id'];
 
     $stmt = $conn->prepare("SELECT
     vouchers.id AS id,
@@ -22,10 +23,10 @@ if(isset($_SESSION['username'])){
 FROM vouchers
 JOIN user_voucher
     ON vouchers.id = user_voucher.voucher_id
-WHERE username = ?
+WHERE user_id = ?
 ");
 
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("i", $userID);
     $stmt->execute();
     $voucher = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 }else{
@@ -35,9 +36,9 @@ WHERE username = ?
 
 
 //CART FETCH
-if(isset($_SESSION['username'])){
+if(isset($_SESSION['user_id'])){
 
-    $username = $_SESSION['username'];
+    $userID = $_SESSION['user_id'];
 
     $stmt = $conn->prepare("SELECT 
     cart.id AS cart_id,
@@ -52,10 +53,10 @@ if(isset($_SESSION['username'])){
 FROM cart
 JOIN products 
     ON cart.product_id = products.id
-WHERE cart.username = ?
+WHERE cart.user_id = ?
 ");
 
-$stmt->bind_param("s", $username);
+$stmt->bind_param("i", $userID);
 $stmt->execute();
 $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
 
@@ -65,15 +66,18 @@ $data = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $data = [];
 }
 
-$distance = $conn->prepare("SELECT user_address FROM userdata
-                            WHERE email = ?");
-$distance->bind_param("s", $username);
-$distance->execute();
-$userAddress = $distance->get_result();
+if(isset($_SESSION['user_id'])){
+    $userId = $_SESSION['user_id'];
+    $distance = $conn->prepare("SELECT user_address FROM userdata
+                            WHERE id = ?");
+    $distance->bind_param("i", $userId);
+    $distance->execute();
+    $userAddress = $distance->get_result();
 
-if($userAddress->num_rows > 0){
-    $row = $userAddress->fetch_assoc();
-    $address = $row['user_address'];
+    if($userAddress->num_rows > 0){
+        $row = $userAddress->fetch_assoc();
+        $address = $row['user_address'];
+    }
 }
 
 ?>
@@ -232,7 +236,7 @@ if($userAddress->num_rows > 0){
             <svg class="icon" viewBox="0 0 640 512" aria-hidden="true" onclick="window.location.href='cart.php'">
                 <path fill="currentColor" d="M24 0C10.7 0 0 10.7 0 24s10.7 24 24 24h45.3c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3C135.5 375.1 165.3 400 200.1 400H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H200.1c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3h303.6c30.8 0 57.2-21.9 62.9-52.2L568.9 85.9C572.6 66.2 557.5 48 537.4 48H124.7l-.4-2C119.5 19.4 96.3 0 69.2 0H24zm184 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>
             </svg>
-            <?php if(isset($_SESSION['username'])): ?>
+            <?php if(isset($_SESSION['user_id'])): ?>
                 <p onclick="window.location.href='user.php'" id="menu-Username" style="cursor: pointer;"><?=$_SESSION['username']?></p>
                 <?php if(!empty($_SESSION['img'])): ?>
                     <div id="user-account" onclick="window.location.href='user.php'">
@@ -295,7 +299,7 @@ if($userAddress->num_rows > 0){
         </div>
     </div>
     <div class="menu-item">
-        <div class="menu-title">ABOUT</div>
+        <div class="menu-title" onclick="window.location.href='about.php'">ABOUT</div>
     </div>
 </div>
 </section>
@@ -327,7 +331,7 @@ if($userAddress->num_rows > 0){
         <a href="cart.php">Cart</a>
         <a href="voucher.php">Vouchers</a>
         <a href="userTier.php">User Tier</a>
-        <a href="#">About Us</a>
+        <a href="about.php">About Us</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
@@ -424,12 +428,14 @@ if($userAddress->num_rows > 0){
 
 
     const dropDown = document.getElementById("main-voucher");
-    dropDown.addEventListener('click', ()=>{
-        document.querySelector(".voucher-list").style.display = "block";
-    });
-    document.addEventListener('click', function(e){
-        if(e.target !== dropDown) document.querySelector(".voucher-list").style.display = "none";
-    });
+    if(dropDown){
+        dropDown.addEventListener('click', ()=>{
+            document.querySelector(".voucher-list").style.display = "block";
+        });
+        document.addEventListener('click', function(e){
+            if(e.target !== dropDown) document.querySelector(".voucher-list").style.display = "none";
+        });
+    }
 
 //CALCULATE TOTAL
 function calculateFinalTotal(){
@@ -608,19 +614,15 @@ vouchers.forEach(voucher => {
 
 
 //USERNAME AND API FETCH
-const username = <?php echo json_encode($username); ?>;
-console.log("USERNAME:", username);
+const user_id = <?php echo json_encode($userID); ?>;
 
-if(username){
+if(user_id){
   const interval = setInterval(async () =>{
     try {
-      const res = await fetch(`http://localhost:5000/api/progress/${username}`);
+      const res = await fetch(`http://localhost:5000/api/progress/${user_id}`);
       const data = await res.json();
 
-      console.log("DATA:", data);
-
       if(data.status === "done"){
-        console.log("DONE TRIGGERED");
         clearInterval(interval);
         const goUser = confirm("Redirect to user page for result?");
         if(goUser){

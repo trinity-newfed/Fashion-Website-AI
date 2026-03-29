@@ -10,16 +10,17 @@ if(!isset($_SESSION['username'])){
   header("Location: reglog.php");
   exit();
 }
+$userID = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 $cart_ids = $_SESSION['checkout_cart_ids'];
 
 $sql = "SELECT * FROM userdata
-        WHERE email = ?";
+        WHERE id = ?";
 $stmt = $conn->prepare($sql);
 if(!$stmt){
     die("Prepare failed: " . $conn->error);
 }
-$stmt->bind_param("s", $username);
+$stmt->bind_param("i", $userID);
 $stmt->execute();
 
 $result = $stmt->get_result();
@@ -27,8 +28,8 @@ $user = $result->fetch_assoc();
 $stmt->close();
 
 $sql = $conn->prepare("SELECT * FROM user_policy_agreement
-                       WHERE username = ? AND policy_id = 'delivery'");
-$sql->bind_param("s", $username);
+                       WHERE user_id = ? AND policy_id = 'delivery'");
+$sql->bind_param("i", $userID);
 $sql->execute();
 $agreement = $sql->get_result();
 $agree = $agreement->fetch_assoc();

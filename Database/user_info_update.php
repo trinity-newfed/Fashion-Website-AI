@@ -11,7 +11,7 @@ if($conn->connect_error){
 
 session_start();
 
-$username = $_SESSION['username'];
+$userID = $_SESSION['user_id'];
 
 $uploadDirAbsolute = __DIR__ . "/../upload/";
 if (!is_dir($uploadDirAbsolute)) {
@@ -23,7 +23,7 @@ $newFileRelative = "upload/" . $fileName;
 $imageFileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 $allowedTypes = ["jpg", "jpeg", "png", "gif"];
 
-$res_current = $conn->query("SELECT * FROM userdata WHERE email = '$username'");
+$res_current = $conn->query("SELECT * FROM userdata WHERE id = '$userID'");
 $current_data = $res_current->fetch_assoc();
 
 $sex = !empty($_POST['user_sex']) ? $_POST['user_sex'] : $current_data['user_sex'];
@@ -33,7 +33,7 @@ $address = !empty($_POST['user_address']) ? $_POST['user_address'] : $current_da
 if(!empty($_FILES['img']['name'])){
     if(in_array($imageFileType, $allowedTypes)){
         if(move_uploaded_file($_FILES["img"]["tmp_name"], $newFileAbsolute)){
-            $result = $conn->query("SELECT img FROM userdata WHERE email = '$username'");
+            $result = $conn->query("SELECT img FROM userdata WHERE id = '$userID'");
             if(!empty($result)){
                 if($result && $row = $result->fetch_assoc()){
                     $oldImage = $row['img'];
@@ -48,8 +48,8 @@ if(!empty($_FILES['img']['name'])){
                                 user_hotline = ?,
                                 user_address = ?,
                                 img = ?
-                                WHERE email = ?");
-            $sql->bind_param("sssss", $sex, $hotline, $address, $newFileRelative, $username);
+                                WHERE id = ?");
+            $sql->bind_param("ssssi", $sex, $hotline, $address, $newFileRelative, $userID);
             $sql->execute();
             $sql->close();
 
@@ -69,8 +69,8 @@ if(!empty($_FILES['img']['name'])){
                                 user_sex = ?,
                                 user_hotline = ?,
                                 user_address = ?
-                                WHERE email = ?");
-            $sql->bind_param("ssss", $sex, $hotline, $address, $username);
+                                WHERE id = ?");
+            $sql->bind_param("sssi", $sex, $hotline, $address, $userID);
             $sql->execute();
             $sql->close();
 }

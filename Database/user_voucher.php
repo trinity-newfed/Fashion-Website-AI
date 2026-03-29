@@ -11,12 +11,12 @@ if ($conn->connect_error) {
 }
 
 session_start();
-$username = $_SESSION['username'];
+$userID = $_SESSION['user_id'];
 $voucher_id = $_POST['voucher_id'];
 
-$check = $conn->prepare("SELECT * FROM user_voucher WHERE username = ? AND voucher_id = ?");
+$check = $conn->prepare("SELECT * FROM user_voucher WHERE user_id = ? AND voucher_id = ?");
 
-$check->bind_param("si", $username, $voucher_id);
+$check->bind_param("ii", $userID, $voucher_id);
 $check->execute();
 $result = $check->get_result();
 
@@ -25,10 +25,10 @@ if($result->num_rows > 0){
     exit();
 }
 $stmt = $conn->prepare("
-    INSERT INTO user_voucher (username, voucher_id)
+    INSERT INTO user_voucher (user_id, voucher_id)
     VALUES (?, ?)
 ");
-$stmt->bind_param("si", $username, $voucher_id);
+$stmt->bind_param("ii", $userID, $voucher_id);
 $stmt->execute();
 
 header("Location: " . $_SERVER['HTTP_REFERER']);

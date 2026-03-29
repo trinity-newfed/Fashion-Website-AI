@@ -7,10 +7,8 @@ $dbname = "TF_Database";
 $conn = new mysqli($host, $user, $password, $dbname);
 session_start();
 if(!isset($_SESSION['role']) || $_SESSION['role'] !== "admin"){
-    echo "<script>
-        alert('Restrict permission!');
-        window.location.href='../Pages/';
-    </script>";
+    $_SESSION['error'] = "Restrict permission!";
+    header("Location: ../Pages/");
     exit();
 }
 //PRODUCT FETCH

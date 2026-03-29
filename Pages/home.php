@@ -7,7 +7,13 @@ $product = $conn
   ->fetch_all(MYSQLI_ASSOC);
 
 
-$username = $_SESSION['username'];
+$username = $_SESSION['username'] ?? null;
+$userID = $_SESSION['user_id'] ?? null;
+
+if(isset($_SESSION['error'])){
+    echo "<script>alert('{$_SESSION['error']}');</script>";
+    unset($_SESSION['error']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -168,7 +174,7 @@ $username = $_SESSION['username'];
                 <p onclick="window.location.href='user.php'" id="menu-Username" style="cursor: pointer;"></p>
                 <?php if(!empty($_SESSION['img'])): ?>
                     <div id="user-account" onclick="window.location.href='user.php'">
-                        <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img']) ?>" alt="avatar">
+                        <img id="user-avatar" src="../upload/<?= htmlspecialchars($_SESSION['img'])?>" alt="avatar">
                     </div>
                 <?php endif; ?>
             <?php else: ?>
@@ -227,7 +233,7 @@ $username = $_SESSION['username'];
         </div>
     </div>
     <div class="menu-item">
-        <div class="menu-title">ABOUT</div>
+        <div class="menu-title" onclick="window.location.href='about.php'">ABOUT</div>
     </div>
 </div>
 </section>
@@ -259,7 +265,7 @@ $username = $_SESSION['username'];
         <a href="cart.php">Cart</a>
         <a href="voucher.php">Vouchers</a>
         <a href="userTier.php">User Tier</a>
-        <a href="#">About Us</a>
+        <a href="about.php">About Us</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-title">INFORMATION</p>
@@ -332,7 +338,6 @@ $username = $_SESSION['username'];
         const bodyObserve = new IntersectionObserver(entries =>{
             entries.forEach(entry =>{
                 if(entry.isIntersecting){
-                    console.log(num);
                 setInterval(() => {
                     if(num < 3){
                         num++;
@@ -378,17 +383,15 @@ $username = $_SESSION['username'];
         });
 
 
-const username = <?php echo json_encode($username); ?>;
-console.log("USERNAME:", username);
+const user_id = <?php echo json_encode($userID); ?>;
 
-if(username){
+if(user_id){
   const interval = setInterval(async () =>{
     try{
-      const res = await fetch(`http://localhost:5000/api/progress/${username}`);
+      const res = await fetch(`http://localhost:5000/api/progress/${user_id}`);
       const data = await res.json();
-      console.log("DATA:", data);
+
       if(data.status === "done"){
-        console.log("DONE TRIGGERED");
         clearInterval(interval);
         const goUser = confirm("Redirect to user page for result?");
         if(goUser){

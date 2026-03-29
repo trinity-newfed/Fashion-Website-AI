@@ -18,17 +18,18 @@ if(!isset($_SESSION['checkout_cart_ids'])){
           </script>";
 }
 $agree = $_POST['policy_id'];
+$userID = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
 $policy = $conn->prepare("SELECT * FROM user_policy_agreement
-                          WHERE username = ? AND policy_id = ?");
-$policy->bind_param("ss", $username, $agree);
+                          WHERE user_id = ? AND policy_id = ?");
+$policy->bind_param("is", $userID, $agree);
 $policy->execute();
 $userAgree = $policy->get_result();
 if($userAgree->num_rows == 0){
-    $sql = $conn->prepare("INSERT INTO user_policy_agreement (username, policy_id)
+    $sql = $conn->prepare("INSERT INTO user_policy_agreement (user_id, policy_id)
                            VALUES (?, ?)");
-    $sql->bind_param("ss", $username, $agree);
+    $sql->bind_param("is", $userID, $agree);
     $sql->execute();
     $sql->close();
 }
@@ -37,10 +38,11 @@ $policy->close();
 $usernameShort = strtoupper(substr($username, 0, 3));
 $orderCode = $usernameShort . date('YmdHis');
 $cart_ids = $_SESSION['checkout_cart_ids'] ?? [];
+
 $from = [106.5775, 10.8908];
 $address = $conn->prepare("SELECT user_address FROM userdata
-                           WHERE email = ?");
-$address->bind_param("s", $username);
+                           WHERE id = ?");
+$address->bind_param("i", $userID);
 $address->execute();
 $userAddress = $address->get_result();
 if($userAddress->num_rows > 0){
@@ -116,12 +118,12 @@ $sql = "SELECT
         FROM cart
         JOIN products ON cart.product_id = products.id
         WHERE cart.id IN ($placeholders)
-        AND cart.username = ?";
+        AND cart.user_id = ?";
 
 $stmt = $conn->prepare($sql);
 
-$types = str_repeat('i', count($cart_ids)) . 's';
-$params = array_merge($cart_ids, [$username]);
+$types = str_repeat('i', count($cart_ids)) . 'i';
+$params = array_merge($cart_ids, [$userID]);
 
 $stmt->bind_param($types, ...$params);
 $stmt->execute();
@@ -138,7 +140,7 @@ $discount_amount = 0;
 $ship_discount = 0;
 
 if($voucher > 0){
-    $vsql = $conn->prepare("SELECT voucher_discount, voucher_type, voucher_max, voucher_type FROM vouchers WHERE id = ?");
+    $vsql = $conn->prepare("SELECT voucher_discount, voucher_max, voucher_type FROM vouchers WHERE id = ?");
     $vsql->bind_param("i", $voucher);
     $vsql->execute();
     $result = $vsql->get_result();
@@ -169,11 +171,11 @@ $conn->begin_transaction();
 
 try{
     $stmt = $conn->prepare("
-        INSERT INTO orders(username, order_name, order_original_price, order_delivery_fee, discount, ship_discount, order_final_price, order_state)
+        INSERT INTO orders(user_id, order_name, order_original_price, order_delivery_fee, discount, ship_discount, order_final_price, order_state)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
-    $stmt->bind_param("ssddddds", $username, $orderCode, $total, $final_ship_fee, $discount_amount, $ship_discount, $final_total, $orderstate);
+    $stmt->bind_param("isddddds", $userID, $orderCode, $total, $final_ship_fee, $discount_amount, $ship_discount, $final_total, $orderstate);
     $stmt->execute();
 
     $order_id = $stmt->insert_id;
@@ -212,9 +214,9 @@ try{
 
     $stmt->close();
 
-    $usql = $conn->prepare("INSERT INTO used_voucher(username, voucher_id) 
+    $usql = $conn->prepare("INSERT INTO used_voucher(user_id, voucher_id) 
                             VALUES(?, ?)");
-    $usql->bind_param("si", $username, $voucher);
+    $usql->bind_param("ii", $userID, $voucher);
     $usql->execute();
     $usql->close();
 
@@ -223,17 +225,17 @@ try{
     $del->execute();
     $del->close();
 
-    $vDel = $conn->prepare("DELETE FROM user_voucher WHERE voucher_id = ? AND username = ?");
-    $vDel->bind_param("is", $voucher, $username);
+    $vDel = $conn->prepare("DELETE FROM user_voucher WHERE voucher_id = ? AND user_id = ?");
+    $vDel->bind_param("ii", $voucher, $userID);
     $vDel->execute();
     $vDel->close();
 
     $stmt = $conn->prepare("SELECT 
                         COUNT(*) AS total_orders, 
                         SUM(order_final_price) AS total_spent 
-                        FROM orders WHERE username = ?");
+                        FROM orders WHERE user_id = ?");
 
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("i", $userID);
     $stmt->execute();
     $result = $stmt->get_result();
     $orderData = $result->fetch_assoc();
@@ -251,8 +253,8 @@ try{
     }
 
     if($newTier !== '1'){
-        $tierUpdate = $conn->prepare("UPDATE userdata SET user_tier = ? WHERE email = ?");
-        $tierUpdate->bind_param("ss", $newTier, $username);
+        $tierUpdate = $conn->prepare("UPDATE userdata SET user_tier = ? WHERE id = ?");
+        $tierUpdate->bind_param("si", $newTier, $userID);
         $tierUpdate->execute();
         $tierUpdate->close();
     }

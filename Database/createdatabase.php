@@ -37,7 +37,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS products(
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS cart(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100),
+    user_id INT,
     product_category VARCHAR(100),
     product_color VARCHAR(100),
     cart_size ENUM('S','M','L','XL') DEFAULT 'S',
@@ -46,7 +46,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS cart(
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS orders(
     id INT(10) AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100),
+    user_id VARCHAR(100),
     order_name VARCHAR(100),
     order_original_price DECIMAL(10,2),
     order_delivery_fee DECIMAL(10,2),
@@ -76,11 +76,12 @@ $conn->query("CREATE TABLE IF NOT EXISTS userdata(
     user_hotline VARCHAR(20),
     user_sex ENUM('Male','Female','Other'),
     user_tier ENUM('1','2','3','4') DEFAULT '1',
-    user_limit_tryon INT,
+    user_limit_tryon ENUM('10','30','50','100') DEFAULT '10',
+    user_limit_password INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS user_policy_agreement(
-    username VARCHAR(255),
+    user_id VARCHAR(255),
     policy_id ENUM('terms','privacy','ai_usage','delivery'),
     agree_at TIMESTAMP
     )");
@@ -98,19 +99,19 @@ $conn->query("CREATE TABLE IF NOT EXISTS vouchers(
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS user_voucher(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100),
+    user_id VARCHAR(100),
     voucher_id VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS used_voucher(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100),
+    user_id VARCHAR(100),
     voucher_id VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 $conn->query("CREATE TABLE IF NOT EXISTS tryon(
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255),
+    user_id VARCHAR(255),
     cloth_path VARCHAR(255),
     result_img VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

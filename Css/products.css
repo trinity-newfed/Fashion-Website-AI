@@ -595,14 +595,14 @@ html,body{
 #tooltip-explain{
   position: absolute;
   width: 150px;
-  height: 80px;
+  height: 90px;
   background-color: rgba(0, 0, 0, 0.65);
   visibility: hidden;
   opacity: 0;
   bottom: 140%;
   transition: .3s all;
   color: white;
-  font-size: clamp(0.35rem, 0.7vw, 1rem); 
+  font-size: clamp(0.65rem, .8vw, 1rem); 
   text-align: center;
   font-family: "Montserrat", serif;
 }
@@ -709,6 +709,10 @@ html,body{
   cursor: pointer;
   transition: 0.3s;
 }
+
+.modal-add:hover {
+  background: #333;
+}
 .modal-try {
   width: 100%;
   height: 50px;
@@ -720,10 +724,6 @@ html,body{
   font-weight: 600;
   cursor: pointer;
   transition: .3s all;
-}
-
-.modal-add:hover {
-  background: #333;
 }
 .modal-try:hover{
   background: black;
