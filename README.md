@@ -5,6 +5,7 @@ composer (https://getcomposer.org/Composer-Setup.exe)
 
 
 #MAILER
+composer require vlucas/phpdotenv
 composer require phpmailer/phpmailer
 
 #PINELINE#
