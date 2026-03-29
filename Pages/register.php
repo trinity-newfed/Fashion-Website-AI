@@ -1,7 +1,9 @@
 <?php
 require __DIR__ . '/../vendor/autoload.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
@@ -15,39 +17,70 @@ if ($conn->connect_error) {
     die("Lỗi kết nối: " . $conn->connect_error);
 }
 
-session_start();     
+session_start();
 
-if($_SERVER["REQUEST_METHOD"] === "POST"){
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
+    $email    = trim($_POST['email']);
+    $password = $_POST['user_password'];
+    $address  = trim($_POST['user_address'] ?? "");
+    $sex      = $_POST["user_sex"] ?? "";
+    $hotline  = trim($_POST['user_hotline']);
     $inputOtp = $_POST['registerOtp'] ?? '';
-    $_SESSION['email']    = trim($_POST['email']);
-    $_SESSION['password'] = $_POST['user_password'];
-    $_SESSION['address']  = trim($_POST['user_address'] ?? null);
-    $_SESSION['sex'] = $_POST["user_sex"] ?? "";
-    $_SESSION['hotline']  = trim($_POST['user_hotline']);
 
-    if(empty($_SESSION['password']) || strlen($_SESSION['password']) < 6){
+    if (empty($password) || strlen($password) < 6) {
         echo "<script>alert('Password must be at least 6 characters');window.history.back();</script>";
         exit;
     }
 
+    // Check email tồn tại
     $stmt = $conn->prepare("SELECT id FROM userdata WHERE email = ?");
-    $stmt->bind_param("s", $_SESSION['email']);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();
 
-    if($stmt->num_rows > 0){
+    if ($stmt->num_rows > 0) {
         echo "<script>alert('Email already exists!');window.history.back();</script>";
         exit;
     }
 
-    if(empty($inputOtp)){
+    if (empty($inputOtp)) {
+
+        // Check spam OTP (30s)
+        $stmt = $conn->prepare("SELECT created_at FROM user_otp WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($row = $result->fetch_assoc()) {
+            if (time() - strtotime($row['created_at']) < 30) {
+                echo "<script>alert('Please wait 30s before requesting new OTP');window.location.href='reglog.php';</script>";
+                exit;
+            }
+        }
 
         $otp = random_int(100000, 999999);
-        $_SESSION['registerOtp'] = $otp;
-        $_SESSION['otp_expire'] = time() + 180;
+        $expire = time() + 180;
 
-        try{
+        $stmt = $conn->prepare("DELETE FROM user_otp WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+
+        $hashedOtp = password_hash($otp, PASSWORD_DEFAULT);
+
+        $stmt = $conn->prepare("INSERT INTO user_otp (email, otp, expire_at) VALUES (?, ?, ?)");
+        $stmt->bind_param("ssi", $email, $hashedOtp, $expire);
+        $stmt->execute();
+
+        // Lưu tạm info user vào session
+        $_SESSION['register_data'] = [
+            'email' => $email,
+            'password' => $password,
+            'address' => $address,
+            'sex' => $sex,
+            'hotline' => $hotline
+        ];
+        try {
             $mail = new PHPMailer(true);
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
@@ -58,87 +91,85 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             $mail->Port = 587;
 
             $mail->setFrom('triple3tbusiness@gmail.com', 'Trinity Verify');
-            $mail->addAddress($_SESSION['email']);
+            $mail->addAddress($email);
 
             $mail->isHTML(true);
             $mail->Subject = 'Your OTP Code';
-            $mail->Body = '
-                        <div style="margin:0; padding:0; background-color:#f2f2f2;">
-                            <div style="max-width:480px; margin:40px auto; background:#ffffff; border-radius:8px; padding:32px; font-family:Arial, sans-serif; color:#202124; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-                                <div style="text-align:center; margin-bottom:24px;">
-                                    <div style="font-size:20px; font-weight:500; color:#202124;">Verification Code</div>
-                                </div>
-                                <p style="font-size:14px; line-height:1.6; margin-bottom:20px;">
-                                Hello, '.$_SESSION['email'].'<br><br>
-                                Please use the verification code below to sign up your new account.
-                                </p>
-                                <div style="text-align:center; margin:24px 0;">
-                                    <span style="display:inline-block; font-size:28px; letter-spacing:6px; font-weight:bold; color:#202124; background:#f1f3f4; padding:12px 24px; border-radius:6px;">
-                                        '.$otp.'
-                                    </span>
-                                </div>
-                                <p style="font-size:13px; color:#5f6368; margin-bottom:20px;">
-                                    This code will expire in 3 minutes. Do not share this code with anyone.
-                                </p>    
-                                <p style="font-size:12px; color:#9aa0a6;">
-                                    If you didn’t request this, you can safely ignore this email.
-                                </p>
 
-                                </div>
-                                <div style="text-align:center; font-size:11px; color:#9aa0a6; margin-top:12px;">© '.date("Y").' TRINITY STYLE AI</div>
-                        </div>
-                        ';
+            $mail->Body = "
+                <div style='font-family:Arial;padding:20px'>
+                    <h2>Verification Code</h2>
+                    <p>Hello, $email</p>
+                    <p>Your OTP is:</p>
+                    <h1 style='letter-spacing:5px'>$otp</h1>
+                    <p>This code expires in 3 minutes.</p>
+                </div>
+            ";
 
             $mail->send();
 
-            echo "<script>
-                    alert('OTP sent!');
-                    window.location.href='reglog.php';
-                  </script>";
+            echo "<script>alert('OTP sent!');window.location.href='reglog.php';</script>";
+            exit;
 
-        }catch(Exception $e){
+        } catch (Exception $e) {
             error_log($mail->ErrorInfo);
+            echo "Send mail failed";
         }
     }
+    else {
 
-    elseif($inputOtp == $_SESSION['registerOtp']){
-
-
-        $hashedPassword = password_hash($_SESSION['password'], PASSWORD_DEFAULT);
-        $email = $_SESSION['email'];
-        $address = $_SESSION['address'];
-        $sex = $_SESSION['sex'];
-        $hotline = $_SESSION['hotline'];
-        $stmt = $conn->prepare("
-            INSERT INTO userdata 
-            (email, user_password, user_address, user_sex, user_hotline)
-            VALUES (?, ?, ?, ?, ?)
-        ");
-        $stmt->bind_param("sssss", $email, $hashedPassword, $address, $sex, $hotline);
-        if($stmt->execute()){
-            unset($_SESSION['registerOtp']);
-            unset($_SESSION['registerOtp']);
-            unset($_SESSION['otp_expire']);
-            unset($_SESSION['email']);
-            unset($_SESSION['password']);
-            unset($_SESSION['address']);
-            unset($_SESSION['sex']);
-            unset($_SESSION['hotline']);
-
-            echo "<script>
-                    alert('Register success!');window.location='reglog.php';
-                    window.location.href='reglog.php';
-                  </script>";
+        if (!isset($_SESSION['register_data'])) {
+            echo "<script>alert('Session expired');window.location.href='reglog.php';</script>";
             exit;
         }
-    }
-    else{
-        unset($_SESSION['registerOtp']);
-        unset($_SESSION['otp_expire']);
-        echo "<script>
-                alert('Invalid OTP');
-                window.location.href='reglog.php';
-              </script>";
+
+        $stmt = $conn->prepare("SELECT otp, expire_at FROM user_otp WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($row = $result->fetch_assoc()) {
+
+            if (
+                password_verify($inputOtp, $row['otp']) &&
+                time() < $row['expire_at']
+            ) {
+                $data = $_SESSION['register_data'];
+                $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+
+                $stmt = $conn->prepare("
+                    INSERT INTO userdata 
+                    (email, user_password, user_address, user_sex, user_hotline)
+                    VALUES (?, ?, ?, ?, ?)
+                ");
+                $stmt->bind_param(
+                    "sssss",
+                    $data['email'],
+                    $hashedPassword,
+                    $data['address'],
+                    $data['sex'],
+                    $data['hotline']
+                );
+
+                if ($stmt->execute()) {
+
+                    $stmt = $conn->prepare("DELETE FROM user_otp WHERE email = ?");
+                    $stmt->bind_param("s", $email);
+                    $stmt->execute();
+
+                    unset($_SESSION['register_data']);
+
+                    echo "<script>alert('Register success!');window.location.href='reglog.php';</script>";
+                    exit;
+                }
+
+            } else {
+                echo "<script>alert('Invalid or expired OTP');window.location.href='reglog.php';</script>";
+            }
+
+        } else {
+            echo "<script>alert('OTP not found');window.location.href='reglog.php';</script>";
+        }
     }
 }
 ?>

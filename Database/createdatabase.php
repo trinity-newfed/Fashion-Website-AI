@@ -80,6 +80,13 @@ $conn->query("CREATE TABLE IF NOT EXISTS userdata(
     user_limit_password INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
+$conn->query("CREATE TABLE IF NOT EXISTS user_otp(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(40) UNIQUE NOT NULL,
+    otp VARCHAR(10),
+    expire_at INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
 $conn->query("CREATE TABLE IF NOT EXISTS user_policy_agreement(
     user_id VARCHAR(255),
     policy_id ENUM('terms','privacy','ai_usage','delivery'),
