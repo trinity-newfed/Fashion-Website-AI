@@ -7,10 +7,10 @@ $dbname = "TF_Database";
 $conn = new mysqli($host, $user, $password, $dbname);
 session_start();
 $otp = 0;
-if(isset($_SESSION['otp']) || isset($_SESSION['admin_otp'])){
-  $otp = 1;
-}elseif(isset($_SESSION['register_data'])){
+if(isset($_SESSION['register_data'])){
   $otp = 2;
+}elseif(isset($_SESSION['admin_otp']) || isset($_SESSION['otp'])){
+  $otp = 1;
 }
 ?>
 <!doctype html>
@@ -371,7 +371,7 @@ if(isset($_SESSION['otp']) || isset($_SESSION['admin_otp'])){
       }
       .item{
         padding: 5px;
-        ursor: pointer;  
+        cursor: pointer;  
         }
       .item:hover{
         background: rgba(0, 0, 0, 0.05);
@@ -393,53 +393,19 @@ if(isset($_SESSION['otp']) || isset($_SESSION['admin_otp'])){
         <span class="Accesories" onclick="window.location.href='products.php?category=accesories'">Accesories</span>
       </div>
 
-      <form action="register.php" method="POST" id="regForm">
-        <?php if($otp == 2): ?>
+      <?php if($otp == 2): ?>
+      <form action="register.php" method="POST" id="regForm" class="move">
+        
         <div class="info-box">
           <div class="brand-header">
             <h2>Register</h2>
-            <p>Create new Trinity Account</p>
+            <p style="font-size:13px; margin-bottom:10px;">
+              OTP sent to: 
+              <b><?php echo $_SESSION['register_data']['email'] ?? '' ?></b>
+            </p>
           </div>
-          <div class="input-group" style="display: none;">
-            <input type="text" name="email" value="<?=$_SESSION['email']?>">
-            <label>Email</label>
-          </div>
-          <div class="input-group" style="display: none;">
-            <input type="password" name="user_password" value="<?=$_SESSION['password']?>">
-            <label>Password</label>
-          </div>
-          <span class="gender-label" style="display: none;">Sex</span>
-          <div class="gender-container" style="display: none;">
-            <div class="gender-box">
-              <div class="male-front">Male</div>
-              <input type="radio" value="male" name="user_sex" id="s-1" value="<?=$_SESSION['sex']?>">
-              <label for="s-1" class="male-back" style="background-color: #3266ff">Male</label>
-            </div>
-            <div class="gender-box">
-              <div class="male-front">Female</div>
-              <input type="radio" value="female" name="user_sex" id="s-2" value="<?=$_SESSION['sex']?>">
-              <label for="s-2" class="male-back" style="background-color: #ff00aa">
-                Female
-              </label>
-            </div>
-            <div class="gender-box">
-              <div class="male-front">Other</div>
-              <input type="radio" value="other" name="user_sex" id="s-3" value="<?=$_SESSION['sex']?>">
-              <label for="s-3" class="male-back" style="background-color: #888">Other</label>
-            </div>
-          </div>
-          <div class="input-group" style="display: none;">
-            <input type="text" name="user_hotline" id="hotline" value="<?=$_SESSION['hotline']?>">
-            <label>Hotline</label>
-          </div>
-          <div class="input-group" style="display: none;">
-            <div class="address-container">
-              <input type="text" id="address" name="user_address" oninput="search(this, 'toList')" value="<?=$_SESSION['address']?>">
-              <div id="toList" class="suggest"></div>
-            </div>
-          </div>
-            <div class="input-group">
-              <input type="text" name="registerOtp"/>
+      <div class="input-group">
+              <input type="text" name="registerOtp" maxlength="6" pattern="\d{6}" required/>
               <label>OTP</label>
             </div>
           <button type="submit" class="btn-action">Create Account</button>
@@ -447,7 +413,9 @@ if(isset($_SESSION['otp']) || isset($_SESSION['admin_otp'])){
             Already have an account? <a href="#" id="login-btn" class="btn">Login</a>
           </div>
         </div>
+        </form>
         <?php else: ?>
+          <form action="register.php" method="POST" id="regForm">
           <div class="info-box">
           <div class="brand-header">
             <h2>Register</h2>
@@ -496,9 +464,12 @@ if(isset($_SESSION['otp']) || isset($_SESSION['admin_otp'])){
             Already have an account? <a href="#" id="login-btn" class="btn">Login</a>
           </div>
         </div>
-        <?php endif; ?>
+        
       </form>
+      <?php endif; ?>
 
+
+      <?php if($otp !== 2): ?>
       <form action="login.php" method="POST" id="loginForm">
         <div class="info-box login-box">
           <div class="brand-header">
@@ -528,10 +499,12 @@ if(isset($_SESSION['otp']) || isset($_SESSION['admin_otp'])){
           </div>
         </div>
       </form>
+      <?php endif; ?>
     </div>
     <script>
       const hotlineInput = document.querySelector('input[name="user_hotline"]');
-      hotlineInput.addEventListener('input', function(e){
+      if(hotlineInput){
+        hotlineInput.addEventListener('input', function(e){
         this.value = this.value.replace(/[^0-9]/g, '');
         if(this.value.length > 10){
           this.value = this.value.slice(0, 10);
@@ -556,6 +529,13 @@ if(isset($_SESSION['otp']) || isset($_SESSION['admin_otp'])){
         this.value = value;
       });
 
+      document.querySelector('input[name="user_hotline"]').addEventListener("input", function(){
+        this.value = this.value.replace(/\D/g, "").slice(0,10);
+      });
+      }
+
+      
+
       const select = document.querySelectorAll(".gender-box");
       select.forEach(sec =>{
         sec.addEventListener('click', ()=>{
@@ -573,16 +553,16 @@ if(isset($_SESSION['otp']) || isset($_SESSION['admin_otp'])){
         });
       });
 
-      document.querySelector('input[name="user_hotline"]').addEventListener("input", function(){
-        this.value = this.value.replace(/\D/g, "").slice(0,10);
-      });
 
 const addressInput = document.getElementById("address");
 const suggestBox = document.getElementById("toList");
+if(addressInput){
+    addressInput.addEventListener("focus", () => {
+      suggestBox.style.display = "block";
+    });
+}
 
-addressInput.addEventListener("focus", () => {
-  suggestBox.style.display = "block";
-});
+
 
 document.addEventListener("click", function(e){
   if (!e.target.closest(".address-container")) {

@@ -59,7 +59,32 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
                 $mail->isHTML(true);
                 $mail->Subject = 'Your Trinity OTP Code';
 
-                $mail->Body = "<h2>Your OTP: $otp</h2><p>Expires in 3 minutes</p>";
+                $mail->Body = '
+                        <div style="margin:0; padding:0; background-color:#f2f2f2;">
+                            <div style="max-width:480px; margin:40px auto; background:#ffffff; border-radius:8px; padding:32px; font-family:Arial, sans-serif; color:#202124; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                                <div style="text-align:center; margin-bottom:24px;">
+                                    <div style="font-size:20px; font-weight:500; color:#202124;">Verification Code</div>
+                                </div>
+                                <p style="font-size:14px; line-height:1.6; margin-bottom:20px;">
+                                Hello, Admin<br><br>
+                                Please use code below to verify your identity.
+                                </p>
+                                <div style="text-align:center; margin:24px 0;">
+                                    <span style="display:inline-block; font-size:28px; letter-spacing:6px; font-weight:bold; color:#202124; background:#f1f3f4; padding:12px 24px; border-radius:6px;">
+                                        '.$otp.'
+                                    </span>
+                                </div>
+                                <p style="font-size:13px; color:#5f6368; margin-bottom:20px;">
+                                    This code will expire in 3 minutes. Do not share this code with anyone.
+                                </p>    
+                                <p style="font-size:12px; color:#9aa0a6;">
+                                    This otp mail is for admin login only.
+                                </p>
+
+                                </div>
+                                <div style="text-align:center; font-size:11px; color:#9aa0a6; margin-top:12px;">© '.date("Y").' TRINITY STYLE AI</div>
+                        </div>
+                        ';
 
                 $mail->send();
 
@@ -147,6 +172,12 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
             $stmt = $conn->prepare("UPDATE userdata SET user_limit_password = 0 WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
+            $stmt->close();
+
+            $stmt = $conn->prepare("DELETE FROM user_otp WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->close();
 
             header("Location: ../Pages/");
             exit;
@@ -172,7 +203,32 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
 
             $mail->isHTML(true);
             $mail->Subject = 'Your OTP Code';
-            $mail->Body = "<h2>Your OTP: $otp</h2>";
+            $mail->Body = '
+                        <div style="margin:0; padding:0; background-color:#f2f2f2;">
+                            <div style="max-width:480px; margin:40px auto; background:#ffffff; border-radius:8px; padding:32px; font-family:Arial, sans-serif; color:#202124; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                                <div style="text-align:center; margin-bottom:24px;">
+                                    <div style="font-size:20px; font-weight:500; color:#202124;">Verification Code</div>
+                                </div>
+                                <p style="font-size:14px; line-height:1.6; margin-bottom:20px;">
+                                Hello, '.$email.'<br><br>
+                                Please use the verification code below to sign in to your account.
+                                </p>
+                                <div style="text-align:center; margin:24px 0;">
+                                    <span style="display:inline-block; font-size:28px; letter-spacing:6px; font-weight:bold; color:#202124; background:#f1f3f4; padding:12px 24px; border-radius:6px;">
+                                        '.$otp.'
+                                    </span>
+                                </div>
+                                <p style="font-size:13px; color:#5f6368; margin-bottom:20px;">
+                                    This code will expire in 3 minutes. Do not share this code with anyone.
+                                </p>    
+                                <p style="font-size:12px; color:#9aa0a6;">
+                                    If you didn’t request this, you can safely ignore this email.
+                                </p>
+
+                                </div>
+                                <div style="text-align:center; font-size:11px; color:#9aa0a6; margin-top:12px;">© '.date("Y").' TRINITY STYLE AI</div>
+                        </div>
+                        ';
 
             $mail->send();
 

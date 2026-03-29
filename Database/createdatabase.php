@@ -83,7 +83,7 @@ $conn->query("CREATE TABLE IF NOT EXISTS userdata(
 $conn->query("CREATE TABLE IF NOT EXISTS user_otp(
     id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(40) UNIQUE NOT NULL,
-    otp VARCHAR(10),
+    otp VARCHAR(255),
     expire_at INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
